@@ -1,0 +1,12 @@
+{
+	"name": "crunch",
+	"version": "0.0.0",
+	"description": "event stream analysis",
+	"author": "Dave Pacheco <dap@joyent.com>",
+	"license": "MIT",
+	"dependencies": {
+		"assert-plus": "0.1.5",
+		"jsprim": "0.5.1",
+		"verror": "1.4.0"
+	}
+}

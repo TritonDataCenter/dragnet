@@ -216,7 +216,7 @@ Specifies which records to include in this index.  All other records will be
 dropped.  The format is a [node-krill](https://github.com/joyent/node-krill)
 object.
 
-### primaryKey (object)
+### primaryKey (string)
 e.g., `"time"`
 
 Defines the name and field denoting the primary key that organizes the data.
