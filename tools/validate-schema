@@ -1,0 +1,61 @@
+#!/usr/bin/env node
+
+/*
+ * validate-schema.js: given one of the schemas in schema/ and an input file,
+ * validate that the input file matches the schema.
+ */
+
+var mod_fs = require('fs');
+var mod_jsprim = require('jsprim');
+var mod_path = require('path');
+var VError = require('verror');
+
+var mod_streamutil = require('../lib/stream-util');
+
+var basename = mod_path.basename(process.argv[1]);
+var schemas = {
+    'user-index': require('../schema/user-index'),
+    'user-query': require('../schema/user-query')
+};
+
+function usage(message)
+{
+	console.error('usage: %s SCHEMA_NAME INPUT_FILE', basename);
+	console.error('available schemas: %s',
+	    Object.keys(schemas).sort().join(', '));
+	process.exit(2);
+}
+
+function fatal(err)
+{
+	console.error('%s: %s', basename, err.message);
+	process.exit(1);
+}
+
+function main()
+{
+	var schema_name, input_file, schema, input_stream;
+
+	if (process.argv.length != 4)
+		usage();
+
+	schema_name = process.argv[2];
+	input_file = process.argv[3];
+
+	if (!schemas.hasOwnProperty(schema_name))
+		usage();
+
+	schema = schemas[schema_name];
+	input_stream = mod_fs.createReadStream(input_file);
+	mod_streamutil.readToEndJson(input_stream, function (err, input) {
+		if (err)
+			fatal(new VError(err, 'read "%s"', input_file));
+
+		err = mod_jsprim.validateJsonObject(schema, input);
+		if (err)
+			fatal(err);
+		console.log('%s okay', input_file);
+	});
+}
+
+main();

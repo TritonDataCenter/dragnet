@@ -19,9 +19,10 @@ JSSTYLE		 = jsstyle
 #
 JSON_FILES	 = package.json
 JS_FILES	:= $(shell find schema -name '*.js')
+JS_FILES	+= tools/validate-schema
 JSL_FILES_NODE   = $(JS_FILES)
 JSSTYLE_FILES	 = $(JS_FILES)
-JSL_CONF_NODE	 = jsl.node.conf
+JSL_CONF_NODE	 = tools/jsl.node.conf
 
 all:
 	npm install

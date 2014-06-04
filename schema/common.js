@@ -12,7 +12,7 @@ exports.enum = schemaEnum;
 function schemaType(name, options)
 {
 	var rv = { 'type': name };
-	schemaApplyOptions(rv, options);
+	schemaApplyOptions(rv, options || []);
 	return (rv);
 }
 
@@ -23,8 +23,9 @@ function schemaEnum(values, options)
 	mod_assertplus.ok(values.length > 0,
 	    'enum must have at least one value');
 	rv = { 'type': typeof (values[0]) };
-	schemaApplyOptions(rv, options);
+	schemaApplyOptions(rv, options || []);
 	rv['enum'] = values.slice(0);
+	return (rv);
 }
 
 function schemaApplyOptions(rv, options)

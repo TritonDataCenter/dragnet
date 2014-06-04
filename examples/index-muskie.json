@@ -1,0 +1,22 @@
+{
+    "name": "muskie.requests",
+    "mantaroot": "/poseidon/stor/logs/muskie/2014/06/01/00",
+    "format": "json",
+    "filter": { "eq": [ "audit", true ] },
+    "primaryKey": "time",
+    "columns": [
+        "hostname",
+        "req.method",
+        "req.statusCode",
+        {
+	    "name": "latency",
+            "field": "latency",
+            "aggr": "quantize"
+        },
+        {
+	    "name": "latency",
+            "field": "latencyToFirstByte",
+            "aggr": "quantize"
+        }
+    ]
+}
