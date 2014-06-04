@@ -12,7 +12,7 @@ var VError = require('verror');
 
 var mod_streamutil = require('../lib/stream-util');
 
-var basename = mod_path.basename(process.argv[1]);
+var arg0 = mod_path.basename(process.argv[1]);
 var schemas = {
     'user-index': require('../schema/user-index'),
     'user-query': require('../schema/user-query')
@@ -20,7 +20,7 @@ var schemas = {
 
 function usage(message)
 {
-	console.error('usage: %s SCHEMA_NAME INPUT_FILE', basename);
+	console.error('usage: %s SCHEMA_NAME INPUT_FILE', arg0);
 	console.error('available schemas: %s',
 	    Object.keys(schemas).sort().join(', '));
 	process.exit(2);
@@ -28,7 +28,7 @@ function usage(message)
 
 function fatal(err)
 {
-	console.error('%s: %s', basename, err.message);
+	console.error('%s: %s', arg0, err.message);
 	process.exit(1);
 }
 
