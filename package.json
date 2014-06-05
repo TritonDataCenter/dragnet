@@ -6,6 +6,7 @@
 	"license": "MIT",
 	"dependencies": {
 		"assert-plus": "0.1.5",
+		"lstream": "0.0.4",
 		"jsprim": "0.5.1",
 		"vasync": "1.5.0",
 		"verror": "1.4.0"

@@ -1,0 +1,56 @@
+#!/usr/bin/env node
+
+/*
+ * json_streamer.js: read stdin and emit a count of the number of valid JSON
+ * objects that were found, exercising the JsonLineStream.
+ */
+
+var mod_assert = require('assert');
+var mod_jls = require('../lib/format-json');
+
+var mod_path = require('path');
+var VError = require('verror');
+
+var arg0 = mod_path.basename(process.argv[1]);
+
+function fatal(err)
+{
+	console.error('%s: %s', arg0, err.message);
+	process.exit(1);
+}
+
+function main()
+{
+	var schema_name, input_file, schema, input_stream;
+
+	var stream = new mod_jls();
+	var count = 0;
+	process.stdin.pipe(stream);
+	stream.on('err', fatal);
+	stream.on('invalid_record', function (line, lineno, err) {
+		console.error('line %d: %s', lineno, err.toString());
+	});
+
+	if (process.argv[2] == '--stop') {
+		/*
+		 * Test that flow control works by not piping the stream and
+		 * monitoring the length of the internal buffers.
+		 */
+		mod_assert.ok(stream.read(0) === null);
+		setInterval(function () {
+			console.error(stream._readableState.length);
+			console.error(stream._writableState.length);
+		}, 1000);
+	} else {
+		stream.on('data', function (obj) {
+			if (count % 2000 === 1999)
+				console.error('processed %d lines', count + 1);
+			count++;
+		});
+		stream.on('end', function () {
+			console.log('%d', count);
+		});
+	}
+}
+
+main();
