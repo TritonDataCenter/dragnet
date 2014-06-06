@@ -6,7 +6,7 @@
 	"license": "MIT",
 	"private": true,
 	"bin": {
-	    "./bin/dn"
+	    "dn": "./bin/dn"
 	},
 	"repository": {
 		"type": "git",
