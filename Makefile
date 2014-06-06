@@ -19,7 +19,7 @@ JSSTYLE		 = jsstyle
 #
 JSON_FILES	 = package.json
 JS_FILES	:= $(shell find lib schema -name '*.js')
-JS_FILES	+= bin/crunch \
+JS_FILES	+= bin/dn \
 		   tools/validate-schema
 JSL_FILES_NODE   = $(JS_FILES)
 JSSTYLE_FILES	 = $(JS_FILES)

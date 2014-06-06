@@ -1,11 +1,12 @@
 {
-	"name": "crunch",
+	"name": "dragnet",
 	"version": "0.0.0",
 	"description": "event stream analysis",
 	"author": "Dave Pacheco <dap@joyent.com>",
 	"license": "MIT",
 	"dependencies": {
 		"assert-plus": "0.1.5",
+		"extsprintf": "1.0.3",
 		"lstream": "0.0.4",
 		"jsprim": "0.5.1",
 		"vasync": "1.5.0",
