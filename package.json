@@ -4,11 +4,22 @@
 	"description": "event stream analysis",
 	"author": "Dave Pacheco <dap@joyent.com>",
 	"license": "MIT",
+	"private": true,
+	"bin": {
+	    "./bin/dn"
+	},
+	"repository": {
+		"type": "git",
+		"url": "http://github.com/joyent/dragnet.git"
+	},
 	"dependencies": {
 		"assert-plus": "0.1.5",
+		"catstreams": "0.0.4",
 		"extsprintf": "1.0.3",
+		"krill": "0.1.0",
 		"lstream": "0.0.4",
 		"jsprim": "0.5.1",
+		"skinner": "0.0.2",
 		"vasync": "1.5.0",
 		"verror": "1.4.0"
 	}
