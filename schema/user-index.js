@@ -9,7 +9,8 @@ module.exports = {
     'type': 'object',
     'properties': {
 	'name': schema_common.type('string', [ 'required' ]),
-	'mantaroot': schema_common.type('string', [ 'required' ]),
+	'fsroot': schema_common.type('string'),
+	'mantaroot': schema_common.type('string'),
 	'format': schema_common.enum([ 'json' ], [ 'required' ]),
 	'filter': { 'type': 'object' },
 	'primaryKey': schema_common.type('string'),

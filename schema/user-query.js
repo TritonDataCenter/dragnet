@@ -8,8 +8,8 @@ module.exports = {
     'type': 'object',
     'properties': {
 	'index': schema_common.type('string', [ 'required' ]),
-	'timeStart': schema_common.type('string', [ 'required' ]),
-	'timeEnd': schema_common.type('string', [ 'required' ]),
+	'timeStart': schema_common.type('string'),
+	'timeEnd': schema_common.type('string'),
 	'timeResolution': schema_common.type('number'),
 	'filter': { 'type': 'object' },
 	'breakdowns': {

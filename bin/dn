@@ -4,20 +4,32 @@
  * dn: create, query, and destroy indexes on data stored in Manta
  */
 
+var mod_bunyan = require('bunyan');
 var mod_path = require('path');
+var mod_vasync = require('vasync');
 var VError = require('verror');
+
+var mod_streamutil = require('../lib/stream-util');
+var schemaIndex = require('../schema/user-index');
+var schemaQuery = require('../schema/user-query');
+var LocalDataStore = require('../lib/datastore-local');
+var JsonLineStream = require('../lib/format-json');
+var QueryScanner = require('../lib/query-scan');
 
 var dnArg0 = mod_path.basename(process.argv[1]);
 var dnCmds = {
     'index': cmdIndex,
     'destroy': cmdDestroy,
-    'query': cmdQuery
+    'query': cmdQuery,
+    'scan': cmdScan
 };
 var dnUsage = [
     'usage: dn index INDEX_CONFIG_FILE\n',
     '       dn destroy INDEX_NAME\n',
-    '       dn query INDEX_NAME ...'
+    '       dn query INDEX_NAME QUERY_CONFIG_FILE ...\n',
+    '       dn scan INDEX_CONFIG_FILE QUERY_CONFIG_FILE'
 ].join('');
+var dnLog;
 
 function usage(err)
 {
@@ -45,6 +57,10 @@ function main()
 	if (!dnCmds.hasOwnProperty(cmdname))
 		usage(new VError('no such command: "%s"', cmdname));
 
+	dnLog = new mod_bunyan({
+	    'name': 'dragnet',
+	    'level': process.env['LOG_LEVEL'] || 'warn'
+	});
 	cmdfunc = dnCmds[cmdname];
 	cmdfunc(cmdname, process.argv.slice(3));
 }
@@ -64,5 +80,64 @@ function cmdQuery(cmdname, argv)
 	console.log('"%s" not yet implemented', cmdname);
 }
 
+function cmdScan(cmdname, argv)
+{
+	var indexname, queryname, indexConf;
+
+	if (argv.length != 2)
+		usage();
+
+	indexname = argv[0];
+	queryname = argv[1];
+	mod_vasync.waterfall([
+	    function (callback) {
+		mod_streamutil.readFileJson({
+		    'filename': indexname,
+		    'schema': schemaIndex
+		}, callback);
+	    },
+	    function (conf, callback) {
+		indexConf = conf;
+		mod_streamutil.readFileJson({
+		    'filename': queryname,
+		    'schema': schemaQuery
+		}, callback);
+	    }
+	], function (err, queryConf) {
+		if (err)
+			fatal(err);
+
+		if (!indexConf.hasOwnProperty('fsroot'))
+			err = new VError('expected "fsroot"');
+		else if (indexConf.format != 'json')
+			err = new VError('only "json" format is supported');
+
+		if (err)
+			fatal(err);
+
+		var datastore, source, parser, scanner;
+
+		datastore = new LocalDataStore({
+		    'log': dnLog,
+		    'fsroot': indexConf.fsroot
+		});
+		source = datastore.stream();
+		source.on('err', fatal);
+
+		parser = new JsonLineStream();
+		source.pipe(parser);
+
+		scanner = new QueryScanner({
+		    'log': dnLog,
+		    'index': indexConf,
+		    'query': queryConf
+		});
+		parser.pipe(scanner);
+
+		scanner.on('data', function (result) {
+			console.log(JSON.stringify(result, null, '\t'));
+		});
+	});
+}
 
 main();
