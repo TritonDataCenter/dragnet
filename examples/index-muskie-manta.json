@@ -14,7 +14,7 @@
             "aggr": "quantize"
         },
         {
-	    "name": "latency",
+	    "name": "latencyToFirstByte",
             "field": "latencyToFirstByte",
             "aggr": "quantize"
         }

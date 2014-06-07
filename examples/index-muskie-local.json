@@ -9,12 +9,12 @@
         "req.method",
         "req.statusCode",
         {
-	    "name": "latency",
+            "name": "latency",
             "field": "latency",
             "aggr": "quantize"
         },
         {
-	    "name": "latency",
+            "name": "latencyToFirstByte",
             "field": "latencyToFirstByte",
             "aggr": "quantize"
         }

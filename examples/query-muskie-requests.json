@@ -1,4 +1,5 @@
 {
 	"index": "muskie.requests.local",
-	"filter": { "eq": [ "billable_operation", "HEAD" ] }
+	"filter": { "eq": [ "billable_operation", "HEAD" ] },
+	"breakdowns": [ "operation", "latency" ]
 }
