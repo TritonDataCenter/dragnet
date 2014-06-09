@@ -4,9 +4,11 @@
  * dn: create, query, and destroy indexes on data stored in Manta
  */
 
+var mod_assert = require('assert');
 var mod_bunyan = require('bunyan');
 var mod_jsprim = require('jsprim');
 var mod_path = require('path');
+var mod_tab = require('tab');
 var mod_vasync = require('vasync');
 var OptionParser = require('posix-getopt').BasicParser;
 var VError = require('verror');
@@ -89,9 +91,10 @@ function cmdScan(cmdname, argv)
 	var queryConf = {
 	    'breakdowns': []
 	};
+	var output = cmdScanOutputPretty;
 
 	argv.unshift('', '');
-	optparser = new OptionParser(':f:(filter)b:(breakdowns)', argv);
+	optparser = new OptionParser(':b:(breakdowns)f:(filter)r(raw)', argv);
 	while ((option = optparser.getopt()) !== undefined) {
 		switch (option.option) {
 		case 'f':
@@ -108,13 +111,17 @@ function cmdScan(cmdname, argv)
 			    queryConf.breakdowns.concat(fields);
 			break;
 
+		case 'r':
+			output = cmdScanOutputRaw;
+			break;
+
 		default:
 			usage();
 			break;
 		}
 	}
 
-	if (optparser.optind() == argv.length)
+	if (optparser.optind() != argv.length - 1)
 		usage();
 
 	indexname = argv[optparser.optind()];
@@ -162,10 +169,119 @@ function cmdScan(cmdname, argv)
 		});
 		parser.pipe(scanner);
 
-		scanner.on('data', function (result) {
-			console.log(JSON.stringify(result, null, '\t'));
+		scanner.on('data', function (rows) {
+			output({
+			    'index': indexConf,
+			    'columns': queryConf.breakdowns,
+			    'rows': rows
+			});
 		});
 	});
+}
+
+function cmdScanOutputRaw(results)
+{
+	console.log(JSON.stringify(results.rows, null, '\t'));
+}
+
+function cmdScanOutputPretty(results)
+{
+	var hasquantize = false;
+	var columndefsbyname = {};
+	var coldefs, i, tablefields;
+
+	results.index.columns.forEach(function (coldef) {
+		if (typeof (coldef) == 'string') {
+			columndefsbyname[coldef] = {
+			    'name': coldef,
+			    'field': coldef
+			};
+		} else {
+			columndefsbyname[coldef.name] = coldef;
+		}
+	});
+
+	coldefs = results.columns.map(function (colname) {
+		if (columndefsbyname.hasOwnProperty(colname))
+			return (columndefsbyname[colname]);
+		return ({ 'name': colname });
+	});
+
+	for (i = 0; i < coldefs.length; i++) {
+		if (coldefs[i].aggr) {
+			hasquantize = true;
+			break;
+		}
+	}
+
+	if (hasquantize) {
+		cmdScanOutputPrettyQuantized(results, coldefs);
+		return;
+	}
+
+	tablefields = coldefs.map(function (c) {
+		return ({
+		    'label': c.name.toUpperCase(),
+		    'width': c.name.toUpperCase().toString().length
+		});
+	});
+	tablefields.push({
+	    'label': 'VALUE',
+	    'width': 'VALUE'.length,
+	    'align': 'right'
+	});
+
+	mod_assert.ok(results.rows.length > 0);
+	if (results.rows.length == 1 && typeof (results.rows[0]) == 'number')
+		results.rows[0] = [ results.rows[0] ];
+
+	results.rows.forEach(function (row) {
+		var width;
+
+		mod_assert.ok(row.length == coldefs.length + 1);
+		coldefs.forEach(function (c, j) {
+			if (typeof (row[j]) == 'number')
+				tablefields[j].align = 'right';
+			else
+				mod_assert.equal('string', typeof (row[j]));
+
+			width = row[j].toString().length;
+			if (tablefields[j].width < width)
+				tablefields[j].width = width;
+		});
+
+		mod_assert.equal('number', typeof (row[row.length - 1]));
+		width = row[row.length - 1].toString().length;
+		if (tablefields[row.length - 1].width < width)
+			tablefields[row.length - 1].width = width;
+	});
+
+	mod_tab.emitTable({
+	    'columns': tablefields,
+	    'rows': results.rows.slice(0).sort(function (a, b) {
+		var j, d;
+
+		mod_assert.ok(Array.isArray(a) && Array.isArray(b));
+		mod_assert.equal(a.length, b.length);
+		for (j = 0; j < a.length; j++) {
+			if (typeof (a[j]) == 'string')
+				d = a[j].localeCompare(b[j]);
+			else
+				d = b[j] - a[j];
+
+			if (d !== 0)
+				return (d);
+		}
+
+		return (0);
+	    })
+	});
+}
+
+function cmdScanOutputPrettyQuantized(results, coldefs)
+{
+	/* XXX NYI */
+	console.log('pretty-printed');
 }
 
 main();
