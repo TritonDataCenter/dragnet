@@ -20,6 +20,7 @@
 		"krill": "0.2.0",
 		"lstream": "0.0.4",
 		"jsprim": "0.5.1",
+		"posix-getopt": "1.1.0",
 		"skinner": "0.1.0",
 		"vasync": "1.5.0",
 		"verror": "1.4.0"

@@ -5,8 +5,10 @@
  */
 
 var mod_bunyan = require('bunyan');
+var mod_jsprim = require('jsprim');
 var mod_path = require('path');
 var mod_vasync = require('vasync');
+var OptionParser = require('posix-getopt').BasicParser;
 var VError = require('verror');
 
 var mod_streamutil = require('../lib/stream-util');
@@ -82,13 +84,40 @@ function cmdQuery(cmdname, argv)
 
 function cmdScan(cmdname, argv)
 {
-	var indexname, queryname, indexConf;
+	var indexname, indexConf;
+	var optparser, option;
+	var queryConf = {
+	    'breakdowns': []
+	};
 
-	if (argv.length != 2)
+	argv.unshift('', '');
+	optparser = new OptionParser(':f:(filter)b:(breakdowns)', argv);
+	while ((option = optparser.getopt()) !== undefined) {
+		switch (option.option) {
+		case 'f':
+			try {
+				queryConf.filter = JSON.parse(option.optarg);
+			} catch (ex) {
+				usage(new VError(ex, 'invalid filter'));
+			}
+			break;
+
+		case 'b':
+			var fields = option.optarg.split(',');
+			queryConf.breakdowns =
+			    queryConf.breakdowns.concat(fields);
+			break;
+
+		default:
+			usage();
+			break;
+		}
+	}
+
+	if (optparser.optind() == argv.length)
 		usage();
 
-	indexname = argv[0];
-	queryname = argv[1];
+	indexname = argv[optparser.optind()];
 	mod_vasync.waterfall([
 	    function (callback) {
 		mod_streamutil.readFileJson({
@@ -98,12 +127,11 @@ function cmdScan(cmdname, argv)
 	    },
 	    function (conf, callback) {
 		indexConf = conf;
-		mod_streamutil.readFileJson({
-		    'filename': queryname,
-		    'schema': schemaQuery
-		}, callback);
+		queryConf.index = indexConf.name;
+		var err = mod_jsprim.validateJsonObject(schemaQuery, queryConf);
+		callback(err);
 	    }
-	], function (err, queryConf) {
+	], function (err) {
 		if (err)
 			fatal(err);
 
