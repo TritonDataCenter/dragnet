@@ -17,7 +17,7 @@
 		"bunyan": "0.23.1",
 		"catstreams": "0.0.4",
 		"extsprintf": "1.0.3",
-		"krill": "0.2.0",
+		"krill": "0.3.0",
 		"lstream": "0.0.4",
 		"jsprim": "0.5.1",
 		"posix-getopt": "1.1.0",
