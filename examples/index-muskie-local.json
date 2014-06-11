@@ -1,6 +1,6 @@
 {
     "name": "muskie.requests.local",
-    "fsroot": "muskie.local",
+    "fsroot": "../muskie.local",
     "format": "json",
     "filter": { "eq": [ "audit", true ] },
     "primaryKey": "time",
