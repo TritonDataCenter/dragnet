@@ -175,7 +175,7 @@ function cmdScan(cmdname, argv)
 		parser = new JsonLineStream();
 		source.pipe(parser);
 		if (showinvalid) {
-			parser.on('invalid_record', function (str, idx, perr) {
+			parser.on('invalid_record', function (str, perr, idx) {
 				console.error('warn: bad record at line %d: %s',
 				    idx, perr.toString());
 				console.error('      input: %s', str);
@@ -188,6 +188,14 @@ function cmdScan(cmdname, argv)
 		    'query': queryConf
 		});
 		parser.pipe(scanner);
+		if (showinvalid) {
+			scanner.on('invalid_object', function (str, perr, idx) {
+				console.error('warn: bad record at scanner ' +
+				    'object %d: %s', idx, perr.message);
+				console.error('      input: %s',
+				    JSON.stringify(str));
+			});
+		}
 
 		scanner.on('data', function (rows) {
 			output({
