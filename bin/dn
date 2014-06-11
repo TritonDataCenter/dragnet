@@ -100,10 +100,11 @@ function cmdScan(cmdname, argv)
 	};
 	var output = cmdScanOutputPretty;
 	var showinvalid = false;
+	var showcounters = false;
 
 	argv.unshift('', '');
 	optparser = new OptionParser(':b:(breakdowns)f:(filter)r(raw)' +
-	    'S(show-invalid)', argv);
+	    'C(counters)S(show-invalid)', argv);
 	while ((option = optparser.getopt()) !== undefined) {
 		switch (option.option) {
 		case 'f':
@@ -122,6 +123,10 @@ function cmdScan(cmdname, argv)
 
 		case 'r':
 			output = cmdScanOutputRaw;
+			break;
+
+		case 'C':
+			showcounters = true;
 			break;
 
 		case 'S':
@@ -204,6 +209,8 @@ function cmdScan(cmdname, argv)
 			    'rows': rows,
 			    'bucketizer': scanner.bucketizer()
 			});
+			/* XXX DataStore and JsonLineStream stats? */
+			cmdScanPrintCounters(scanner.stats(), showcounters);
 		});
 	});
 }
@@ -364,6 +371,28 @@ function printDistribution(stream, distr, bucketizer)
 		stream.write(sprintf('%16s |%s %s\n',
 		    min.toString(), dots, count));
 	}
+}
+
+function cmdScanPrintCounters(c, showall)
+{
+	if (!showall) {
+		if (c.aggr_nerr_nonnumeric !== 0) {
+			console.error('warn: ignored %d non-numeric values',
+			    c.aggr_nerr_nonnumeric);
+		}
+
+		return;
+	}
+
+	var width, fmt;
+	mod_jsprim.forEachKey(c, function (name, value) {
+		if (width === undefined || width < name.length)
+			width = name.length;
+	});
+	fmt = '%-' + (width + 1) + 's  %d';
+	mod_jsprim.forEachKey(c, function (name, value) {
+		console.error(sprintf(fmt, name + ':', value));
+	});
 }
 
 main();
