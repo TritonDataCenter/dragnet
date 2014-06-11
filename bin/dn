@@ -12,6 +12,7 @@ var mod_tab = require('tab');
 var mod_vasync = require('vasync');
 var OptionParser = require('posix-getopt').BasicParser;
 var VError = require('verror');
+var sprintf = require('extsprintf').sprintf;
 
 var mod_streamutil = require('../lib/stream-util');
 var schemaIndex = require('../schema/user-index');
@@ -65,6 +66,12 @@ function main()
 	    'name': 'dragnet',
 	    'level': process.env['LOG_LEVEL'] || 'warn'
 	});
+
+	process.stdout.on('error', function (err) {
+		if (err.code == 'EPIPE')
+			process.exit(0);
+		throw (err);
+	});
 	cmdfunc = dnCmds[cmdname];
 	cmdfunc(cmdname, process.argv.slice(3));
 }
@@ -92,9 +99,11 @@ function cmdScan(cmdname, argv)
 	    'breakdowns': []
 	};
 	var output = cmdScanOutputPretty;
+	var showinvalid = false;
 
 	argv.unshift('', '');
-	optparser = new OptionParser(':b:(breakdowns)f:(filter)r(raw)', argv);
+	optparser = new OptionParser(':b:(breakdowns)f:(filter)r(raw)' +
+	    'S(show-invalid)', argv);
 	while ((option = optparser.getopt()) !== undefined) {
 		switch (option.option) {
 		case 'f':
@@ -113,6 +122,10 @@ function cmdScan(cmdname, argv)
 
 		case 'r':
 			output = cmdScanOutputRaw;
+			break;
+
+		case 'S':
+			showinvalid = true;
 			break;
 
 		default:
@@ -161,6 +174,13 @@ function cmdScan(cmdname, argv)
 
 		parser = new JsonLineStream();
 		source.pipe(parser);
+		if (showinvalid) {
+			parser.on('invalid_record', function (str, idx, perr) {
+				console.error('warn: bad record at line %d: %s',
+				    idx, perr.toString());
+				console.error('      input: %s', str);
+			});
+		}
 
 		scanner = new QueryScanner({
 		    'log': dnLog,
@@ -173,7 +193,8 @@ function cmdScan(cmdname, argv)
 			output({
 			    'index': indexConf,
 			    'columns': queryConf.breakdowns,
-			    'rows': rows
+			    'rows': rows,
+			    'bucketizer': scanner.bucketizer()
 			});
 		});
 	});
@@ -280,8 +301,61 @@ function cmdScanOutputPretty(results)
 
 function cmdScanOutputPrettyQuantized(results, coldefs)
 {
-	/* XXX NYI */
-	console.log('pretty-printed');
+	var quantizedcol, stream, bucketizer;
+
+	quantizedcol = coldefs[coldefs.length - 1];
+	mod_assert.equal(typeof (quantizedcol.aggr), 'string');
+	stream = process.stdout;
+	bucketizer = results.bucketizer;
+
+	results.rows.forEach(function (row) {
+		var discrete_values = row.slice(0, coldefs.length - 1);
+		var distr = row.slice(coldefs.length - 1);
+
+		stream.write(discrete_values.join(', ') + '\n');
+		printDistribution(stream, distr, bucketizer);
+		stream.write('\n');
+	});
+}
+
+function printDistribution(stream, distr, bucketizer)
+{
+	var total, count, normalized, dots;
+	var bi, di, i, min;
+
+	stream.write('           ');
+	stream.write(
+	    'value  ------------- Distribution ------------- count\n');
+
+	if (distr.length === 0)
+		return;
+
+	total = 0;
+	for (di = 0; di < distr.length; di++)
+		total += distr[di][1];
+
+	for (bi = 0, di = 0; di < distr.length + 1; bi++) {
+		if (di == distr.length) {
+			count = 0;
+			di++;
+		} else if (distr[di][0] == bi) {
+			count = distr[di][1];
+			di++;
+		} else {
+			count = 0;
+		}
+
+		normalized = Math.round(40 * count / total);
+		dots = '';
+		for (i = 0; i < normalized; i++)
+			dots += '@';
+		for (; i < 40; i++)
+			dots += ' ';
+
+		min = bucketizer.bucketMin(bi);
+		stream.write(sprintf('%16s |%s %s\n',
+		    min.toString(), dots, count));
+	}
 }
 
 main();
