@@ -14,12 +14,9 @@ var OptionParser = require('posix-getopt').BasicParser;
 var VError = require('verror');
 var sprintf = require('extsprintf').sprintf;
 
-var mod_streamutil = require('../lib/stream-util');
-var schemaIndex = require('../schema/user-index');
+var mod_dragnet = require('../lib/dragnet');
 var schemaQuery = require('../schema/user-query');
 var IndexScanner = require('../lib/index-scan');
-var JsonLineStream = require('../lib/format-json');
-var LocalDataStore = require('../lib/datastore-local');
 var QueryScanner = require('../lib/query-scan');
 
 var dnArg0 = mod_path.basename(process.argv[1]);
@@ -105,31 +102,20 @@ function cmdIndex(cmdname, argv)
 		usage();
 
 	indexname = argv[optparser.optind()];
-	mod_streamutil.readFileJson({
-	    'filename': indexname,
-	    'schema': schemaIndex
-	}, function (err, indexConf) {
-		if (err)
-			fatal(err);
-
-		if (!indexConf.hasOwnProperty('fsroot'))
-			err = new VError('expected "fsroot"');
-		else if (indexConf.format != 'json')
-			err = new VError('only "json" format is supported');
-
+	mod_dragnet.indexLoad({
+	    'log': dnLog,
+	    'filename': indexname
+	}, function (err, index) {
 		if (err)
 			fatal(err);
 
 		var datastore, source, parser, indexer;
 
-		datastore = new LocalDataStore({
-		    'log': dnLog,
-		    'fsroot': indexConf.fsroot
-		});
+		datastore = index.ic_datastore;
 		source = datastore.stream();
 		source.on('err', fatal);
 
-		parser = new JsonLineStream();
+		parser = index.ic_formatstream;
 		source.pipe(parser);
 		if (showinvalid) {
 			parser.on('invalid_record', function (str, perr, idx) {
@@ -141,7 +127,7 @@ function cmdIndex(cmdname, argv)
 
 		indexer = new IndexScanner({
 		    'log': dnLog,
-		    'index': indexConf
+		    'index': index
 		});
 		parser.pipe(indexer);
 		if (showinvalid) {
@@ -226,14 +212,14 @@ function cmdScan(cmdname, argv)
 	indexname = argv[optparser.optind()];
 	mod_vasync.waterfall([
 	    function (callback) {
-		mod_streamutil.readFileJson({
-		    'filename': indexname,
-		    'schema': schemaIndex
+		mod_dragnet.indexLoad({
+		    'log': dnLog,
+		    'filename': indexname
 		}, callback);
 	    },
 	    function (conf, callback) {
 		indexConf = conf;
-		queryConf.index = indexConf.name;
+		queryConf.index = indexConf.ic_name;
 		var err = mod_jsprim.validateJsonObject(schemaQuery, queryConf);
 		callback(err);
 	    }
@@ -241,24 +227,13 @@ function cmdScan(cmdname, argv)
 		if (err)
 			fatal(err);
 
-		if (!indexConf.hasOwnProperty('fsroot'))
-			err = new VError('expected "fsroot"');
-		else if (indexConf.format != 'json')
-			err = new VError('only "json" format is supported');
-
-		if (err)
-			fatal(err);
-
 		var datastore, source, parser, scanner;
 
-		datastore = new LocalDataStore({
-		    'log': dnLog,
-		    'fsroot': indexConf.fsroot
-		});
+		datastore = indexConf.ic_datastore;
 		source = datastore.stream();
 		source.on('err', fatal);
 
-		parser = new JsonLineStream();
+		parser = indexConf.ic_formatstream;
 		source.pipe(parser);
 		if (showinvalid) {
 			parser.on('invalid_record', function (str, perr, idx) {
@@ -304,19 +279,8 @@ function cmdScanOutputRaw(results)
 function cmdScanOutputPretty(results)
 {
 	var hasquantize = false;
-	var columndefsbyname = {};
+	var columndefsbyname = results.index.ic_columns_byname;
 	var coldefs, i, tablefields;
-
-	results.index.columns.forEach(function (coldef) {
-		if (typeof (coldef) == 'string') {
-			columndefsbyname[coldef] = {
-			    'name': coldef,
-			    'field': coldef
-			};
-		} else {
-			columndefsbyname[coldef.name] = coldef;
-		}
-	});
 
 	coldefs = results.columns.map(function (colname) {
 		if (columndefsbyname.hasOwnProperty(colname))
