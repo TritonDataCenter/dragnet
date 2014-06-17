@@ -168,10 +168,11 @@ function cmdScan(cmdname, argv)
 	var output = cmdScanOutputPretty;
 	var showinvalid = false;
 	var showcounters = false;
+	var aspoints = false;
 
 	argv.unshift('', '');
-	optparser = new OptionParser(':b:(breakdowns)f:(filter)r(raw)' +
-	    'C(counters)S(show-invalid)', argv);
+	optparser = new OptionParser(':b:(breakdowns)f:(filter)p(points)' +
+	    'r(raw)C(counters)S(show-invalid)', argv);
 	while ((option = optparser.getopt()) !== undefined) {
 		switch (option.option) {
 		case 'f':
@@ -186,6 +187,11 @@ function cmdScan(cmdname, argv)
 			var fields = option.optarg.split(',');
 			queryConf.breakdowns =
 			    queryConf.breakdowns.concat(fields);
+			break;
+
+		case 'p':
+			output = cmdScanOutputRaw;
+			aspoints = true;
 			break;
 
 		case 'r':
@@ -246,7 +252,8 @@ function cmdScan(cmdname, argv)
 		scanner = new QueryScanner({
 		    'log': dnLog,
 		    'index': indexConf,
-		    'query': queryConf
+		    'query': queryConf,
+		    'resultsAsPoints': aspoints
 		});
 		parser.pipe(scanner);
 		if (showinvalid) {
@@ -265,6 +272,9 @@ function cmdScan(cmdname, argv)
 			    'rows': rows,
 			    'bucketizer': scanner.bucketizer()
 			});
+		});
+
+		scanner.on('end', function () {
 			/* XXX DataStore and JsonLineStream stats? */
 			cmdScanPrintCounters(scanner.stats(), showcounters);
 		});

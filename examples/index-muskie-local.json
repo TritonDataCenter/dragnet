@@ -7,15 +7,10 @@
     "columns": [
         "hostname",
         "req.method",
-        "req.statusCode",
+        "res.statusCode",
         {
             "name": "latency",
             "field": "latency",
-            "aggr": "quantize"
-        },
-        {
-            "name": "latencyToFirstByte",
-            "field": "latencyToFirstByte",
             "aggr": "quantize"
         }
     ]

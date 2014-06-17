@@ -21,7 +21,7 @@
 		"lstream": "0.0.4",
 		"jsprim": "0.5.1",
 		"posix-getopt": "1.1.0",
-		"skinner": "0.3.1",
+		"skinner": "git://github.com/joyent/node-skinner.git#dragnet",
 		"sqlite3": "2.2.3",
 		"tab": "0.1.0",
 		"vasync": "1.5.0",
