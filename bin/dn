@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* vim: set syn=javascript: */
 
 /*
  * dn: create, query, and destroy indexes on data stored in Manta
@@ -17,6 +18,7 @@ var sprintf = require('extsprintf').sprintf;
 var mod_dragnet = require('../lib/dragnet');
 var schemaQuery = require('../schema/user-query');
 var IndexScanner = require('../lib/index-scan');
+var QueryIndex = require('../lib/query-index');
 var QueryScanner = require('../lib/query-scan');
 
 var dnArg0 = mod_path.basename(process.argv[1]);
@@ -153,9 +155,83 @@ function cmdDestroy(cmdname, argv)
 	console.log('"%s" not yet implemented', cmdname);
 }
 
+/* XXX commonize with cmdScan */
 function cmdQuery(cmdname, argv)
 {
-	console.log('"%s" not yet implemented', cmdname);
+	var indexname, indexConf;
+	var optparser, option;
+	var queryConf = {
+	    'breakdowns': []
+	};
+	var output = cmdScanOutputPretty;
+
+	argv.unshift('', '');
+	optparser = new OptionParser(':b:(breakdowns)f:(filter)r(raw)', argv);
+	while ((option = optparser.getopt()) !== undefined) {
+		switch (option.option) {
+		case 'f':
+			try {
+				queryConf.filter = JSON.parse(option.optarg);
+			} catch (ex) {
+				usage(new VError(ex, 'invalid filter'));
+			}
+			break;
+
+		case 'b':
+			var fields = option.optarg.split(',');
+			queryConf.breakdowns =
+			    queryConf.breakdowns.concat(fields);
+			break;
+
+		case 'r':
+			output = cmdScanOutputRaw;
+			break;
+
+		default:
+			usage();
+			break;
+		}
+	}
+
+	if (optparser.optind() != argv.length - 1)
+		usage();
+
+	indexname = argv[optparser.optind()];
+	mod_vasync.waterfall([
+	    function (callback) {
+		mod_dragnet.indexLoad({
+		    'log': dnLog,
+		    'filename': indexname
+		}, callback);
+	    },
+	    function (conf, callback) {
+		indexConf = conf;
+		queryConf.index = indexConf.ic_name;
+		var err = mod_jsprim.validateJsonObject(schemaQuery, queryConf);
+		callback(err);
+	    }
+	], function (err) {
+		if (err)
+			fatal(err);
+
+		var queryindex;
+
+		queryindex = new QueryIndex({
+		    'log': dnLog,
+		    'index': indexConf
+		});
+		queryindex.run(queryConf, function (qerr, rows) {
+			if (qerr)
+				fatal(qerr);
+
+			output({
+			    'index': indexConf,
+			    'columns': queryConf.breakdowns,
+			    'rows': rows
+			    /* XXX bucketizer */
+			});
+		});
+	});
 }
 
 function cmdScan(cmdname, argv)
@@ -322,7 +398,9 @@ function cmdScanOutputPretty(results)
 	    'align': 'right'
 	});
 
-	mod_assert.ok(results.rows.length > 0);
+	if (results.rows.length === 0)
+		return;
+
 	if (results.rows.length == 1 && typeof (results.rows[0]) == 'number')
 		results.rows[0] = [ results.rows[0] ];
 
