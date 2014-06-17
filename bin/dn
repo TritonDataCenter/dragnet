@@ -220,16 +220,20 @@ function cmdQuery(cmdname, argv)
 		    'log': dnLog,
 		    'index': indexConf
 		});
-		queryindex.run(queryConf, function (qerr, rows) {
-			if (qerr)
-				fatal(qerr);
+		queryindex.on('error', fatal);
+		queryindex.on('ready', function () {
+			queryindex.run(queryConf,
+			    function (qerr, rows, bucketizer) {
+				if (qerr)
+					fatal(qerr);
 
-			output({
-			    'index': indexConf,
-			    'columns': queryConf.breakdowns,
-			    'rows': rows
-			    /* XXX bucketizer */
-			});
+				output({
+				    'index': indexConf,
+				    'columns': queryConf.breakdowns,
+				    'rows': rows,
+				    'bucketizer': bucketizer
+				});
+			    });
 		});
 	});
 }
