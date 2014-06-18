@@ -26,10 +26,12 @@ var SkinnerFlattener = require('../lib/skinner-flattener');
 
 var dnArg0 = mod_path.basename(process.argv[1]);
 var dnCmds = {
+    'index-file': cmdIndexFile,
     'scan-file': cmdScanFile
 };
 var dnUsage = [
-    'usage: dn scan-file QUERY_OPTIONS FILENAME'
+    'usage: dn index-file INDEX_OPTIONS FILENAME INDEX_FILENAME\n',
+    '       dn scan-file  QUERY_OPTIONS FILENAME'
 ].join('');
 var dnLog;
 
@@ -71,6 +73,88 @@ function main()
 	});
 	cmdfunc = dnCmds[cmdname];
 	cmdfunc(cmdname, process.argv.slice(3));
+}
+
+function cmdIndexFile(cmdname, argv)
+{
+	var optparser, option;
+	var indexConf = {
+	    'columns': []
+	};
+	var showinvalid = false;
+	var showcounters = false;
+	var source, index, indexop;
+
+	argv.unshift('', '');
+	optparser = new OptionParser(
+	    ':c:(columns)f:(filter)C(counters)S(show-invalid)', argv);
+	while ((option = optparser.getopt()) !== undefined) {
+		switch (option.option) {
+		case 'c':
+			var fields = option.optarg.split(',');
+			indexConf.columns =
+			    indexConf.columns.concat(fields);
+			break;
+
+		case 'f':
+			try {
+				indexConf.filter = JSON.parse(option.optarg);
+			} catch (ex) {
+				usage(new VError(ex, 'invalid filter'));
+			}
+			break;
+
+		case 'C':
+			showcounters = true;
+			break;
+
+		case 'S':
+			showinvalid = true;
+			break;
+
+		default:
+			usage();
+			break;
+		}
+	}
+
+	if (optparser.optind() != argv.length - 2)
+		usage();
+
+	source = new FileDataSource({
+	    'log': dnLog,
+	    'filename': argv[optparser.optind()]
+	});
+
+	index = mod_dragnet.indexLoad({ 'index': indexConf });
+	if (index instanceof Error)
+		fatal(index);
+
+	indexop = source.index({
+	    'index': index,
+	    'format': 'json',
+	    'filename': argv[optparser.optind() + 1]
+	});
+	indexop.on('error', fatal);
+
+	if (showinvalid) {
+		indexop.on('invalid_record', function (str, perr, idx) {
+			console.error('warn: bad record at line %d: %s',
+			    idx, perr.toString());
+			console.error('      input: %s', str);
+		});
+
+		indexop.on('invalid_object', function (obj, perr, idx) {
+			console.error('warn: bad object at line %d: %s',
+			    idx, perr.message);
+			console.error('      input: %s', JSON.stringify(obj));
+		});
+	}
+
+	indexop.pipe(process.stdout);
+	indexop.on('end', function () {
+		cmdScanPrintCounters(indexop.stats(), showcounters);
+	});
 }
 
 function cmdScanFile(cmdname, argv)
