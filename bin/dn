@@ -16,23 +16,20 @@ var VError = require('verror');
 var sprintf = require('extsprintf').sprintf;
 
 var mod_dragnet = require('../lib/dragnet');
+var mod_dragnet_impl = require('../lib/dragnet-impl'); /* XXX */
 var schemaQuery = require('../schema/user-query');
+var FileDataSource = require('../lib/source-file');
 var IndexScanner = require('../lib/index-scan');
 var QueryIndex = require('../lib/query-index');
 var QueryScanner = require('../lib/query-scan');
+var SkinnerFlattener = require('../lib/skinner-flattener');
 
 var dnArg0 = mod_path.basename(process.argv[1]);
 var dnCmds = {
-    'index': cmdIndex,
-    'destroy': cmdDestroy,
-    'query': cmdQuery,
-    'scan': cmdScan
+    'scan-file': cmdScanFile
 };
 var dnUsage = [
-    'usage: dn index INDEX_CONFIG_FILE\n',
-    '       dn destroy INDEX_NAME\n',
-    '       dn query INDEX_NAME QUERY_CONFIG_FILE ...\n',
-    '       dn scan INDEX_CONFIG_FILE QUERY_CONFIG_FILE'
+    'usage: dn scan-file QUERY_OPTIONS FILENAME'
 ].join('');
 var dnLog;
 
@@ -76,171 +73,8 @@ function main()
 	cmdfunc(cmdname, process.argv.slice(3));
 }
 
-function cmdIndex(cmdname, argv)
+function cmdScanFile(cmdname, argv)
 {
-	var optparser, option, indexname;
-	var showinvalid = false;
-	var showcounters = false;
-
-	argv.unshift('', '');
-	optparser = new OptionParser('C(counters)S(show-invalid)', argv);
-	while ((option = optparser.getopt()) !== undefined) {
-		switch (option.option) {
-		case 'C':
-			showcounters = true;
-			break;
-
-		case 'S':
-			showinvalid = true;
-			break;
-
-		default:
-			usage();
-			break;
-		}
-	}
-
-	if (optparser.optind() != argv.length - 1)
-		usage();
-
-	indexname = argv[optparser.optind()];
-	mod_dragnet.indexLoad({
-	    'log': dnLog,
-	    'filename': indexname
-	}, function (err, index) {
-		if (err)
-			fatal(err);
-
-		var datastore, source, parser, indexer;
-
-		datastore = index.ic_datastore;
-		source = datastore.stream();
-		source.on('err', fatal);
-
-		parser = index.ic_formatstream;
-		source.pipe(parser);
-		if (showinvalid) {
-			parser.on('invalid_record', function (str, perr, idx) {
-				console.error('warn: bad record at line %d: %s',
-				    idx, perr.toString());
-				console.error('      input: %s', str);
-			});
-		}
-
-		indexer = new IndexScanner({
-		    'log': dnLog,
-		    'index': index
-		});
-		parser.pipe(indexer);
-		if (showinvalid) {
-			indexer.on('invalid_object', function (str, perr, idx) {
-				console.error('warn: bad record at indexer ' +
-				    'object %d: %s', idx, perr.message);
-				console.error('      input: %s',
-				    JSON.stringify(str));
-			});
-		}
-
-		indexer.on('error', fatal);
-		indexer.on('finish', function () {
-			console.error('index built');
-			/* XXX DataStore and JsonLineStream stats? */
-			cmdScanPrintCounters(indexer.stats(), showcounters);
-		});
-	});
-}
-
-function cmdDestroy(cmdname, argv)
-{
-	console.log('"%s" not yet implemented', cmdname);
-}
-
-/* XXX commonize with cmdScan */
-function cmdQuery(cmdname, argv)
-{
-	var indexname, indexConf;
-	var optparser, option;
-	var queryConf = {
-	    'breakdowns': []
-	};
-	var output = cmdScanOutputPretty;
-
-	argv.unshift('', '');
-	optparser = new OptionParser(':b:(breakdowns)f:(filter)r(raw)', argv);
-	while ((option = optparser.getopt()) !== undefined) {
-		switch (option.option) {
-		case 'f':
-			try {
-				queryConf.filter = JSON.parse(option.optarg);
-			} catch (ex) {
-				usage(new VError(ex, 'invalid filter'));
-			}
-			break;
-
-		case 'b':
-			var fields = option.optarg.split(',');
-			queryConf.breakdowns =
-			    queryConf.breakdowns.concat(fields);
-			break;
-
-		case 'r':
-			output = cmdScanOutputRaw;
-			break;
-
-		default:
-			usage();
-			break;
-		}
-	}
-
-	if (optparser.optind() != argv.length - 1)
-		usage();
-
-	indexname = argv[optparser.optind()];
-	mod_vasync.waterfall([
-	    function (callback) {
-		mod_dragnet.indexLoad({
-		    'log': dnLog,
-		    'filename': indexname
-		}, callback);
-	    },
-	    function (conf, callback) {
-		indexConf = conf;
-		queryConf.index = indexConf.ic_name;
-		var err = mod_jsprim.validateJsonObject(schemaQuery, queryConf);
-		callback(err);
-	    }
-	], function (err) {
-		if (err)
-			fatal(err);
-
-		var queryindex;
-
-		queryindex = new QueryIndex({
-		    'log': dnLog,
-		    'index': indexConf
-		});
-		queryindex.on('error', fatal);
-		queryindex.on('ready', function () {
-			queryindex.run(queryConf,
-			    function (qerr, rows, bucketizer) {
-				if (qerr)
-					fatal(qerr);
-
-				output({
-				    'index': indexConf,
-				    'columns': queryConf.breakdowns,
-				    'rows': rows,
-				    'bucketizer': bucketizer
-				});
-			    });
-		});
-	});
-}
-
-function cmdScan(cmdname, argv)
-{
-	var indexname, indexConf;
 	var optparser, option;
 	var queryConf = {
 	    'breakdowns': []
@@ -249,6 +83,7 @@ function cmdScan(cmdname, argv)
 	var showinvalid = false;
 	var showcounters = false;
 	var aspoints = false;
+	var source, query, scan, stream, tail;
 
 	argv.unshift('', '');
 	optparser = new OptionParser(':b:(breakdowns)f:(filter)p(points)' +
@@ -295,69 +130,57 @@ function cmdScan(cmdname, argv)
 	if (optparser.optind() != argv.length - 1)
 		usage();
 
-	indexname = argv[optparser.optind()];
-	mod_vasync.waterfall([
-	    function (callback) {
-		mod_dragnet.indexLoad({
-		    'log': dnLog,
-		    'filename': indexname
-		}, callback);
-	    },
-	    function (conf, callback) {
-		indexConf = conf;
-		queryConf.index = indexConf.ic_name;
-		var err = mod_jsprim.validateJsonObject(schemaQuery, queryConf);
-		callback(err);
-	    }
-	], function (err) {
-		if (err)
-			fatal(err);
+	source = new FileDataSource({
+	    'log': dnLog,
+	    'filename': argv[optparser.optind()]
+	});
 
-		var datastore, source, parser, scanner;
+	query = mod_dragnet.queryLoad({ 'query': queryConf });
+	if (query instanceof Error)
+		fatal(query);
 
-		datastore = indexConf.ic_datastore;
-		source = datastore.stream();
-		source.on('err', fatal);
+	scan = source.scan({
+	    'query': query,
+	    'format': 'json'
+	});
+	scan.on('error', fatal);
 
-		parser = indexConf.ic_formatstream;
-		source.pipe(parser);
-		if (showinvalid) {
-			parser.on('invalid_record', function (str, perr, idx) {
-				console.error('warn: bad record at line %d: %s',
-				    idx, perr.toString());
-				console.error('      input: %s', str);
-			});
-		}
-
-		scanner = new QueryScanner({
-		    'log': dnLog,
-		    'index': indexConf,
-		    'query': queryConf,
-		    'resultsAsPoints': aspoints
-		});
-		parser.pipe(scanner);
-		if (showinvalid) {
-			scanner.on('invalid_object', function (str, perr, idx) {
-				console.error('warn: bad record at scanner ' +
-				    'object %d: %s', idx, perr.message);
-				console.error('      input: %s',
-				    JSON.stringify(str));
-			});
-		}
-
-		scanner.on('data', function (rows) {
-			output({
-			    'index': indexConf,
-			    'columns': queryConf.breakdowns,
-			    'rows': rows,
-			    'bucketizer': scanner.bucketizer()
-			});
+	if (showinvalid) {
+		scan.on('invalid_record', function (str, perr, idx) {
+			console.error('warn: bad record at line %d: %s',
+			    idx, perr.toString());
+			console.error('      input: %s', str);
 		});
 
-		scanner.on('end', function () {
-			/* XXX DataStore and JsonLineStream stats? */
-			cmdScanPrintCounters(scanner.stats(), showcounters);
+		scan.on('invalid_object', function (obj, perr, idx) {
+			console.error('warn: bad object at line %d: %s',
+			    idx, perr.message);
+			console.error('      input: %s', JSON.stringify(obj));
 		});
+	}
+
+	if (aspoints) {
+		tail = scan;
+	} else {
+		stream = new SkinnerFlattener({
+		    'skinnerOptions': mod_dragnet_impl.queryAggrStreamConfig({
+		        'query': query
+		    })
+		});
+		scan.pipe(stream);
+		tail = stream;
+	}
+
+	tail.on('data', function (rows) {
+		output({
+		    'rows': rows,
+		    'columns': query.qc_breakdowns,
+		    'bucketizers': query.qc_bucketizers
+		});
+	});
+
+	tail.on('end', function () {
+		cmdScanPrintCounters(scan.stats(), showcounters);
 	});
 }
 
@@ -369,14 +192,9 @@ function cmdScanOutputRaw(results)
 function cmdScanOutputPretty(results)
 {
 	var hasquantize = false;
-	var columndefsbyname = results.index.ic_columns_byname;
 	var coldefs, i, tablefields;
 
-	coldefs = results.columns.map(function (colname) {
-		if (columndefsbyname.hasOwnProperty(colname))
-			return (columndefsbyname[colname]);
-		return ({ 'name': colname });
-	});
+	coldefs = results.columns;
 
 	for (i = 0; i < coldefs.length; i++) {
 		if (coldefs[i].aggr) {
@@ -386,7 +204,7 @@ function cmdScanOutputPretty(results)
 	}
 
 	if (hasquantize) {
-		cmdScanOutputPrettyQuantized(results, coldefs);
+		cmdScanOutputPrettyQuantized(results);
 		return;
 	}
 
@@ -451,14 +269,16 @@ function cmdScanOutputPretty(results)
 	});
 }
 
-function cmdScanOutputPrettyQuantized(results, coldefs)
+function cmdScanOutputPrettyQuantized(results)
 {
-	var quantizedcol, stream, bucketizer;
+	var coldefs, quantizedcol, stream, bucketizer;
 
+	coldefs = results.columns;
 	quantizedcol = coldefs[coldefs.length - 1];
 	mod_assert.equal(typeof (quantizedcol.aggr), 'string');
+	bucketizer = results.bucketizers[quantizedcol.name];
+	mod_assert.ok(bucketizer !== null);
 	stream = process.stdout;
-	bucketizer = results.bucketizer;
 
 	results.rows.forEach(function (row) {
 		var discrete_values = row.slice(0, coldefs.length - 1);
