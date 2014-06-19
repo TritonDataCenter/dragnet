@@ -17,19 +17,20 @@ var sprintf = require('extsprintf').sprintf;
 var mod_dragnet = require('../lib/dragnet');
 var mod_dragnet_impl = require('../lib/dragnet-impl'); /* XXX */
 var FileDataSource = require('../lib/source-file');
+var FileSetDataSource = require('../lib/source-fileset');
 var QueryIndex = require('../lib/query-index');
 var SkinnerFlattener = require('../lib/skinner-flattener');
 
 var dnArg0 = mod_path.basename(process.argv[1]);
 var dnCmds = {
-    'index-file': cmdIndexFile,
-    'query-file': cmdQueryFile,
-    'scan-file': cmdScanFile
+    'index': cmdIndex,
+    'query': cmdQuery,
+    'scan': cmdScan
 };
 var dnUsage = [
-    'usage: dn index-file INDEX_OPTIONS FILENAME INDEX_FILENAME\n',
-    '       dn scan-file  QUERY_OPTIONS FILENAME\n',
-    '       dn query-file QUERY_OPTIONS INDEX_FILENAME'
+    'usage: dn index INDEX_OPTIONS FILENAME INDEX_FILENAME\n',
+    '       dn scan  QUERY_OPTIONS FILENAME\n',
+    '       dn query QUERY_OPTIONS INDEX_FILENAME'
 ].join('');
 var dnLog;
 
@@ -73,7 +74,7 @@ function main()
 	cmdfunc(cmdname, process.argv.slice(3));
 }
 
-function cmdIndexFile(cmdname, argv)
+function cmdIndex(cmdname, argv)
 {
 	var optparser, option;
 	var indexConf = {
@@ -155,7 +156,7 @@ function cmdIndexFile(cmdname, argv)
 	});
 }
 
-function cmdQueryFile(cmdname, argv)
+function cmdQuery(cmdname, argv)
 {
 	var indexfile;
 	var optparser, option;
@@ -220,7 +221,7 @@ function cmdQueryFile(cmdname, argv)
 	});
 }
 
-function cmdScanFile(cmdname, argv)
+function cmdScan(cmdname, argv)
 {
 	var optparser, option;
 	var queryConf = {
@@ -230,11 +231,13 @@ function cmdScanFile(cmdname, argv)
 	var showinvalid = false;
 	var showcounters = false;
 	var aspoints = false;
+	var sourceclass, sourceargs;
 	var source, query, scan, stream, tail;
 
+	sourceargs = { 'log': dnLog };
 	argv.unshift('', '');
 	optparser = new OptionParser(':b:(breakdowns)f:(filter)p(points)' +
-	    'r(raw)C(counters)S(show-invalid)', argv);
+	    'r(raw)C(counters)R:(root)S(show-invalid)', argv);
 	while ((option = optparser.getopt()) !== undefined) {
 		switch (option.option) {
 		case 'f':
@@ -264,6 +267,11 @@ function cmdScanFile(cmdname, argv)
 			showcounters = true;
 			break;
 
+		case 'R':
+			sourceclass = FileSetDataSource;
+			sourceargs['path'] = option.optarg;
+			break;
+
 		case 'S':
 			showinvalid = true;
 			break;
@@ -274,13 +282,14 @@ function cmdScanFile(cmdname, argv)
 		}
 	}
 
-	if (optparser.optind() != argv.length - 1)
-		usage();
+	if (sourceclass === undefined) {
+		if (optparser.optind() != argv.length - 1)
+			usage();
+		sourceclass = FileDataSource;
+		sourceargs['filename'] = argv[optparser.optind()];
+	}
 
-	source = new FileDataSource({
-	    'log': dnLog,
-	    'filename': argv[optparser.optind()]
-	});
+	source = new sourceclass(sourceargs);
 
 	query = mod_dragnet.queryLoad({ 'query': queryConf });
 	if (query instanceof Error)
