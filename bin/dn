@@ -40,12 +40,14 @@ function usage(err)
 	if (err)
 		console.error('%s: %s', dnArg0, err.message);
 
+	dnDone = true;
 	console.error(dnUsage);
 	process.exit(2);
 }
 
 function fatal(err)
 {
+	dnDone = true;
 	console.error('%s: %s', dnArg0, err.message);
 	process.exit(1);
 }
@@ -389,19 +391,10 @@ function cmdScanOutputRaw(results)
 
 function cmdScanOutputPretty(results)
 {
-	var hasquantize = false;
-	var coldefs, i, tablefields;
+	var coldefs, tablefields;
 
 	coldefs = results.columns;
-
-	for (i = 0; i < coldefs.length; i++) {
-		if (coldefs[i].aggr) {
-			hasquantize = true;
-			break;
-		}
-	}
-
-	if (hasquantize) {
+	if (coldefs.length > 0 && coldefs[coldefs.length - 1].aggr) {
 		cmdScanOutputPrettyQuantized(results);
 		return;
 	}
@@ -469,7 +462,7 @@ function cmdScanOutputPretty(results)
 
 function cmdScanOutputPrettyQuantized(results)
 {
-	var coldefs, quantizedcol, stream, bucketizer;
+	var coldefs, quantizedcol, stream, bucketizer, last, distr;
 
 	coldefs = results.columns;
 	quantizedcol = coldefs[coldefs.length - 1];
@@ -477,16 +470,29 @@ function cmdScanOutputPrettyQuantized(results)
 	bucketizer = results.bucketizers[quantizedcol.name];
 	mod_assert.ok(bucketizer !== null);
 	stream = process.stdout;
+	last = null;
+	distr = [];
 
 	results.rows.forEach(function (row) {
 		var discrete_values = row.slice(0, coldefs.length - 1);
-		var distr = row.slice(coldefs.length - 1);
+		var key = discrete_values.join(', ') + '\n';
+		if (distr.length > 0 && key !== last) {
+			stream.write(last);
+			printDistribution(stream, distr, bucketizer,
+			    quantizedcol.name == '__dn_ts'); /* XXX */
+			stream.write('\n');
+		}
+		if (key !== last) {
+			last = key;
+			distr = [];
+		}
 
-		stream.write(discrete_values.join(', ') + '\n');
-		printDistribution(stream, distr, bucketizer,
-		    quantizedcol.name == '__dn_ts'); /* XXX */
-		stream.write('\n');
+		distr.push([ row[coldefs.length - 1], row[coldefs.length] ]);
 	});
+
+	stream.write(last);
+	printDistribution(stream, distr, bucketizer,
+	    quantizedcol.name == '__dn_ts'); /* XXX */
 }
 
 function printDistribution(stream, distr, bucketizer, omitleading)
