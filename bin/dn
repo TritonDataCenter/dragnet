@@ -32,6 +32,7 @@ var dnUsage = [
     '       dn scan  QUERY_OPTIONS FILENAME\n',
     '       dn query QUERY_OPTIONS INDEX_FILENAME'
 ].join('');
+var dnDone = false;
 var dnLog;
 
 function usage(err)
@@ -76,17 +77,22 @@ function main()
 
 function cmdIndex(cmdname, argv)
 {
-	var optparser, option;
+	var optparser, option, optind;
 	var indexConf = {
-	    'columns': []
+	    'columns': [],
+	    'resolution': 'hour'
 	};
 	var showinvalid = false;
 	var showcounters = false;
+	var sourceclass, sourceargs;
 	var source, index, indexop;
+	var indexargs;
 
+	sourceargs = { 'log': dnLog };
+	indexargs = {};
 	argv.unshift('', '');
-	optparser = new OptionParser(
-	    ':c:(columns)f:(filter)C(counters)S(show-invalid)', argv);
+	optparser = new OptionParser(':c:(columns)f:(filter)C(counters)' +
+	    'I:(indexroot)R:(dataroot)S(show-invalid)', argv);
 	while ((option = optparser.getopt()) !== undefined) {
 		switch (option.option) {
 		case 'c':
@@ -107,6 +113,15 @@ function cmdIndex(cmdname, argv)
 			showcounters = true;
 			break;
 
+		case 'I':
+			indexargs['indexroot'] = option.optarg;
+			break;
+
+		case 'R':
+			sourceclass = FileSetDataSource;
+			sourceargs['dataroot'] = option.optarg;
+			break;
+
 		case 'S':
 			showinvalid = true;
 			break;
@@ -117,23 +132,42 @@ function cmdIndex(cmdname, argv)
 		}
 	}
 
-	if (optparser.optind() != argv.length - 2)
-		usage();
+	optind = optparser.optind();
+	if (sourceclass === undefined) {
+		if (optparser.optind() != argv.length - 2)
+			usage();
+		sourceclass = FileDataSource;
+		sourceargs['filename'] = argv[optind++];
+		indexargs['filename'] = argv[optind++];
 
-	source = new FileDataSource({
-	    'log': dnLog,
-	    'filename': argv[optparser.optind()]
-	});
+		if (indexargs.hasOwnProperty('indexroot')) {
+			console.error('warn: -I/--indexroot is ignored for ' +
+			    'file-based indexes');
+		}
+	} else {
+		if (optparser.optind() != argv.length)
+			usage();
+
+		if (!indexargs.hasOwnProperty('indexroot')) {
+			var databasename = mod_path.basename(
+			    mod_path.resolve(sourceargs['dataroot']));
+			indexargs['indexroot'] = mod_path.join(
+			    sourceargs['dataroot'], '../',
+			    databasename + '_index');
+			console.error('inferring index root: %s',
+			    indexargs['indexroot']);
+		}
+	}
+
+	source = new sourceclass(sourceargs);
 
 	index = mod_dragnet.indexLoad({ 'index': indexConf });
 	if (index instanceof Error)
 		fatal(index);
 
-	indexop = source.index({
-	    'index': index,
-	    'format': 'json',
-	    'filename': argv[optparser.optind() + 1]
-	});
+	indexargs['index'] = index;
+	indexargs['format'] = 'json';
+	indexop = source.index(indexargs);
 	indexop.on('error', fatal);
 
 	if (showinvalid) {
@@ -150,9 +184,14 @@ function cmdIndex(cmdname, argv)
 		});
 	}
 
-	indexop.pipe(process.stdout);
-	indexop.on('end', function () {
+	indexop.on('finish', function () {
+		if (indexargs['filename']) {
+			console.error('index "%s" created',
+			    indexargs['filename']);
+		}
+
 		cmdScanPrintCounters(indexop.stats(), showcounters);
+		dnDone = true;
 	});
 }
 
@@ -217,6 +256,7 @@ function cmdQuery(cmdname, argv)
 			    'columns': query.qc_breakdowns,
 			    'bucketizers': query.qc_bucketizers
 			});
+			dnDone = true;
 		});
 	});
 }
@@ -269,7 +309,7 @@ function cmdScan(cmdname, argv)
 
 		case 'R':
 			sourceclass = FileSetDataSource;
-			sourceargs['path'] = option.optarg;
+			sourceargs['dataroot'] = option.optarg;
 			break;
 
 		case 'S':
@@ -297,7 +337,8 @@ function cmdScan(cmdname, argv)
 
 	scan = source.scan({
 	    'query': query,
-	    'format': 'json'
+	    'format': 'json',
+	    'timeField': 'time' /* XXX */
 	});
 	scan.on('error', fatal);
 
@@ -337,6 +378,7 @@ function cmdScan(cmdname, argv)
 
 	tail.on('end', function () {
 		cmdScanPrintCounters(scan.stats(), showcounters);
+		dnDone = true;
 	});
 }
 
@@ -441,12 +483,13 @@ function cmdScanOutputPrettyQuantized(results)
 		var distr = row.slice(coldefs.length - 1);
 
 		stream.write(discrete_values.join(', ') + '\n');
-		printDistribution(stream, distr, bucketizer);
+		printDistribution(stream, distr, bucketizer,
+		    quantizedcol.name == '__dn_ts'); /* XXX */
 		stream.write('\n');
 	});
 }
 
-function printDistribution(stream, distr, bucketizer)
+function printDistribution(stream, distr, bucketizer, omitleading)
 {
 	var total, count, normalized, dots;
 	var bi, di, i, min;
@@ -462,7 +505,12 @@ function printDistribution(stream, distr, bucketizer)
 	for (di = 0; di < distr.length; di++)
 		total += distr[di][1];
 
-	for (bi = 0, di = 0; di < distr.length + 1; bi++) {
+	if (omitleading)
+		bi = distr[0][0];
+	else
+		bi = 0;
+
+	for (di = 0; di < distr.length + 1; bi++) {
 		if (di == distr.length) {
 			count = 0;
 			di++;
@@ -507,5 +555,7 @@ function cmdScanPrintCounters(c, showall)
 		console.error(sprintf(fmt, name + ':', value));
 	});
 }
+
+process.on('exit', function () { mod_assert.ok(dnDone); });
 
 main();
