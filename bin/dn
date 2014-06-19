@@ -153,15 +153,9 @@ function cmdIndex(cmdname, argv)
 		if (optparser.optind() != argv.length)
 			usage();
 
-		if (!indexargs.hasOwnProperty('indexroot')) {
-			var databasename = mod_path.basename(
-			    mod_path.resolve(sourceargs['dataroot']));
-			indexargs['indexroot'] = mod_path.join(
-			    sourceargs['dataroot'], '../',
-			    databasename + '_index');
-			console.error('inferring index root: %s',
-			    indexargs['indexroot']);
-		}
+		if (!indexargs.hasOwnProperty('indexroot'))
+			indexargs['indexroot'] = inferIndexRoot(
+			    sourceargs['dataroot']);
 	}
 
 	source = new sourceclass(sourceargs);
@@ -202,16 +196,19 @@ function cmdIndex(cmdname, argv)
 
 function cmdQuery(cmdname, argv)
 {
-	var indexfile;
 	var optparser, option;
 	var queryConf = {
 	    'breakdowns': []
 	};
 	var output = cmdScanOutputPretty;
-	var query, queryindex;
+	var query, queryargs;
+	var source, sourceclass, sourceargs;
 
+	sourceargs = { 'log': dnLog };
+	queryargs = {};
 	argv.unshift('', '');
-	optparser = new OptionParser(':b:(breakdowns)f:(filter)r(raw)', argv);
+	optparser = new OptionParser(':b:(breakdowns)f:(filter)r(raw)R(root)',
+	    argv);
 	while ((option = optparser.getopt()) !== undefined) {
 		switch (option.option) {
 		case 'f':
@@ -232,38 +229,64 @@ function cmdQuery(cmdname, argv)
 			output = cmdScanOutputRaw;
 			break;
 
+		case 'I':
+			sourceclass = FileSetDataSource;
+			if (!sourceargs['dataroot']) {
+				/*
+				 * XXX should dataroot/filename arguments just
+				 * be passed into scan() rather than the
+				 * constructor so that they're only used when
+				 * needed?
+				 */
+				sourceargs['dataroot'] = 'unused';
+			}
+			queryargs['indexroot'] = option.optarg;
+			break;
+
+		case 'R':
+			sourceclass = FileSetDataSource;
+			sourceargs['dataroot'] = option.optarg;
+			break;
+
 		default:
 			usage();
 			break;
 		}
 	}
 
-	if (optparser.optind() != argv.length - 1)
-		usage();
+	if (sourceclass === undefined) {
+		if (optparser.optind() != argv.length - 1)
+			usage();
 
-	indexfile = argv[optparser.optind()];
+		sourceclass = FileDataSource;
+		sourceargs['filename'] = 'unused'; /* XXX see above */
+		queryargs['filename'] = argv[optparser.optind()];
+	} else {
+		if (optparser.optind() != argv.length)
+			usage();
+
+		if (!queryargs.hasOwnProperty('indexroot'))
+			queryargs['indexroot'] = inferIndexRoot(
+			    sourceargs['dataroot']);
+	}
+
 	query = mod_dragnet.queryLoad({ 'query': queryConf });
 	if (query instanceof Error)
 		fatal(query);
 
-	queryindex = new QueryIndex({
-	    'log': dnLog,
-	    'filename': indexfile
-	});
-	queryindex.on('error', fatal);
-	queryindex.on('ready', function () {
-		queryindex.run(query, function (qerr, rows) {
-			if (qerr)
-				fatal(qerr);
+	queryargs['query'] = query;
+	source = new sourceclass(sourceargs);
+	source.query(queryargs, function (err, rows) {
+		if (err)
+			fatal(err);
 
-			output({
-			    'rows': rows,
-			    'columns': query.qc_breakdowns,
-			    'bucketizers': query.qc_bucketizers
-			});
-
-			dnDone = true;
+		output({
+		    'rows': rows,
+		    'columns': query.qc_breakdowns,
+		    'bucketizers': query.qc_bucketizers
 		});
+
+		dnDone = true;
 	});
 }
 
@@ -336,7 +359,6 @@ function cmdScan(cmdname, argv)
 	}
 
 	source = new sourceclass(sourceargs);
-
 	query = mod_dragnet.queryLoad({ 'query': queryConf });
 	if (query instanceof Error)
 		fatal(query);
@@ -418,6 +440,20 @@ function cmdScanOutputPretty(results)
 	if (results.rows.length === 0)
 		return;
 
+	/*
+	 * Take a pass over the results and replace quantized values with the
+	 * real values.
+	 */
+	coldefs.forEach(function (c, j) {
+		if (!results.bucketizers.hasOwnProperty(c.name))
+			return;
+
+		var bucketizer = results.bucketizers[c.name];
+		results.rows.forEach(function (row) {
+			row[j] = bucketizer.bucketMin(row[j]);
+		});
+	});
+
 	if (results.rows.length == 1 && typeof (results.rows[0]) == 'number')
 		results.rows[0] = [ results.rows[0] ];
 
@@ -453,7 +489,7 @@ function cmdScanOutputPretty(results)
 			if (typeof (a[j]) == 'string')
 				d = a[j].localeCompare(b[j]);
 			else
-				d = b[j] - a[j];
+				d = a[j] - b[j];
 
 			if (d !== 0)
 				return (d);
@@ -567,6 +603,17 @@ function cmdScanPrintCounters(c, showall)
 	mod_jsprim.forEachKey(c, function (name, value) {
 		console.error(sprintf(fmt, name + ':', value));
 	});
+}
+
+function inferIndexRoot(dataroot)
+{
+	var resolved, basename, indexroot;
+
+	resolved = mod_path.resolve(dataroot);
+	basename = mod_path.basename(resolved);
+	indexroot = mod_path.join(dataroot, '..', basename + '_index');
+	console.error('inferring index root: %s', indexroot);
+	return (indexroot);
 }
 
 process.on('exit', function () { mod_assert.ok(dnDone); });
