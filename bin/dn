@@ -33,6 +33,7 @@ var dnUsage = [
     '       dn query QUERY_OPTIONS INDEX_FILENAME'
 ].join('');
 var dnDone = false;
+var dnTimeField = 'time'; /* XXX */
 var dnLog;
 
 function usage(err)
@@ -69,8 +70,10 @@ function main()
 	});
 
 	process.stdout.on('error', function (err) {
-		if (err.code == 'EPIPE')
+		if (err.code == 'EPIPE') {
+			dnDone = true;
 			process.exit(0);
+		}
 		throw (err);
 	});
 	cmdfunc = dnCmds[cmdname];
@@ -162,13 +165,13 @@ function cmdIndex(cmdname, argv)
 	}
 
 	source = new sourceclass(sourceargs);
-
 	index = mod_dragnet.indexLoad({ 'index': indexConf });
 	if (index instanceof Error)
 		fatal(index);
 
 	indexargs['index'] = index;
 	indexargs['format'] = 'json';
+	indexargs['timeField'] = dnTimeField;
 	indexop = source.index(indexargs);
 	indexop.on('error', fatal);
 
@@ -258,6 +261,7 @@ function cmdQuery(cmdname, argv)
 			    'columns': query.qc_breakdowns,
 			    'bucketizers': query.qc_bucketizers
 			});
+
 			dnDone = true;
 		});
 	});
@@ -340,7 +344,7 @@ function cmdScan(cmdname, argv)
 	scan = source.scan({
 	    'query': query,
 	    'format': 'json',
-	    'timeField': 'time' /* XXX */
+	    'timeField': dnTimeField
 	});
 	scan.on('error', fatal);
 
@@ -478,8 +482,7 @@ function cmdScanOutputPrettyQuantized(results)
 		var key = discrete_values.join(', ') + '\n';
 		if (distr.length > 0 && key !== last) {
 			stream.write(last);
-			printDistribution(stream, distr, bucketizer,
-			    quantizedcol.name == '__dn_ts'); /* XXX */
+			printDistribution(stream, distr, bucketizer);
 			stream.write('\n');
 		}
 		if (key !== last) {
@@ -491,11 +494,10 @@ function cmdScanOutputPrettyQuantized(results)
 	});
 
 	stream.write(last);
-	printDistribution(stream, distr, bucketizer,
-	    quantizedcol.name == '__dn_ts'); /* XXX */
+	printDistribution(stream, distr, bucketizer);
 }
 
-function printDistribution(stream, distr, bucketizer, omitleading)
+function printDistribution(stream, distr, bucketizer)
 {
 	var total, count, normalized, dots;
 	var bi, di, i, min;
@@ -511,7 +513,12 @@ function printDistribution(stream, distr, bucketizer, omitleading)
 	for (di = 0; di < distr.length; di++)
 		total += distr[di][1];
 
-	if (omitleading)
+	/*
+	 * If there's a large number of empty buckets at the beginning, we're
+	 * probably lookint at large values (like timestamps) where the user
+	 * doesn't really want us to print all the leading empty buckets.
+	 */
+	if (distr[0][0] > 100)
 		bi = distr[0][0];
 	else
 		bi = 0;
