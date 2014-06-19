@@ -10,18 +10,14 @@ var mod_bunyan = require('bunyan');
 var mod_jsprim = require('jsprim');
 var mod_path = require('path');
 var mod_tab = require('tab');
-var mod_vasync = require('vasync');
 var OptionParser = require('posix-getopt').BasicParser;
 var VError = require('verror');
 var sprintf = require('extsprintf').sprintf;
 
 var mod_dragnet = require('../lib/dragnet');
 var mod_dragnet_impl = require('../lib/dragnet-impl'); /* XXX */
-var schemaQuery = require('../schema/user-query');
 var FileDataSource = require('../lib/source-file');
-var IndexScanner = require('../lib/index-scan');
 var QueryIndex = require('../lib/query-index');
-var QueryScanner = require('../lib/query-scan');
 var SkinnerFlattener = require('../lib/skinner-flattener');
 
 var dnArg0 = mod_path.basename(process.argv[1]);
