@@ -5,6 +5,7 @@
  * dn: create, query, and destroy indexes on data stored in Manta
  */
 
+var timeStarted = process.hrtime();
 var mod_assert = require('assert');
 var mod_bunyan = require('bunyan');
 var mod_jsprim = require('jsprim');
@@ -20,6 +21,8 @@ var FileDataSource = require('../lib/source-file');
 var FileSetDataSource = require('../lib/source-fileset');
 var SkinnerFlattener = require('../lib/skinner-flattener');
 
+var timeRequireDone = process.hrtime(timeStarted);
+
 var dnArg0 = mod_path.basename(process.argv[1]);
 var dnCmds = {
     'index': cmdIndex,
@@ -33,6 +36,7 @@ var dnUsage = [
 ].join('');
 var dnDone = false;
 var dnTimeField = 'time'; /* XXX */
+var dnTrackTime = false;
 var dnLog;
 
 function usage(err)
@@ -54,12 +58,18 @@ function fatal(err)
 
 function main()
 {
-	var cmdname, cmdfunc;
+	var optind, cmdname, cmdfunc;
 
-	if (process.argv.length < 3)
+	optind = 2;
+	if (process.argv[optind] == '-t') {
+		dnTrackTime = true;
+		optind++;
+	}
+
+	if (process.argv.length < optind + 1)
 		usage();
 
-	cmdname = process.argv[2];
+	cmdname = process.argv[optind];
 	if (!dnCmds.hasOwnProperty(cmdname))
 		usage(new VError('no such command: "%s"', cmdname));
 
@@ -76,7 +86,7 @@ function main()
 		throw (err);
 	});
 	cmdfunc = dnCmds[cmdname];
-	cmdfunc(cmdname, process.argv.slice(3));
+	cmdfunc(cmdname, process.argv.slice(optind + 1));
 }
 
 function cmdIndex(cmdname, argv)
@@ -206,8 +216,8 @@ function cmdQuery(cmdname, argv)
 	sourceargs = { 'log': dnLog };
 	queryargs = {};
 	argv.unshift('', '');
-	optparser = new OptionParser(':b:(breakdowns)f:(filter)r(raw)R:(root)',
-	    argv);
+	optparser = new OptionParser(':b:(breakdowns)f:(filter)r(raw)' +
+	    'I:(indexroot)R:(root)', argv);
 	while ((option = optparser.getopt()) !== undefined) {
 		switch (option.option) {
 		case 'f':
@@ -622,6 +632,15 @@ function inferIndexRoot(dataroot)
 	return (indexroot);
 }
 
-process.on('exit', function () { mod_assert.ok(dnDone); });
+process.on('exit', function () {
+	if (dnTrackTime) {
+		var timeDone = process.hrtime(timeStarted);
+		console.error('timing stats:');
+		console.error('    require: ', timeRequireDone);
+		console.error('    total:   ', timeDone);
+	}
+
+	mod_assert.ok(dnDone);
+});
 
 main();

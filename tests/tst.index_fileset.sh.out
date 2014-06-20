@@ -1,0 +1,1425 @@
+./2014-05-31-21.sqlite
+./2014-05-31-22.sqlite
+./2014-05-31-23.sqlite
+# dn query
+VALUE
+ 2000
+
+# dn query -b operation
+OPERATION           VALUE
+deletepublicstorage   240
+deletestorage         238
+getjoberrors          172
+getpublicstorage      170
+getstorage            161
+headpublicstorage     258
+headstorage           255
+putdirectory          170
+putobject             167
+putpublicobject       169
+
+# dn query -b operation,req.method,host
+OPERATION           REQ.METHOD HOST    VALUE
+deletepublicstorage DELETE     janey      41
+deletepublicstorage DELETE     kearney    45
+deletepublicstorage DELETE     ralph      52
+deletepublicstorage DELETE     sherri     59
+deletepublicstorage DELETE     wendell    43
+deletestorage       DELETE     janey      43
+deletestorage       DELETE     kearney    61
+deletestorage       DELETE     ralph      54
+deletestorage       DELETE     sherri     38
+deletestorage       DELETE     wendell    42
+getjoberrors        GET        janey      38
+getjoberrors        GET        kearney    28
+getjoberrors        GET        ralph      34
+getjoberrors        GET        sherri     39
+getjoberrors        GET        wendell    33
+getpublicstorage    GET        janey      36
+getpublicstorage    GET        kearney    34
+getpublicstorage    GET        ralph      36
+getpublicstorage    GET        sherri     34
+getpublicstorage    GET        wendell    30
+getstorage          GET        janey      42
+getstorage          GET        kearney    28
+getstorage          GET        ralph      35
+getstorage          GET        sherri     28
+getstorage          GET        wendell    28
+headpublicstorage   HEAD       janey      60
+headpublicstorage   HEAD       kearney    41
+headpublicstorage   HEAD       ralph      37
+headpublicstorage   HEAD       sherri     66
+headpublicstorage   HEAD       wendell    54
+headstorage         HEAD       janey      64
+headstorage         HEAD       kearney    47
+headstorage         HEAD       ralph      55
+headstorage         HEAD       sherri     49
+headstorage         HEAD       wendell    40
+putdirectory        PUT        janey      39
+putdirectory        PUT        kearney    32
+putdirectory        PUT        ralph      35
+putdirectory        PUT        sherri     34
+putdirectory        PUT        wendell    30
+putobject           PUT        janey      37
+putobject           PUT        kearney    26
+putobject           PUT        ralph      33
+putobject           PUT        sherri     31
+putobject           PUT        wendell    40
+putpublicobject     PUT        janey      32
+putpublicobject     PUT        kearney    41
+putpublicobject     PUT        ralph      38
+putpublicobject     PUT        sherri     31
+putpublicobject     PUT        wendell    27
+
+# dn query -b req.caller
+REQ.CALLER VALUE
+admin        523
+null         489
+poseidon     490
+undefined    498
+
+# dn query -b operation,req.caller
+OPERATION           REQ.CALLER VALUE
+deletepublicstorage admin         63
+deletepublicstorage null          60
+deletepublicstorage poseidon      59
+deletepublicstorage undefined     58
+deletestorage       admin         56
+deletestorage       null          61
+deletestorage       poseidon      60
+deletestorage       undefined     61
+getjoberrors        admin         48
+getjoberrors        null          41
+getjoberrors        poseidon      38
+getjoberrors        undefined     45
+getpublicstorage    admin         39
+getpublicstorage    null          38
+getpublicstorage    poseidon      49
+getpublicstorage    undefined     44
+getstorage          admin         47
+getstorage          null          39
+getstorage          poseidon      37
+getstorage          undefined     38
+headpublicstorage   admin         68
+headpublicstorage   null          64
+headpublicstorage   poseidon      61
+headpublicstorage   undefined     65
+headstorage         admin         70
+headstorage         null          73
+headstorage         poseidon      49
+headstorage         undefined     63
+putdirectory        admin         42
+putdirectory        null          44
+putdirectory        poseidon      45
+putdirectory        undefined     39
+putobject           admin         41
+putobject           null          38
+putobject           poseidon      39
+putobject           undefined     49
+putpublicobject     admin         49
+putpublicobject     null          31
+putpublicobject     poseidon      53
+putpublicobject     undefined     36
+
+# dn query -f { "eq": [ "req.method", "GET" ] }
+VALUE
+  503
+
+# dn query -f { "eq": [ "req.method", "GET" ] } -b operation,req.method,host
+OPERATION        REQ.METHOD HOST    VALUE
+getjoberrors     GET        janey      38
+getjoberrors     GET        kearney    28
+getjoberrors     GET        ralph      34
+getjoberrors     GET        sherri     39
+getjoberrors     GET        wendell    33
+getpublicstorage GET        janey      36
+getpublicstorage GET        kearney    34
+getpublicstorage GET        ralph      36
+getpublicstorage GET        sherri     34
+getpublicstorage GET        wendell    30
+getstorage       GET        janey      42
+getstorage       GET        kearney    28
+getstorage       GET        ralph      35
+getstorage       GET        sherri     28
+getstorage       GET        wendell    28
+
+# dn query -f { "eq": [ "req.caller", "poseidon" ] }
+VALUE
+  490
+
+# dn query -f { "eq": [ "req.caller", "poseidon" ] } -b req.caller
+REQ.CALLER VALUE
+poseidon     490
+
+# dn query -b latency[aggr=quantize]
+
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |@@                                       90
+               2 |@@@@@@@@                                 388
+               4 |@@@@@@                                   324
+               8 |                                         0
+              16 |@@@@@@@@@@@@                             590
+              32 |                                         0
+              64 |@                                        49
+             128 |@@@                                      141
+             256 |                                         0
+             512 |                                         0
+            1024 |@@@                                      139
+            2048 |@@@@@@                                   279
+            4096 |                                         0
+
+# dn query -b latency[aggr=quantize],operation,host
+LATENCY OPERATION           HOST    VALUE
+      1 deletepublicstorage janey       4
+      1 deletepublicstorage kearney     1
+      1 deletepublicstorage sherri      1
+      1 deletepublicstorage wendell     2
+      1 deletestorage       kearney     2
+      1 deletestorage       ralph       5
+      1 deletestorage       wendell     5
+      1 getjoberrors        janey       2
+      1 getjoberrors        kearney     1
+      1 getjoberrors        ralph       1
+      1 getjoberrors        sherri      2
+      1 getjoberrors        wendell     1
+      1 getpublicstorage    janey       2
+      1 getpublicstorage    kearney     1
+      1 getpublicstorage    sherri      2
+      1 getpublicstorage    wendell     1
+      1 getstorage          janey       2
+      1 getstorage          kearney     4
+      1 getstorage          sherri      1
+      1 getstorage          wendell     3
+      1 headpublicstorage   janey       4
+      1 headpublicstorage   kearney     1
+      1 headpublicstorage   ralph       2
+      1 headpublicstorage   wendell     2
+      1 headstorage         janey       3
+      1 headstorage         kearney     4
+      1 headstorage         ralph       3
+      1 headstorage         sherri      3
+      1 headstorage         wendell     3
+      1 putdirectory        janey       2
+      1 putdirectory        kearney     1
+      1 putdirectory        ralph       1
+      1 putobject           janey       3
+      1 putobject           kearney     1
+      1 putobject           ralph       5
+      1 putobject           sherri      2
+      1 putobject           wendell     1
+      1 putpublicobject     janey       1
+      1 putpublicobject     kearney     1
+      1 putpublicobject     ralph       2
+      1 putpublicobject     sherri      2
+      2 deletepublicstorage janey       7
+      2 deletepublicstorage kearney     9
+      2 deletepublicstorage ralph       9
+      2 deletepublicstorage sherri     12
+      2 deletepublicstorage wendell    13
+      2 deletestorage       janey      11
+      2 deletestorage       kearney    13
+      2 deletestorage       ralph      11
+      2 deletestorage       sherri      7
+      2 deletestorage       wendell     8
+      2 getjoberrors        janey       8
+      2 getjoberrors        kearney     9
+      2 getjoberrors        ralph       3
+      2 getjoberrors        sherri     10
+      2 getjoberrors        wendell     5
+      2 getpublicstorage    janey       7
+      2 getpublicstorage    kearney    11
+      2 getpublicstorage    ralph       8
+      2 getpublicstorage    sherri      5
+      2 getpublicstorage    wendell     5
+      2 getstorage          janey       9
+      2 getstorage          kearney     3
+      2 getstorage          ralph       9
+      2 getstorage          sherri      2
+      2 getstorage          wendell     5
+      2 headpublicstorage   janey      11
+      2 headpublicstorage   kearney    13
+      2 headpublicstorage   ralph       2
+      2 headpublicstorage   sherri     14
+      2 headpublicstorage   wendell     9
+      2 headstorage         janey      14
+      2 headstorage         kearney     8
+      2 headstorage         ralph      10
+      2 headstorage         sherri     10
+      2 headstorage         wendell     9
+      2 putdirectory        janey       7
+      2 putdirectory        kearney     6
+      2 putdirectory        ralph       3
+      2 putdirectory        sherri      4
+      2 putdirectory        wendell     9
+      2 putobject           janey      12
+      2 putobject           kearney     6
+      2 putobject           ralph       5
+      2 putobject           sherri      6
+      2 putobject           wendell     6
+      2 putpublicobject     janey       3
+      2 putpublicobject     kearney     5
+      2 putpublicobject     ralph       6
+      2 putpublicobject     sherri      6
+      2 putpublicobject     wendell     5
+      4 deletepublicstorage janey       8
+      4 deletepublicstorage kearney     4
+      4 deletepublicstorage ralph       9
+      4 deletepublicstorage sherri      6
+      4 deletepublicstorage wendell     7
+      4 deletestorage       janey       9
+      4 deletestorage       kearney    11
+      4 deletestorage       ralph      11
+      4 deletestorage       sherri      8
+      4 deletestorage       wendell     5
+      4 getjoberrors        janey       4
+      4 getjoberrors        kearney     2
+      4 getjoberrors        ralph       7
+      4 getjoberrors        sherri     11
+      4 getjoberrors        wendell     4
+      4 getpublicstorage    janey       6
+      4 getpublicstorage    kearney     4
+      4 getpublicstorage    ralph      12
+      4 getpublicstorage    sherri      1
+      4 getpublicstorage    wendell     6
+      4 getstorage          janey       6
+      4 getstorage          kearney     5
+      4 getstorage          ralph       6
+      4 getstorage          sherri      5
+      4 getstorage          wendell     4
+      4 headpublicstorage   janey       8
+      4 headpublicstorage   kearney     7
+      4 headpublicstorage   ralph       6
+      4 headpublicstorage   sherri     10
+      4 headpublicstorage   wendell     9
+      4 headstorage         janey       8
+      4 headstorage         kearney    12
+      4 headstorage         ralph       9
+      4 headstorage         sherri      4
+      4 headstorage         wendell     7
+      4 putdirectory        janey      11
+      4 putdirectory        kearney     9
+      4 putdirectory        ralph       5
+      4 putdirectory        sherri      3
+      4 putdirectory        wendell     4
+      4 putobject           janey       4
+      4 putobject           kearney     3
+      4 putobject           ralph       6
+      4 putobject           sherri      5
+      4 putobject           wendell     4
+      4 putpublicobject     janey       4
+      4 putpublicobject     kearney     8
+      4 putpublicobject     ralph       8
+      4 putpublicobject     sherri      3
+      4 putpublicobject     wendell     6
+     16 deletepublicstorage janey      10
+     16 deletepublicstorage kearney    15
+     16 deletepublicstorage ralph      15
+     16 deletepublicstorage sherri     20
+     16 deletepublicstorage wendell    13
+     16 deletestorage       janey      14
+     16 deletestorage       kearney    19
+     16 deletestorage       ralph      18
+     16 deletestorage       sherri      9
+     16 deletestorage       wendell     9
+     16 getjoberrors        janey      12
+     16 getjoberrors        kearney     8
+     16 getjoberrors        ralph      16
+     16 getjoberrors        sherri      6
+     16 getjoberrors        wendell    15
+     16 getpublicstorage    janey      12
+     16 getpublicstorage    kearney     9
+     16 getpublicstorage    ralph       8
+     16 getpublicstorage    sherri     11
+     16 getpublicstorage    wendell     6
+     16 getstorage          janey      14
+     16 getstorage          kearney     4
+     16 getstorage          ralph      10
+     16 getstorage          sherri     11
+     16 getstorage          wendell     8
+     16 headpublicstorage   janey      21
+     16 headpublicstorage   kearney    10
+     16 headpublicstorage   ralph      14
+     16 headpublicstorage   sherri     19
+     16 headpublicstorage   wendell    16
+     16 headstorage         janey      19
+     16 headstorage         kearney    13
+     16 headstorage         ralph      18
+     16 headstorage         sherri     16
+     16 headstorage         wendell    13
+     16 putdirectory        janey      11
+     16 putdirectory        kearney     7
+     16 putdirectory        ralph      12
+     16 putdirectory        sherri      8
+     16 putdirectory        wendell     6
+     16 putobject           janey      10
+     16 putobject           kearney     6
+     16 putobject           ralph      10
+     16 putobject           sherri     10
+     16 putobject           wendell    11
+     16 putpublicobject     janey      10
+     16 putpublicobject     kearney     3
+     16 putpublicobject     ralph      12
+     16 putpublicobject     sherri     13
+     16 putpublicobject     wendell    10
+     64 deletepublicstorage janey       2
+     64 deletepublicstorage kearney     1
+     64 deletepublicstorage ralph       1
+     64 deletepublicstorage sherri      1
+     64 deletepublicstorage wendell     2
+     64 deletestorage       janey       2
+     64 deletestorage       ralph       2
+     64 deletestorage       wendell     1
+     64 getjoberrors        kearney     1
+     64 getjoberrors        ralph       1
+     64 getjoberrors        sherri      1
+     64 getpublicstorage    ralph       2
+     64 getpublicstorage    sherri      1
+     64 getpublicstorage    wendell     2
+     64 getstorage          kearney     1
+     64 getstorage          ralph       1
+     64 getstorage          sherri      1
+     64 headpublicstorage   janey       1
+     64 headpublicstorage   kearney     2
+     64 headpublicstorage   ralph       2
+     64 headpublicstorage   wendell     2
+     64 headstorage         janey       1
+     64 headstorage         kearney     1
+     64 headstorage         ralph       2
+     64 headstorage         sherri      3
+     64 putdirectory        janey       1
+     64 putdirectory        kearney     1
+     64 putdirectory        ralph       2
+     64 putdirectory        sherri      1
+     64 putobject           ralph       1
+     64 putobject           sherri      1
+     64 putobject           wendell     1
+     64 putpublicobject     janey       1
+     64 putpublicobject     kearney     2
+     64 putpublicobject     wendell     1
+    128 deletepublicstorage janey       1
+    128 deletepublicstorage kearney     4
+    128 deletepublicstorage ralph       4
+    128 deletepublicstorage sherri      5
+    128 deletepublicstorage wendell     1
+    128 deletestorage       janey       1
+    128 deletestorage       kearney     2
+    128 deletestorage       ralph       2
+    128 deletestorage       sherri      6
+    128 deletestorage       wendell     3
+    128 getjoberrors        janey       1
+    128 getjoberrors        kearney     1
+    128 getjoberrors        sherri      5
+    128 getjoberrors        wendell     1
+    128 getpublicstorage    janey       5
+    128 getpublicstorage    kearney     3
+    128 getpublicstorage    ralph       1
+    128 getpublicstorage    sherri      5
+    128 getpublicstorage    wendell     5
+    128 getstorage          janey       5
+    128 getstorage          kearney     4
+    128 getstorage          ralph       3
+    128 getstorage          sherri      1
+    128 getstorage          wendell     3
+    128 headpublicstorage   janey       7
+    128 headpublicstorage   kearney     4
+    128 headpublicstorage   ralph       2
+    128 headpublicstorage   sherri      2
+    128 headpublicstorage   wendell     2
+    128 headstorage         janey       3
+    128 headstorage         kearney     2
+    128 headstorage         ralph       5
+    128 headstorage         sherri      2
+    128 putdirectory        janey       3
+    128 putdirectory        kearney     1
+    128 putdirectory        ralph       6
+    128 putdirectory        sherri      5
+    128 putobject           janey       1
+    128 putobject           kearney     4
+    128 putobject           ralph       2
+    128 putobject           sherri      1
+    128 putobject           wendell     5
+    128 putpublicobject     janey       4
+    128 putpublicobject     kearney     5
+    128 putpublicobject     ralph       2
+    128 putpublicobject     sherri      1
+   1024 deletepublicstorage janey       3
+   1024 deletepublicstorage kearney     4
+   1024 deletepublicstorage ralph       7
+   1024 deletepublicstorage sherri      4
+   1024 deletestorage       janey       2
+   1024 deletestorage       kearney     3
+   1024 deletestorage       sherri      1
+   1024 deletestorage       wendell     4
+   1024 getjoberrors        janey       5
+   1024 getjoberrors        kearney     3
+   1024 getjoberrors        ralph       2
+   1024 getjoberrors        sherri      2
+   1024 getjoberrors        wendell     2
+   1024 getpublicstorage    janey       2
+   1024 getpublicstorage    kearney     1
+   1024 getpublicstorage    ralph       2
+   1024 getpublicstorage    sherri      2
+   1024 getpublicstorage    wendell     1
+   1024 getstorage          janey       3
+   1024 getstorage          kearney     2
+   1024 getstorage          ralph       1
+   1024 getstorage          sherri      2
+   1024 getstorage          wendell     3
+   1024 headpublicstorage   janey       1
+   1024 headpublicstorage   kearney     2
+   1024 headpublicstorage   ralph       1
+   1024 headpublicstorage   sherri      8
+   1024 headpublicstorage   wendell     6
+   1024 headstorage         janey       7
+   1024 headstorage         kearney     6
+   1024 headstorage         ralph       4
+   1024 headstorage         sherri      4
+   1024 headstorage         wendell     4
+   1024 putdirectory        janey       1
+   1024 putdirectory        kearney     3
+   1024 putdirectory        ralph       2
+   1024 putdirectory        sherri      5
+   1024 putdirectory        wendell     3
+   1024 putobject           janey       1
+   1024 putobject           kearney     1
+   1024 putobject           ralph       1
+   1024 putobject           sherri      2
+   1024 putobject           wendell     2
+   1024 putpublicobject     janey       3
+   1024 putpublicobject     kearney     3
+   1024 putpublicobject     ralph       3
+   1024 putpublicobject     sherri      2
+   1024 putpublicobject     wendell     3
+   2048 deletepublicstorage janey       6
+   2048 deletepublicstorage kearney     7
+   2048 deletepublicstorage ralph       7
+   2048 deletepublicstorage sherri     10
+   2048 deletepublicstorage wendell     5
+   2048 deletestorage       janey       4
+   2048 deletestorage       kearney    11
+   2048 deletestorage       ralph       5
+   2048 deletestorage       sherri      7
+   2048 deletestorage       wendell     7
+   2048 getjoberrors        janey       6
+   2048 getjoberrors        kearney     3
+   2048 getjoberrors        ralph       4
+   2048 getjoberrors        sherri      2
+   2048 getjoberrors        wendell     5
+   2048 getpublicstorage    janey       2
+   2048 getpublicstorage    kearney     5
+   2048 getpublicstorage    ralph       3
+   2048 getpublicstorage    sherri      7
+   2048 getpublicstorage    wendell     4
+   2048 getstorage          janey       3
+   2048 getstorage          kearney     5
+   2048 getstorage          ralph       5
+   2048 getstorage          sherri      5
+   2048 getstorage          wendell     2
+   2048 headpublicstorage   janey       7
+   2048 headpublicstorage   kearney     2
+   2048 headpublicstorage   ralph       8
+   2048 headpublicstorage   sherri     13
+   2048 headpublicstorage   wendell     8
+   2048 headstorage         janey       9
+   2048 headstorage         kearney     1
+   2048 headstorage         ralph       4
+   2048 headstorage         sherri      7
+   2048 headstorage         wendell     4
+   2048 putdirectory        janey       3
+   2048 putdirectory        kearney     4
+   2048 putdirectory        ralph       4
+   2048 putdirectory        sherri      8
+   2048 putdirectory        wendell     8
+   2048 putobject           janey       6
+   2048 putobject           kearney     5
+   2048 putobject           ralph       3
+   2048 putobject           sherri      4
+   2048 putobject           wendell    10
+   2048 putpublicobject     janey       6
+   2048 putpublicobject     kearney    14
+   2048 putpublicobject     ralph       5
+   2048 putpublicobject     sherri      4
+   2048 putpublicobject     wendell     2
+
+# dn query -b host,operation,latency[aggr=quantize]
+janey, deletepublicstorage
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |@@@@                                     4
+               2 |@@@@@@@                                  7
+               4 |@@@@@@@@                                 8
+               8 |                                         0
+              16 |@@@@@@@@@@                               10
+              32 |                                         0
+              64 |@@                                       2
+             128 |@                                        1
+             256 |                                         0
+             512 |                                         0
+            1024 |@@@                                      3
+            2048 |@@@@@@                                   6
+            4096 |                                         0
+
+janey, deletestorage
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |                                         0
+               2 |@@@@@@@@@@                               11
+               4 |@@@@@@@@                                 9
+               8 |                                         0
+              16 |@@@@@@@@@@@@@                            14
+              32 |                                         0
+              64 |@@                                       2
+             128 |@                                        1
+             256 |                                         0
+             512 |                                         0
+            1024 |@@                                       2
+            2048 |@@@@                                     4
+            4096 |                                         0
+
+janey, getjoberrors
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |@@                                       2
+               2 |@@@@@@@@                                 8
+               4 |@@@@                                     4
+               8 |                                         0
+              16 |@@@@@@@@@@@@@                            12
+              32 |                                         0
+              64 |                                         0
+             128 |@                                        1
+             256 |                                         0
+             512 |                                         0
+            1024 |@@@@@                                    5
+            2048 |@@@@@@                                   6
+            4096 |                                         0
+
+janey, getpublicstorage
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |@@                                       2
+               2 |@@@@@@@@                                 7
+               4 |@@@@@@@                                  6
+               8 |                                         0
+              16 |@@@@@@@@@@@@@                            12
+              32 |                                         0
+              64 |                                         0
+             128 |@@@@@@                                   5
+             256 |                                         0
+             512 |                                         0
+            1024 |@@                                       2
+            2048 |@@                                       2
+            4096 |                                         0
+
+janey, getstorage
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |@@                                       2
+               2 |@@@@@@@@@                                9
+               4 |@@@@@@                                   6
+               8 |                                         0
+              16 |@@@@@@@@@@@@@                            14
+              32 |                                         0
+              64 |                                         0
+             128 |@@@@@                                    5
+             256 |                                         0
+             512 |                                         0
+            1024 |@@@                                      3
+            2048 |@@@                                      3
+            4096 |                                         0
+
+janey, headpublicstorage
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |@@@                                      4
+               2 |@@@@@@@                                  11
+               4 |@@@@@                                    8
+               8 |                                         0
+              16 |@@@@@@@@@@@@@@                           21
+              32 |                                         0
+              64 |@                                        1
+             128 |@@@@@                                    7
+             256 |                                         0
+             512 |                                         0
+            1024 |@                                        1
+            2048 |@@@@@                                    7
+            4096 |                                         0
+
+janey, headstorage
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |@@                                       3
+               2 |@@@@@@@@@                                14
+               4 |@@@@@                                    8
+               8 |                                         0
+              16 |@@@@@@@@@@@@                             19
+              32 |                                         0
+              64 |@                                        1
+             128 |@@                                       3
+             256 |                                         0
+             512 |                                         0
+            1024 |@@@@                                     7
+            2048 |@@@@@@                                   9
+            4096 |                                         0
+
+janey, putdirectory
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |@@                                       2
+               2 |@@@@@@@                                  7
+               4 |@@@@@@@@@@@                              11
+               8 |                                         0
+              16 |@@@@@@@@@@@                              11
+              32 |                                         0
+              64 |@                                        1
+             128 |@@@                                      3
+             256 |                                         0
+             512 |                                         0
+            1024 |@                                        1
+            2048 |@@@                                      3
+            4096 |                                         0
+
+janey, putobject
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |@@@                                      3
+               2 |@@@@@@@@@@@@@                            12
+               4 |@@@@                                     4
+               8 |                                         0
+              16 |@@@@@@@@@@@                              10
+              32 |                                         0
+              64 |                                         0
+             128 |@                                        1
+             256 |                                         0
+             512 |                                         0
+            1024 |@                                        1
+            2048 |@@@@@@                                   6
+            4096 |                                         0
+
+janey, putpublicobject
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |@                                        1
+               2 |@@@@                                     3
+               4 |@@@@@                                    4
+               8 |                                         0
+              16 |@@@@@@@@@@@@@                            10
+              32 |                                         0
+              64 |@                                        1
+             128 |@@@@@                                    4
+             256 |                                         0
+             512 |                                         0
+            1024 |@@@@                                     3
+            2048 |@@@@@@@@                                 6
+            4096 |                                         0
+
+kearney, deletepublicstorage
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |@                                        1
+               2 |@@@@@@@@                                 9
+               4 |@@@@                                     4
+               8 |                                         0
+              16 |@@@@@@@@@@@@@                            15
+              32 |                                         0
+              64 |@                                        1
+             128 |@@@@                                     4
+             256 |                                         0
+             512 |                                         0
+            1024 |@@@@                                     4
+            2048 |@@@@@@                                   7
+            4096 |                                         0
+
+kearney, deletestorage
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |@                                        2
+               2 |@@@@@@@@@                                13
+               4 |@@@@@@@                                  11
+               8 |                                         0
+              16 |@@@@@@@@@@@@                             19
+              32 |                                         0
+              64 |                                         0
+             128 |@                                        2
+             256 |                                         0
+             512 |                                         0
+            1024 |@@                                       3
+            2048 |@@@@@@@                                  11
+            4096 |                                         0
+
+kearney, getjoberrors
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |@                                        1
+               2 |@@@@@@@@@@@@@                            9
+               4 |@@@                                      2
+               8 |                                         0
+              16 |@@@@@@@@@@@                              8
+              32 |                                         0
+              64 |@                                        1
+             128 |@                                        1
+             256 |                                         0
+             512 |                                         0
+            1024 |@@@@                                     3
+            2048 |@@@@                                     3
+            4096 |                                         0
+
+kearney, getpublicstorage
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |@                                        1
+               2 |@@@@@@@@@@@@@                            11
+               4 |@@@@@                                    4
+               8 |                                         0
+              16 |@@@@@@@@@@@                              9
+              32 |                                         0
+              64 |                                         0
+             128 |@@@@                                     3
+             256 |                                         0
+             512 |                                         0
+            1024 |@                                        1
+            2048 |@@@@@@                                   5
+            4096 |                                         0
+
+kearney, getstorage
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |@@@@@@                                   4
+               2 |@@@@                                     3
+               4 |@@@@@@@                                  5
+               8 |                                         0
+              16 |@@@@@@                                   4
+              32 |                                         0
+              64 |@                                        1
+             128 |@@@@@@                                   4
+             256 |                                         0
+             512 |                                         0
+            1024 |@@@                                      2
+            2048 |@@@@@@@                                  5
+            4096 |                                         0
+
+kearney, headpublicstorage
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |@                                        1
+               2 |@@@@@@@@@@@@@                            13
+               4 |@@@@@@@                                  7
+               8 |                                         0
+              16 |@@@@@@@@@@                               10
+              32 |                                         0
+              64 |@@                                       2
+             128 |@@@@                                     4
+             256 |                                         0
+             512 |                                         0
+            1024 |@@                                       2
+            2048 |@@                                       2
+            4096 |                                         0
+
+kearney, headstorage
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |@@@                                      4
+               2 |@@@@@@@                                  8
+               4 |@@@@@@@@@@                               12
+               8 |                                         0
+              16 |@@@@@@@@@@@                              13
+              32 |                                         0
+              64 |@                                        1
+             128 |@@                                       2
+             256 |                                         0
+             512 |                                         0
+            1024 |@@@@@                                    6
+            2048 |@                                        1
+            4096 |                                         0
+
+kearney, putdirectory
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |@                                        1
+               2 |@@@@@@@@                                 6
+               4 |@@@@@@@@@@@                              9
+               8 |                                         0
+              16 |@@@@@@@@@                                7
+              32 |                                         0
+              64 |@                                        1
+             128 |@                                        1
+             256 |                                         0
+             512 |                                         0
+            1024 |@@@@                                     3
+            2048 |@@@@@                                    4
+            4096 |                                         0
+
+kearney, putobject
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |@@                                       1
+               2 |@@@@@@@@@                                6
+               4 |@@@@@                                    3
+               8 |                                         0
+              16 |@@@@@@@@@                                6
+              32 |                                         0
+              64 |                                         0
+             128 |@@@@@@                                   4
+             256 |                                         0
+             512 |                                         0
+            1024 |@@                                       1
+            2048 |@@@@@@@@                                 5
+            4096 |                                         0
+
+kearney, putpublicobject
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |@                                        1
+               2 |@@@@@                                    5
+               4 |@@@@@@@@                                 8
+               8 |                                         0
+              16 |@@@                                      3
+              32 |                                         0
+              64 |@@                                       2
+             128 |@@@@@                                    5
+             256 |                                         0
+             512 |                                         0
+            1024 |@@@                                      3
+            2048 |@@@@@@@@@@@@@@                           14
+            4096 |                                         0
+
+ralph, deletepublicstorage
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |                                         0
+               2 |@@@@@@@                                  9
+               4 |@@@@@@@                                  9
+               8 |                                         0
+              16 |@@@@@@@@@@@@                             15
+              32 |                                         0
+              64 |@                                        1
+             128 |@@@                                      4
+             256 |                                         0
+             512 |                                         0
+            1024 |@@@@@                                    7
+            2048 |@@@@@                                    7
+            4096 |                                         0
+
+ralph, deletestorage
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |@@@@                                     5
+               2 |@@@@@@@@                                 11
+               4 |@@@@@@@@                                 11
+               8 |                                         0
+              16 |@@@@@@@@@@@@@                            18
+              32 |                                         0
+              64 |@                                        2
+             128 |@                                        2
+             256 |                                         0
+             512 |                                         0
+            1024 |                                         0
+            2048 |@@@@                                     5
+            4096 |                                         0
+
+ralph, getjoberrors
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |@                                        1
+               2 |@@@@                                     3
+               4 |@@@@@@@@                                 7
+               8 |                                         0
+              16 |@@@@@@@@@@@@@@@@@@@                      16
+              32 |                                         0
+              64 |@                                        1
+             128 |                                         0
+             256 |                                         0
+             512 |                                         0
+            1024 |@@                                       2
+            2048 |@@@@@                                    4
+            4096 |                                         0
+
+ralph, getpublicstorage
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |                                         0
+               2 |@@@@@@@@@                                8
+               4 |@@@@@@@@@@@@@                            12
+               8 |                                         0
+              16 |@@@@@@@@@                                8
+              32 |                                         0
+              64 |@@                                       2
+             128 |@                                        1
+             256 |                                         0
+             512 |                                         0
+            1024 |@@                                       2
+            2048 |@@@                                      3
+            4096 |                                         0
+
+ralph, getstorage
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |                                         0
+               2 |@@@@@@@@@@                               9
+               4 |@@@@@@@                                  6
+               8 |                                         0
+              16 |@@@@@@@@@@@                              10
+              32 |                                         0
+              64 |@                                        1
+             128 |@@@                                      3
+             256 |                                         0
+             512 |                                         0
+            1024 |@                                        1
+            2048 |@@@@@@                                   5
+            4096 |                                         0
+
+ralph, headpublicstorage
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |@@                                       2
+               2 |@@                                       2
+               4 |@@@@@@                                   6
+               8 |                                         0
+              16 |@@@@@@@@@@@@@@@                          14
+              32 |                                         0
+              64 |@@                                       2
+             128 |@@                                       2
+             256 |                                         0
+             512 |                                         0
+            1024 |@                                        1
+            2048 |@@@@@@@@@                                8
+            4096 |                                         0
+
+ralph, headstorage
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |@@                                       3
+               2 |@@@@@@@                                  10
+               4 |@@@@@@@                                  9
+               8 |                                         0
+              16 |@@@@@@@@@@@@@                            18
+              32 |                                         0
+              64 |@                                        2
+             128 |@@@@                                     5
+             256 |                                         0
+             512 |                                         0
+            1024 |@@@                                      4
+            2048 |@@@                                      4
+            4096 |                                         0
+
+ralph, putdirectory
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |@                                        1
+               2 |@@@                                      3
+               4 |@@@@@@                                   5
+               8 |                                         0
+              16 |@@@@@@@@@@@@@@                           12
+              32 |                                         0
+              64 |@@                                       2
+             128 |@@@@@@@                                  6
+             256 |                                         0
+             512 |                                         0
+            1024 |@@                                       2
+            2048 |@@@@@                                    4
+            4096 |                                         0
+
+ralph, putobject
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |@@@@@@                                   5
+               2 |@@@@@@                                   5
+               4 |@@@@@@@                                  6
+               8 |                                         0
+              16 |@@@@@@@@@@@@                             10
+              32 |                                         0
+              64 |@                                        1
+             128 |@@                                       2
+             256 |                                         0
+             512 |                                         0
+            1024 |@                                        1
+            2048 |@@@@                                     3
+            4096 |                                         0
+
+ralph, putpublicobject
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |@@                                       2
+               2 |@@@@@@                                   6
+               4 |@@@@@@@@                                 8
+               8 |                                         0
+              16 |@@@@@@@@@@@@@                            12
+              32 |                                         0
+              64 |                                         0
+             128 |@@                                       2
+             256 |                                         0
+             512 |                                         0
+            1024 |@@@                                      3
+            2048 |@@@@@                                    5
+            4096 |                                         0
+
+sherri, deletepublicstorage
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |@                                        1
+               2 |@@@@@@@@                                 12
+               4 |@@@@                                     6
+               8 |                                         0
+              16 |@@@@@@@@@@@@@@                           20
+              32 |                                         0
+              64 |@                                        1
+             128 |@@@                                      5
+             256 |                                         0
+             512 |                                         0
+            1024 |@@@                                      4
+            2048 |@@@@@@@                                  10
+            4096 |                                         0
+
+sherri, deletestorage
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |                                         0
+               2 |@@@@@@@                                  7
+               4 |@@@@@@@@                                 8
+               8 |                                         0
+              16 |@@@@@@@@@                                9
+              32 |                                         0
+              64 |                                         0
+             128 |@@@@@@                                   6
+             256 |                                         0
+             512 |                                         0
+            1024 |@                                        1
+            2048 |@@@@@@@                                  7
+            4096 |                                         0
+
+sherri, getjoberrors
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |@@                                       2
+               2 |@@@@@@@@@@                               10
+               4 |@@@@@@@@@@@                              11
+               8 |                                         0
+              16 |@@@@@@                                   6
+              32 |                                         0
+              64 |@                                        1
+             128 |@@@@@                                    5
+             256 |                                         0
+             512 |                                         0
+            1024 |@@                                       2
+            2048 |@@                                       2
+            4096 |                                         0
+
+sherri, getpublicstorage
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |@@                                       2
+               2 |@@@@@@                                   5
+               4 |@                                        1
+               8 |                                         0
+              16 |@@@@@@@@@@@@@                            11
+              32 |                                         0
+              64 |@                                        1
+             128 |@@@@@@                                   5
+             256 |                                         0
+             512 |                                         0
+            1024 |@@                                       2
+            2048 |@@@@@@@@                                 7
+            4096 |                                         0
+
+sherri, getstorage
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |@                                        1
+               2 |@@@                                      2
+               4 |@@@@@@@                                  5
+               8 |                                         0
+              16 |@@@@@@@@@@@@@@@@                         11
+              32 |                                         0
+              64 |@                                        1
+             128 |@                                        1
+             256 |                                         0
+             512 |                                         0
+            1024 |@@@                                      2
+            2048 |@@@@@@@                                  5
+            4096 |                                         0
+
+sherri, headpublicstorage
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |                                         0
+               2 |@@@@@@@@                                 14
+               4 |@@@@@@                                   10
+               8 |                                         0
+              16 |@@@@@@@@@@@@                             19
+              32 |                                         0
+              64 |                                         0
+             128 |@                                        2
+             256 |                                         0
+             512 |                                         0
+            1024 |@@@@@                                    8
+            2048 |@@@@@@@@                                 13
+            4096 |                                         0
+
+sherri, headstorage
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |@@                                       3
+               2 |@@@@@@@@                                 10
+               4 |@@@                                      4
+               8 |                                         0
+              16 |@@@@@@@@@@@@@                            16
+              32 |                                         0
+              64 |@@                                       3
+             128 |@@                                       2
+             256 |                                         0
+             512 |                                         0
+            1024 |@@@                                      4
+            2048 |@@@@@@                                   7
+            4096 |                                         0
+
+sherri, putdirectory
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |                                         0
+               2 |@@@@@                                    4
+               4 |@@@@                                     3
+               8 |                                         0
+              16 |@@@@@@@@@                                8
+              32 |                                         0
+              64 |@                                        1
+             128 |@@@@@@                                   5
+             256 |                                         0
+             512 |                                         0
+            1024 |@@@@@@                                   5
+            2048 |@@@@@@@@@                                8
+            4096 |                                         0
+
+sherri, putobject
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |@@@                                      2
+               2 |@@@@@@@@                                 6
+               4 |@@@@@@                                   5
+               8 |                                         0
+              16 |@@@@@@@@@@@@@                            10
+              32 |                                         0
+              64 |@                                        1
+             128 |@                                        1
+             256 |                                         0
+             512 |                                         0
+            1024 |@@@                                      2
+            2048 |@@@@@                                    4
+            4096 |                                         0
+
+sherri, putpublicobject
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |@@@                                      2
+               2 |@@@@@@@@                                 6
+               4 |@@@@                                     3
+               8 |                                         0
+              16 |@@@@@@@@@@@@@@@@@                        13
+              32 |                                         0
+              64 |                                         0
+             128 |@                                        1
+             256 |                                         0
+             512 |                                         0
+            1024 |@@@                                      2
+            2048 |@@@@@                                    4
+            4096 |                                         0
+
+wendell, deletepublicstorage
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |@@                                       2
+               2 |@@@@@@@@@@@@                             13
+               4 |@@@@@@@                                  7
+               8 |                                         0
+              16 |@@@@@@@@@@@@                             13
+              32 |                                         0
+              64 |@@                                       2
+             128 |@                                        1
+             256 |                                         0
+             512 |                                         0
+            1024 |                                         0
+            2048 |@@@@@                                    5
+            4096 |                                         0
+
+wendell, deletestorage
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |@@@@@                                    5
+               2 |@@@@@@@@                                 8
+               4 |@@@@@                                    5
+               8 |                                         0
+              16 |@@@@@@@@@                                9
+              32 |                                         0
+              64 |@                                        1
+             128 |@@@                                      3
+             256 |                                         0
+             512 |                                         0
+            1024 |@@@@                                     4
+            2048 |@@@@@@@                                  7
+            4096 |                                         0
+
+wendell, getjoberrors
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |@                                        1
+               2 |@@@@@@                                   5
+               4 |@@@@@                                    4
+               8 |                                         0
+              16 |@@@@@@@@@@@@@@@@@@                       15
+              32 |                                         0
+              64 |                                         0
+             128 |@                                        1
+             256 |                                         0
+             512 |                                         0
+            1024 |@@                                       2
+            2048 |@@@@@@                                   5
+            4096 |                                         0
+
+wendell, getpublicstorage
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |@                                        1
+               2 |@@@@@@@                                  5
+               4 |@@@@@@@@                                 6
+               8 |                                         0
+              16 |@@@@@@@@                                 6
+              32 |                                         0
+              64 |@@@                                      2
+             128 |@@@@@@@                                  5
+             256 |                                         0
+             512 |                                         0
+            1024 |@                                        1
+            2048 |@@@@@                                    4
+            4096 |                                         0
+
+wendell, getstorage
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |@@@@                                     3
+               2 |@@@@@@@                                  5
+               4 |@@@@@@                                   4
+               8 |                                         0
+              16 |@@@@@@@@@@@                              8
+              32 |                                         0
+              64 |                                         0
+             128 |@@@@                                     3
+             256 |                                         0
+             512 |                                         0
+            1024 |@@@@                                     3
+            2048 |@@@                                      2
+            4096 |                                         0
+
+wendell, headpublicstorage
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |@                                        2
+               2 |@@@@@@@                                  9
+               4 |@@@@@@@                                  9
+               8 |                                         0
+              16 |@@@@@@@@@@@@                             16
+              32 |                                         0
+              64 |@                                        2
+             128 |@                                        2
+             256 |                                         0
+             512 |                                         0
+            1024 |@@@@                                     6
+            2048 |@@@@@@                                   8
+            4096 |                                         0
+
+wendell, headstorage
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |@@@                                      3
+               2 |@@@@@@@@@                                9
+               4 |@@@@@@@                                  7
+               8 |                                         0
+              16 |@@@@@@@@@@@@@                            13
+              32 |                                         0
+              64 |                                         0
+             128 |                                         0
+             256 |                                         0
+             512 |                                         0
+            1024 |@@@@                                     4
+            2048 |@@@@                                     4
+            4096 |                                         0
+
+wendell, putdirectory
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |                                         0
+               2 |@@@@@@@@@@@@                             9
+               4 |@@@@@                                    4
+               8 |                                         0
+              16 |@@@@@@@@                                 6
+              32 |                                         0
+              64 |                                         0
+             128 |                                         0
+             256 |                                         0
+             512 |                                         0
+            1024 |@@@@                                     3
+            2048 |@@@@@@@@@@@                              8
+            4096 |                                         0
+
+wendell, putobject
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |@                                        1
+               2 |@@@@@@                                   6
+               4 |@@@@                                     4
+               8 |                                         0
+              16 |@@@@@@@@@@@                              11
+              32 |                                         0
+              64 |@                                        1
+             128 |@@@@@                                    5
+             256 |                                         0
+             512 |                                         0
+            1024 |@@                                       2
+            2048 |@@@@@@@@@@                               10
+            4096 |                                         0
+
+wendell, putpublicobject
+           value  ------------- Distribution ------------- count
+               0 |                                         0
+               1 |                                         0
+               2 |@@@@@@@                                  5
+               4 |@@@@@@@@@                                6
+               8 |                                         0
+              16 |@@@@@@@@@@@@@@@                          10
+              32 |                                         0
+              64 |@                                        1
+             128 |                                         0
+             256 |                                         0
+             512 |                                         0
+            1024 |@@@@                                     3
+            2048 |@@@                                      2
+            4096 |                                         0
+
+# dn query -b latency[aggr=lquantize;step=100]
+
+           value  ------------- Distribution ------------- count
+               0 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@            1441
+             100 |@@@                                      141
+             200 |                                         0
+             300 |                                         0
+             400 |                                         0
+             500 |                                         0
+             600 |                                         0
+             700 |                                         0
+             800 |                                         0
+             900 |                                         0
+            1000 |@@@                                      139
+            1100 |                                         0
+            1200 |                                         0
+            1300 |                                         0
+            1400 |                                         0
+            1500 |                                         0
+            1600 |                                         0
+            1700 |                                         0
+            1800 |                                         0
+            1900 |                                         0
+            2000 |@@@@@@                                   279
+            2100 |                                         0
+
+# dn query
+VALUE
+  503
+

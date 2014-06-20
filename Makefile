@@ -11,6 +11,7 @@
 #
 # Tools must be installed on the path
 #
+CATEST		 = ./tools/catest
 JSL		 = jsl
 JSSTYLE		 = jsstyle
 
@@ -20,7 +21,8 @@ JSSTYLE		 = jsstyle
 JSON_FILES	 = package.json
 JS_FILES	:= $(shell find lib schema -name '*.js')
 JS_FILES	+= bin/dn \
-		   tools/validate-schema
+		   tools/validate-schema \
+		   tools/mktestdata.js
 JSL_FILES_NODE   = $(JS_FILES)
 JSSTYLE_FILES	 = $(JS_FILES)
 JSL_CONF_NODE	 = tools/jsl.node.conf
@@ -29,6 +31,6 @@ all:
 	npm install
 
 test:
-	@echo tests ok
+	$(CATEST) -a
 
 include ./Makefile.targ
