@@ -18,7 +18,6 @@ var mod_dragnet = require('../lib/dragnet');
 var mod_dragnet_impl = require('../lib/dragnet-impl'); /* XXX */
 var FileDataSource = require('../lib/source-file');
 var FileSetDataSource = require('../lib/source-fileset');
-var QueryIndex = require('../lib/query-index');
 var SkinnerFlattener = require('../lib/skinner-flattener');
 
 var dnArg0 = mod_path.basename(process.argv[1]);
@@ -201,13 +200,13 @@ function cmdQuery(cmdname, argv)
 	    'breakdowns': []
 	};
 	var output = cmdScanOutputPretty;
-	var query, queryargs;
+	var query, queryargs, results, stream;
 	var source, sourceclass, sourceargs;
 
 	sourceargs = { 'log': dnLog };
 	queryargs = {};
 	argv.unshift('', '');
-	optparser = new OptionParser(':b:(breakdowns)f:(filter)r(raw)R(root)',
+	optparser = new OptionParser(':b:(breakdowns)f:(filter)r(raw)R:(root)',
 	    argv);
 	while ((option = optparser.getopt()) !== undefined) {
 		switch (option.option) {
@@ -276,16 +275,23 @@ function cmdQuery(cmdname, argv)
 
 	queryargs['query'] = query;
 	source = new sourceclass(sourceargs);
-	source.query(queryargs, function (err, rows) {
-		if (err)
-			fatal(err);
+	stream = new SkinnerFlattener({
+	    'skinnerOptions': mod_dragnet_impl.queryAggrStreamConfig({
+	        'query': query
+	    })
+	});
+	results = source.query(queryargs);
+	results.pipe(stream);
 
+	stream.on('data', function (rows) {
 		output({
 		    'rows': rows,
 		    'columns': query.qc_breakdowns,
 		    'bucketizers': query.qc_bucketizers
 		});
+	});
 
+	stream.on('end', function () {
 		dnDone = true;
 	});
 }
