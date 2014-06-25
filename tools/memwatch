@@ -1,0 +1,26 @@
+#!/bin/bash
+
+#
+# memwatch: given a pid, wait for it to exit, sampling memory usage and emitting
+# the maximum RSS and VSZ seen so far.
+#
+
+pid="$1"
+tmpfile=/var/tmp/memwatch.$$
+
+if [[ -z "$pid" ]]; then
+	echo "usage: memwatch PID" >&2
+	exit 2
+fi
+
+while kill -0 $pid > /dev/null 2>&1; do
+	ps -opid= -orss= -ovsz= -oetime= -p $pid >> $tmpfile
+	sleep 3
+done
+
+if awk '$2 > maxrss { maxrss = $2 } $3 > maxvsz { maxvsz = $3 } END {
+    printf("%d %d\n", maxrss, maxvsz); }' < $tmpfile; then
+    	rm -f $tmpfile
+else
+	echo "memwatch: see $tmpfile"
+fi
