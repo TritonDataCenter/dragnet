@@ -518,7 +518,7 @@ function cmdScanOutputPretty(results)
 
 function cmdScanOutputPrettyQuantized(results)
 {
-	var coldefs, quantizedcol, stream, bucketizer, last, distr;
+	var coldefs, quantizedcol, stream, bucketizer, last, distr, groups;
 
 	coldefs = results.columns;
 	quantizedcol = coldefs[coldefs.length - 1];
@@ -526,6 +526,7 @@ function cmdScanOutputPrettyQuantized(results)
 	bucketizer = results.bucketizers[quantizedcol.name];
 	mod_assert.ok(bucketizer !== null);
 	stream = process.stdout;
+	groups = [];
 	last = null;
 	distr = [];
 
@@ -533,9 +534,10 @@ function cmdScanOutputPrettyQuantized(results)
 		var discrete_values = row.slice(0, coldefs.length - 1);
 		var key = discrete_values.join(', ') + '\n';
 		if (distr.length > 0 && key !== last) {
-			stream.write(last);
-			printDistribution(stream, distr, bucketizer);
-			stream.write('\n');
+			groups.push({
+			    'label': last,
+			    'distr': distr
+			});
 		}
 		if (key !== last) {
 			last = key;
@@ -545,8 +547,20 @@ function cmdScanOutputPrettyQuantized(results)
 		distr.push([ row[coldefs.length - 1], row[coldefs.length] ]);
 	});
 
-	stream.write(last);
-	printDistribution(stream, distr, bucketizer);
+	groups.push({
+	    'label': last,
+	    'distr': distr
+	});
+
+	groups.sort(function (a, b) {
+		return (a.label.localeCompare(b.label));
+	});
+	groups.forEach(function (g, i) {
+		if (i !== 0)
+			stream.write('\n');
+		stream.write(g.label);
+		printDistribution(stream, g.distr, bucketizer);
+	});
 }
 
 function printDistribution(stream, distr, bucketizer)

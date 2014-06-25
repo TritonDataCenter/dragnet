@@ -25,7 +25,12 @@ if [[ $1 -gt $tst_maxrss ]]; then
 	exit 1
 fi
 
-if [[ $2 -gt $tst_maxvsz ]]; then
+#
+# On OS X, Node always uses 3GB of VM size, so ignore this check.
+#
+if [[ $(uname -s) == "Darwin" ]]; then
+	echo "skipping vsz check on Darwin" >&2
+elif [[ $2 -gt $tst_maxvsz ]]; then
 	echo "maximum vsz exceeded (found $2, expected <= $tst_maxvsz)" >&2
 	exit 1
 fi
