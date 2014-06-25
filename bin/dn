@@ -640,7 +640,7 @@ process.on('exit', function () {
 		console.error('    total:   ', timeDone);
 	}
 
-	mod_assert.ok(dnDone);
+	mod_assert.ok(dnDone, 'premature exit');
 });
 
 main();
