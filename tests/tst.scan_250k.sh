@@ -9,8 +9,8 @@ tst_toolsdir="$(dirname $0)/../tools"
 tst_nrecords=250000
 
 # maximum allowed RSS and VSZ values.
-tst_maxrss=75000
-tst_maxvsz=150000
+tst_maxrss=90000
+tst_maxvsz=160000
 
 # pid of process executed
 tst_pid=

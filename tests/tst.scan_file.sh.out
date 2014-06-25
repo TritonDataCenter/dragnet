@@ -3,10 +3,7 @@ VALUE
  1000
 
 # dn scan --points
-{
-	"fields": {},
-	"value": 1000
-}
+{"fields":{},"value":1000}
 
 # dn scan -b operation
 OPERATION           VALUE
@@ -22,66 +19,16 @@ putobject              81
 putpublicobject        84
 
 # dn scan --points -b operation
-{
-	"fields": {
-		"operation": "deletestorage"
-	},
-	"value": 132
-}
-{
-	"fields": {
-		"operation": "putdirectory"
-	},
-	"value": 75
-}
-{
-	"fields": {
-		"operation": "headpublicstorage"
-	},
-	"value": 133
-}
-{
-	"fields": {
-		"operation": "putpublicobject"
-	},
-	"value": 84
-}
-{
-	"fields": {
-		"operation": "deletepublicstorage"
-	},
-	"value": 127
-}
-{
-	"fields": {
-		"operation": "headstorage"
-	},
-	"value": 144
-}
-{
-	"fields": {
-		"operation": "getjoberrors"
-	},
-	"value": 81
-}
-{
-	"fields": {
-		"operation": "putobject"
-	},
-	"value": 81
-}
-{
-	"fields": {
-		"operation": "getpublicstorage"
-	},
-	"value": 67
-}
-{
-	"fields": {
-		"operation": "getstorage"
-	},
-	"value": 76
-}
+{"fields":{"operation":"deletepublicstorage"},"value":127}
+{"fields":{"operation":"deletestorage"},"value":132}
+{"fields":{"operation":"getjoberrors"},"value":81}
+{"fields":{"operation":"getpublicstorage"},"value":67}
+{"fields":{"operation":"getstorage"},"value":76}
+{"fields":{"operation":"headpublicstorage"},"value":133}
+{"fields":{"operation":"headstorage"},"value":144}
+{"fields":{"operation":"putdirectory"},"value":75}
+{"fields":{"operation":"putobject"},"value":81}
+{"fields":{"operation":"putpublicobject"},"value":84}
 
 # dn scan -b operation,req.method,host
 OPERATION           REQ.METHOD HOST    VALUE
@@ -137,406 +84,56 @@ putpublicobject     PUT        sherri     15
 putpublicobject     PUT        wendell    15
 
 # dn scan --points -b operation,req.method,host
-{
-	"fields": {
-		"operation": "deletestorage",
-		"req.method": "DELETE",
-		"host": "wendell"
-	},
-	"value": 23
-}
-{
-	"fields": {
-		"operation": "deletestorage",
-		"req.method": "DELETE",
-		"host": "sherri"
-	},
-	"value": 19
-}
-{
-	"fields": {
-		"operation": "deletestorage",
-		"req.method": "DELETE",
-		"host": "kearney"
-	},
-	"value": 33
-}
-{
-	"fields": {
-		"operation": "deletestorage",
-		"req.method": "DELETE",
-		"host": "janey"
-	},
-	"value": 24
-}
-{
-	"fields": {
-		"operation": "deletestorage",
-		"req.method": "DELETE",
-		"host": "ralph"
-	},
-	"value": 33
-}
-{
-	"fields": {
-		"operation": "putdirectory",
-		"req.method": "PUT",
-		"host": "wendell"
-	},
-	"value": 15
-}
-{
-	"fields": {
-		"operation": "putdirectory",
-		"req.method": "PUT",
-		"host": "ralph"
-	},
-	"value": 14
-}
-{
-	"fields": {
-		"operation": "putdirectory",
-		"req.method": "PUT",
-		"host": "janey"
-	},
-	"value": 22
-}
-{
-	"fields": {
-		"operation": "putdirectory",
-		"req.method": "PUT",
-		"host": "kearney"
-	},
-	"value": 12
-}
-{
-	"fields": {
-		"operation": "putdirectory",
-		"req.method": "PUT",
-		"host": "sherri"
-	},
-	"value": 12
-}
-{
-	"fields": {
-		"operation": "headpublicstorage",
-		"req.method": "HEAD",
-		"host": "wendell"
-	},
-	"value": 32
-}
-{
-	"fields": {
-		"operation": "headpublicstorage",
-		"req.method": "HEAD",
-		"host": "janey"
-	},
-	"value": 28
-}
-{
-	"fields": {
-		"operation": "headpublicstorage",
-		"req.method": "HEAD",
-		"host": "kearney"
-	},
-	"value": 25
-}
-{
-	"fields": {
-		"operation": "headpublicstorage",
-		"req.method": "HEAD",
-		"host": "sherri"
-	},
-	"value": 28
-}
-{
-	"fields": {
-		"operation": "headpublicstorage",
-		"req.method": "HEAD",
-		"host": "ralph"
-	},
-	"value": 20
-}
-{
-	"fields": {
-		"operation": "putpublicobject",
-		"req.method": "PUT",
-		"host": "wendell"
-	},
-	"value": 15
-}
-{
-	"fields": {
-		"operation": "putpublicobject",
-		"req.method": "PUT",
-		"host": "janey"
-	},
-	"value": 13
-}
-{
-	"fields": {
-		"operation": "putpublicobject",
-		"req.method": "PUT",
-		"host": "ralph"
-	},
-	"value": 21
-}
-{
-	"fields": {
-		"operation": "putpublicobject",
-		"req.method": "PUT",
-		"host": "sherri"
-	},
-	"value": 15
-}
-{
-	"fields": {
-		"operation": "putpublicobject",
-		"req.method": "PUT",
-		"host": "kearney"
-	},
-	"value": 20
-}
-{
-	"fields": {
-		"operation": "deletepublicstorage",
-		"req.method": "DELETE",
-		"host": "janey"
-	},
-	"value": 24
-}
-{
-	"fields": {
-		"operation": "deletepublicstorage",
-		"req.method": "DELETE",
-		"host": "wendell"
-	},
-	"value": 23
-}
-{
-	"fields": {
-		"operation": "deletepublicstorage",
-		"req.method": "DELETE",
-		"host": "sherri"
-	},
-	"value": 36
-}
-{
-	"fields": {
-		"operation": "deletepublicstorage",
-		"req.method": "DELETE",
-		"host": "ralph"
-	},
-	"value": 23
-}
-{
-	"fields": {
-		"operation": "deletepublicstorage",
-		"req.method": "DELETE",
-		"host": "kearney"
-	},
-	"value": 21
-}
-{
-	"fields": {
-		"operation": "headstorage",
-		"req.method": "HEAD",
-		"host": "sherri"
-	},
-	"value": 35
-}
-{
-	"fields": {
-		"operation": "headstorage",
-		"req.method": "HEAD",
-		"host": "kearney"
-	},
-	"value": 25
-}
-{
-	"fields": {
-		"operation": "headstorage",
-		"req.method": "HEAD",
-		"host": "ralph"
-	},
-	"value": 28
-}
-{
-	"fields": {
-		"operation": "headstorage",
-		"req.method": "HEAD",
-		"host": "janey"
-	},
-	"value": 34
-}
-{
-	"fields": {
-		"operation": "headstorage",
-		"req.method": "HEAD",
-		"host": "wendell"
-	},
-	"value": 22
-}
-{
-	"fields": {
-		"operation": "getjoberrors",
-		"req.method": "GET",
-		"host": "janey"
-	},
-	"value": 18
-}
-{
-	"fields": {
-		"operation": "getjoberrors",
-		"req.method": "GET",
-		"host": "sherri"
-	},
-	"value": 17
-}
-{
-	"fields": {
-		"operation": "getjoberrors",
-		"req.method": "GET",
-		"host": "wendell"
-	},
-	"value": 15
-}
-{
-	"fields": {
-		"operation": "getjoberrors",
-		"req.method": "GET",
-		"host": "ralph"
-	},
-	"value": 19
-}
-{
-	"fields": {
-		"operation": "getjoberrors",
-		"req.method": "GET",
-		"host": "kearney"
-	},
-	"value": 12
-}
-{
-	"fields": {
-		"operation": "putobject",
-		"req.method": "PUT",
-		"host": "janey"
-	},
-	"value": 22
-}
-{
-	"fields": {
-		"operation": "putobject",
-		"req.method": "PUT",
-		"host": "sherri"
-	},
-	"value": 15
-}
-{
-	"fields": {
-		"operation": "putobject",
-		"req.method": "PUT",
-		"host": "kearney"
-	},
-	"value": 12
-}
-{
-	"fields": {
-		"operation": "putobject",
-		"req.method": "PUT",
-		"host": "wendell"
-	},
-	"value": 16
-}
-{
-	"fields": {
-		"operation": "putobject",
-		"req.method": "PUT",
-		"host": "ralph"
-	},
-	"value": 16
-}
-{
-	"fields": {
-		"operation": "getpublicstorage",
-		"req.method": "GET",
-		"host": "wendell"
-	},
-	"value": 8
-}
-{
-	"fields": {
-		"operation": "getpublicstorage",
-		"req.method": "GET",
-		"host": "ralph"
-	},
-	"value": 17
-}
-{
-	"fields": {
-		"operation": "getpublicstorage",
-		"req.method": "GET",
-		"host": "sherri"
-	},
-	"value": 14
-}
-{
-	"fields": {
-		"operation": "getpublicstorage",
-		"req.method": "GET",
-		"host": "janey"
-	},
-	"value": 12
-}
-{
-	"fields": {
-		"operation": "getpublicstorage",
-		"req.method": "GET",
-		"host": "kearney"
-	},
-	"value": 16
-}
-{
-	"fields": {
-		"operation": "getstorage",
-		"req.method": "GET",
-		"host": "ralph"
-	},
-	"value": 17
-}
-{
-	"fields": {
-		"operation": "getstorage",
-		"req.method": "GET",
-		"host": "janey"
-	},
-	"value": 15
-}
-{
-	"fields": {
-		"operation": "getstorage",
-		"req.method": "GET",
-		"host": "kearney"
-	},
-	"value": 15
-}
-{
-	"fields": {
-		"operation": "getstorage",
-		"req.method": "GET",
-		"host": "wendell"
-	},
-	"value": 17
-}
-{
-	"fields": {
-		"operation": "getstorage",
-		"req.method": "GET",
-		"host": "sherri"
-	},
-	"value": 12
-}
+{"fields":{"operation":"deletepublicstorage","req.method":"DELETE","host":"janey"},"value":24}
+{"fields":{"operation":"deletepublicstorage","req.method":"DELETE","host":"kearney"},"value":21}
+{"fields":{"operation":"deletepublicstorage","req.method":"DELETE","host":"ralph"},"value":23}
+{"fields":{"operation":"deletepublicstorage","req.method":"DELETE","host":"sherri"},"value":36}
+{"fields":{"operation":"deletepublicstorage","req.method":"DELETE","host":"wendell"},"value":23}
+{"fields":{"operation":"deletestorage","req.method":"DELETE","host":"janey"},"value":24}
+{"fields":{"operation":"deletestorage","req.method":"DELETE","host":"kearney"},"value":33}
+{"fields":{"operation":"deletestorage","req.method":"DELETE","host":"ralph"},"value":33}
+{"fields":{"operation":"deletestorage","req.method":"DELETE","host":"sherri"},"value":19}
+{"fields":{"operation":"deletestorage","req.method":"DELETE","host":"wendell"},"value":23}
+{"fields":{"operation":"getjoberrors","req.method":"GET","host":"janey"},"value":18}
+{"fields":{"operation":"getjoberrors","req.method":"GET","host":"kearney"},"value":12}
+{"fields":{"operation":"getjoberrors","req.method":"GET","host":"ralph"},"value":19}
+{"fields":{"operation":"getjoberrors","req.method":"GET","host":"sherri"},"value":17}
+{"fields":{"operation":"getjoberrors","req.method":"GET","host":"wendell"},"value":15}
+{"fields":{"operation":"getpublicstorage","req.method":"GET","host":"janey"},"value":12}
+{"fields":{"operation":"getpublicstorage","req.method":"GET","host":"kearney"},"value":16}
+{"fields":{"operation":"getpublicstorage","req.method":"GET","host":"ralph"},"value":17}
+{"fields":{"operation":"getpublicstorage","req.method":"GET","host":"sherri"},"value":14}
+{"fields":{"operation":"getpublicstorage","req.method":"GET","host":"wendell"},"value":8}
+{"fields":{"operation":"getstorage","req.method":"GET","host":"janey"},"value":15}
+{"fields":{"operation":"getstorage","req.method":"GET","host":"kearney"},"value":15}
+{"fields":{"operation":"getstorage","req.method":"GET","host":"ralph"},"value":17}
+{"fields":{"operation":"getstorage","req.method":"GET","host":"sherri"},"value":12}
+{"fields":{"operation":"getstorage","req.method":"GET","host":"wendell"},"value":17}
+{"fields":{"operation":"headpublicstorage","req.method":"HEAD","host":"janey"},"value":28}
+{"fields":{"operation":"headpublicstorage","req.method":"HEAD","host":"kearney"},"value":25}
+{"fields":{"operation":"headpublicstorage","req.method":"HEAD","host":"ralph"},"value":20}
+{"fields":{"operation":"headpublicstorage","req.method":"HEAD","host":"sherri"},"value":28}
+{"fields":{"operation":"headpublicstorage","req.method":"HEAD","host":"wendell"},"value":32}
+{"fields":{"operation":"headstorage","req.method":"HEAD","host":"janey"},"value":34}
+{"fields":{"operation":"headstorage","req.method":"HEAD","host":"kearney"},"value":25}
+{"fields":{"operation":"headstorage","req.method":"HEAD","host":"ralph"},"value":28}
+{"fields":{"operation":"headstorage","req.method":"HEAD","host":"sherri"},"value":35}
+{"fields":{"operation":"headstorage","req.method":"HEAD","host":"wendell"},"value":22}
+{"fields":{"operation":"putdirectory","req.method":"PUT","host":"janey"},"value":22}
+{"fields":{"operation":"putdirectory","req.method":"PUT","host":"kearney"},"value":12}
+{"fields":{"operation":"putdirectory","req.method":"PUT","host":"ralph"},"value":14}
+{"fields":{"operation":"putdirectory","req.method":"PUT","host":"sherri"},"value":12}
+{"fields":{"operation":"putdirectory","req.method":"PUT","host":"wendell"},"value":15}
+{"fields":{"operation":"putobject","req.method":"PUT","host":"janey"},"value":22}
+{"fields":{"operation":"putobject","req.method":"PUT","host":"kearney"},"value":12}
+{"fields":{"operation":"putobject","req.method":"PUT","host":"ralph"},"value":16}
+{"fields":{"operation":"putobject","req.method":"PUT","host":"sherri"},"value":15}
+{"fields":{"operation":"putobject","req.method":"PUT","host":"wendell"},"value":16}
+{"fields":{"operation":"putpublicobject","req.method":"PUT","host":"janey"},"value":13}
+{"fields":{"operation":"putpublicobject","req.method":"PUT","host":"kearney"},"value":20}
+{"fields":{"operation":"putpublicobject","req.method":"PUT","host":"ralph"},"value":21}
+{"fields":{"operation":"putpublicobject","req.method":"PUT","host":"sherri"},"value":15}
+{"fields":{"operation":"putpublicobject","req.method":"PUT","host":"wendell"},"value":15}
 
 # dn scan -b req.caller
 REQ.CALLER VALUE
@@ -546,30 +143,10 @@ poseidon     239
 undefined    250
 
 # dn scan --points -b req.caller
-{
-	"fields": {
-		"req.caller": "admin"
-	},
-	"value": 274
-}
-{
-	"fields": {
-		"req.caller": "poseidon"
-	},
-	"value": 239
-}
-{
-	"fields": {
-		"req.caller": "null"
-	},
-	"value": 237
-}
-{
-	"fields": {
-		"req.caller": "undefined"
-	},
-	"value": 250
-}
+{"fields":{"req.caller":"admin"},"value":274}
+{"fields":{"req.caller":"null"},"value":237}
+{"fields":{"req.caller":"poseidon"},"value":239}
+{"fields":{"req.caller":"undefined"},"value":250}
 
 # dn scan -b operation,req.caller
 OPERATION           REQ.CALLER VALUE
@@ -615,296 +192,53 @@ putpublicobject     poseidon      29
 putpublicobject     undefined     17
 
 # dn scan --points -b operation,req.caller
-{
-	"fields": {
-		"operation": "deletestorage",
-		"req.caller": "admin"
-	},
-	"value": 39
-}
-{
-	"fields": {
-		"operation": "deletestorage",
-		"req.caller": "poseidon"
-	},
-	"value": 29
-}
-{
-	"fields": {
-		"operation": "deletestorage",
-		"req.caller": "null"
-	},
-	"value": 33
-}
-{
-	"fields": {
-		"operation": "deletestorage",
-		"req.caller": "undefined"
-	},
-	"value": 31
-}
-{
-	"fields": {
-		"operation": "putdirectory",
-		"req.caller": "poseidon"
-	},
-	"value": 21
-}
-{
-	"fields": {
-		"operation": "putdirectory",
-		"req.caller": "null"
-	},
-	"value": 19
-}
-{
-	"fields": {
-		"operation": "putdirectory",
-		"req.caller": "undefined"
-	},
-	"value": 21
-}
-{
-	"fields": {
-		"operation": "putdirectory",
-		"req.caller": "admin"
-	},
-	"value": 14
-}
-{
-	"fields": {
-		"operation": "headpublicstorage",
-		"req.caller": "poseidon"
-	},
-	"value": 34
-}
-{
-	"fields": {
-		"operation": "headpublicstorage",
-		"req.caller": "undefined"
-	},
-	"value": 34
-}
-{
-	"fields": {
-		"operation": "headpublicstorage",
-		"req.caller": "null"
-	},
-	"value": 29
-}
-{
-	"fields": {
-		"operation": "headpublicstorage",
-		"req.caller": "admin"
-	},
-	"value": 36
-}
-{
-	"fields": {
-		"operation": "putpublicobject",
-		"req.caller": "poseidon"
-	},
-	"value": 29
-}
-{
-	"fields": {
-		"operation": "putpublicobject",
-		"req.caller": "null"
-	},
-	"value": 16
-}
-{
-	"fields": {
-		"operation": "putpublicobject",
-		"req.caller": "admin"
-	},
-	"value": 22
-}
-{
-	"fields": {
-		"operation": "putpublicobject",
-		"req.caller": "undefined"
-	},
-	"value": 17
-}
-{
-	"fields": {
-		"operation": "deletepublicstorage",
-		"req.caller": "undefined"
-	},
-	"value": 28
-}
-{
-	"fields": {
-		"operation": "deletepublicstorage",
-		"req.caller": "admin"
-	},
-	"value": 39
-}
-{
-	"fields": {
-		"operation": "deletepublicstorage",
-		"req.caller": "poseidon"
-	},
-	"value": 33
-}
-{
-	"fields": {
-		"operation": "deletepublicstorage",
-		"req.caller": "null"
-	},
-	"value": 27
-}
-{
-	"fields": {
-		"operation": "headstorage",
-		"req.caller": "poseidon"
-	},
-	"value": 20
-}
-{
-	"fields": {
-		"operation": "headstorage",
-		"req.caller": "null"
-	},
-	"value": 42
-}
-{
-	"fields": {
-		"operation": "headstorage",
-		"req.caller": "admin"
-	},
-	"value": 41
-}
-{
-	"fields": {
-		"operation": "headstorage",
-		"req.caller": "undefined"
-	},
-	"value": 41
-}
-{
-	"fields": {
-		"operation": "getjoberrors",
-		"req.caller": "undefined"
-	},
-	"value": 25
-}
-{
-	"fields": {
-		"operation": "getjoberrors",
-		"req.caller": "poseidon"
-	},
-	"value": 18
-}
-{
-	"fields": {
-		"operation": "getjoberrors",
-		"req.caller": "null"
-	},
-	"value": 20
-}
-{
-	"fields": {
-		"operation": "getjoberrors",
-		"req.caller": "admin"
-	},
-	"value": 18
-}
-{
-	"fields": {
-		"operation": "putobject",
-		"req.caller": "undefined"
-	},
-	"value": 23
-}
-{
-	"fields": {
-		"operation": "putobject",
-		"req.caller": "poseidon"
-	},
-	"value": 15
-}
-{
-	"fields": {
-		"operation": "putobject",
-		"req.caller": "admin"
-	},
-	"value": 26
-}
-{
-	"fields": {
-		"operation": "putobject",
-		"req.caller": "null"
-	},
-	"value": 17
-}
-{
-	"fields": {
-		"operation": "getpublicstorage",
-		"req.caller": "undefined"
-	},
-	"value": 15
-}
-{
-	"fields": {
-		"operation": "getpublicstorage",
-		"req.caller": "null"
-	},
-	"value": 15
-}
-{
-	"fields": {
-		"operation": "getpublicstorage",
-		"req.caller": "poseidon"
-	},
-	"value": 22
-}
-{
-	"fields": {
-		"operation": "getpublicstorage",
-		"req.caller": "admin"
-	},
-	"value": 15
-}
-{
-	"fields": {
-		"operation": "getstorage",
-		"req.caller": "null"
-	},
-	"value": 19
-}
-{
-	"fields": {
-		"operation": "getstorage",
-		"req.caller": "undefined"
-	},
-	"value": 15
-}
-{
-	"fields": {
-		"operation": "getstorage",
-		"req.caller": "admin"
-	},
-	"value": 24
-}
-{
-	"fields": {
-		"operation": "getstorage",
-		"req.caller": "poseidon"
-	},
-	"value": 18
-}
+{"fields":{"operation":"deletepublicstorage","req.caller":"admin"},"value":39}
+{"fields":{"operation":"deletepublicstorage","req.caller":"null"},"value":27}
+{"fields":{"operation":"deletepublicstorage","req.caller":"poseidon"},"value":33}
+{"fields":{"operation":"deletepublicstorage","req.caller":"undefined"},"value":28}
+{"fields":{"operation":"deletestorage","req.caller":"admin"},"value":39}
+{"fields":{"operation":"deletestorage","req.caller":"null"},"value":33}
+{"fields":{"operation":"deletestorage","req.caller":"poseidon"},"value":29}
+{"fields":{"operation":"deletestorage","req.caller":"undefined"},"value":31}
+{"fields":{"operation":"getjoberrors","req.caller":"admin"},"value":18}
+{"fields":{"operation":"getjoberrors","req.caller":"null"},"value":20}
+{"fields":{"operation":"getjoberrors","req.caller":"poseidon"},"value":18}
+{"fields":{"operation":"getjoberrors","req.caller":"undefined"},"value":25}
+{"fields":{"operation":"getpublicstorage","req.caller":"admin"},"value":15}
+{"fields":{"operation":"getpublicstorage","req.caller":"null"},"value":15}
+{"fields":{"operation":"getpublicstorage","req.caller":"poseidon"},"value":22}
+{"fields":{"operation":"getpublicstorage","req.caller":"undefined"},"value":15}
+{"fields":{"operation":"getstorage","req.caller":"admin"},"value":24}
+{"fields":{"operation":"getstorage","req.caller":"null"},"value":19}
+{"fields":{"operation":"getstorage","req.caller":"poseidon"},"value":18}
+{"fields":{"operation":"getstorage","req.caller":"undefined"},"value":15}
+{"fields":{"operation":"headpublicstorage","req.caller":"admin"},"value":36}
+{"fields":{"operation":"headpublicstorage","req.caller":"null"},"value":29}
+{"fields":{"operation":"headpublicstorage","req.caller":"poseidon"},"value":34}
+{"fields":{"operation":"headpublicstorage","req.caller":"undefined"},"value":34}
+{"fields":{"operation":"headstorage","req.caller":"admin"},"value":41}
+{"fields":{"operation":"headstorage","req.caller":"null"},"value":42}
+{"fields":{"operation":"headstorage","req.caller":"poseidon"},"value":20}
+{"fields":{"operation":"headstorage","req.caller":"undefined"},"value":41}
+{"fields":{"operation":"putdirectory","req.caller":"admin"},"value":14}
+{"fields":{"operation":"putdirectory","req.caller":"null"},"value":19}
+{"fields":{"operation":"putdirectory","req.caller":"poseidon"},"value":21}
+{"fields":{"operation":"putdirectory","req.caller":"undefined"},"value":21}
+{"fields":{"operation":"putobject","req.caller":"admin"},"value":26}
+{"fields":{"operation":"putobject","req.caller":"null"},"value":17}
+{"fields":{"operation":"putobject","req.caller":"poseidon"},"value":15}
+{"fields":{"operation":"putobject","req.caller":"undefined"},"value":23}
+{"fields":{"operation":"putpublicobject","req.caller":"admin"},"value":22}
+{"fields":{"operation":"putpublicobject","req.caller":"null"},"value":16}
+{"fields":{"operation":"putpublicobject","req.caller":"poseidon"},"value":29}
+{"fields":{"operation":"putpublicobject","req.caller":"undefined"},"value":17}
 
 # dn scan -f { "eq": [ "req.method", "GET" ] }
 VALUE
   224
 
 # dn scan --points -f { "eq": [ "req.method", "GET" ] }
-{
-	"fields": {},
-	"value": 224
-}
+{"fields":{},"value":224}
 
 # dn scan -f { "eq": [ "req.method", "GET" ] } -b operation,req.method,host
 OPERATION        REQ.METHOD HOST    VALUE
@@ -925,148 +259,35 @@ getstorage       GET        sherri     12
 getstorage       GET        wendell    17
 
 # dn scan --points -f { "eq": [ "req.method", "GET" ] } -b operation,req.method,host
-{
-	"fields": {
-		"operation": "getjoberrors",
-		"req.method": "GET",
-		"host": "janey"
-	},
-	"value": 18
-}
-{
-	"fields": {
-		"operation": "getjoberrors",
-		"req.method": "GET",
-		"host": "sherri"
-	},
-	"value": 17
-}
-{
-	"fields": {
-		"operation": "getjoberrors",
-		"req.method": "GET",
-		"host": "wendell"
-	},
-	"value": 15
-}
-{
-	"fields": {
-		"operation": "getjoberrors",
-		"req.method": "GET",
-		"host": "ralph"
-	},
-	"value": 19
-}
-{
-	"fields": {
-		"operation": "getjoberrors",
-		"req.method": "GET",
-		"host": "kearney"
-	},
-	"value": 12
-}
-{
-	"fields": {
-		"operation": "getpublicstorage",
-		"req.method": "GET",
-		"host": "wendell"
-	},
-	"value": 8
-}
-{
-	"fields": {
-		"operation": "getpublicstorage",
-		"req.method": "GET",
-		"host": "ralph"
-	},
-	"value": 17
-}
-{
-	"fields": {
-		"operation": "getpublicstorage",
-		"req.method": "GET",
-		"host": "sherri"
-	},
-	"value": 14
-}
-{
-	"fields": {
-		"operation": "getpublicstorage",
-		"req.method": "GET",
-		"host": "janey"
-	},
-	"value": 12
-}
-{
-	"fields": {
-		"operation": "getpublicstorage",
-		"req.method": "GET",
-		"host": "kearney"
-	},
-	"value": 16
-}
-{
-	"fields": {
-		"operation": "getstorage",
-		"req.method": "GET",
-		"host": "ralph"
-	},
-	"value": 17
-}
-{
-	"fields": {
-		"operation": "getstorage",
-		"req.method": "GET",
-		"host": "janey"
-	},
-	"value": 15
-}
-{
-	"fields": {
-		"operation": "getstorage",
-		"req.method": "GET",
-		"host": "kearney"
-	},
-	"value": 15
-}
-{
-	"fields": {
-		"operation": "getstorage",
-		"req.method": "GET",
-		"host": "wendell"
-	},
-	"value": 17
-}
-{
-	"fields": {
-		"operation": "getstorage",
-		"req.method": "GET",
-		"host": "sherri"
-	},
-	"value": 12
-}
+{"fields":{"operation":"getjoberrors","req.method":"GET","host":"janey"},"value":18}
+{"fields":{"operation":"getjoberrors","req.method":"GET","host":"kearney"},"value":12}
+{"fields":{"operation":"getjoberrors","req.method":"GET","host":"ralph"},"value":19}
+{"fields":{"operation":"getjoberrors","req.method":"GET","host":"sherri"},"value":17}
+{"fields":{"operation":"getjoberrors","req.method":"GET","host":"wendell"},"value":15}
+{"fields":{"operation":"getpublicstorage","req.method":"GET","host":"janey"},"value":12}
+{"fields":{"operation":"getpublicstorage","req.method":"GET","host":"kearney"},"value":16}
+{"fields":{"operation":"getpublicstorage","req.method":"GET","host":"ralph"},"value":17}
+{"fields":{"operation":"getpublicstorage","req.method":"GET","host":"sherri"},"value":14}
+{"fields":{"operation":"getpublicstorage","req.method":"GET","host":"wendell"},"value":8}
+{"fields":{"operation":"getstorage","req.method":"GET","host":"janey"},"value":15}
+{"fields":{"operation":"getstorage","req.method":"GET","host":"kearney"},"value":15}
+{"fields":{"operation":"getstorage","req.method":"GET","host":"ralph"},"value":17}
+{"fields":{"operation":"getstorage","req.method":"GET","host":"sherri"},"value":12}
+{"fields":{"operation":"getstorage","req.method":"GET","host":"wendell"},"value":17}
 
 # dn scan -f { "eq": [ "req.caller", "poseidon" ] }
 VALUE
   239
 
 # dn scan --points -f { "eq": [ "req.caller", "poseidon" ] }
-{
-	"fields": {},
-	"value": 239
-}
+{"fields":{},"value":239}
 
 # dn scan -f { "eq": [ "req.caller", "poseidon" ] } -b req.caller
 REQ.CALLER VALUE
 poseidon     239
 
 # dn scan --points -f { "eq": [ "req.caller", "poseidon" ] } -b req.caller
-{
-	"fields": {
-		"req.caller": "poseidon"
-	},
-	"value": 239
-}
+{"fields":{"req.caller":"poseidon"},"value":239}
 
 # dn scan -b latency[aggr=quantize]
 
@@ -1087,54 +308,14 @@ poseidon     239
             4096 |                                         0
 
 # dn scan --points -b latency[aggr=quantize]
-{
-	"fields": {
-		"latency": 1
-	},
-	"value": 48
-}
-{
-	"fields": {
-		"latency": 2
-	},
-	"value": 194
-}
-{
-	"fields": {
-		"latency": 4
-	},
-	"value": 153
-}
-{
-	"fields": {
-		"latency": 16
-	},
-	"value": 301
-}
-{
-	"fields": {
-		"latency": 64
-	},
-	"value": 21
-}
-{
-	"fields": {
-		"latency": 128
-	},
-	"value": 73
-}
-{
-	"fields": {
-		"latency": 1024
-	},
-	"value": 68
-}
-{
-	"fields": {
-		"latency": 2048
-	},
-	"value": 142
-}
+{"fields":{"latency":1},"value":48}
+{"fields":{"latency":1024},"value":68}
+{"fields":{"latency":128},"value":73}
+{"fields":{"latency":16},"value":301}
+{"fields":{"latency":2},"value":194}
+{"fields":{"latency":2048},"value":142}
+{"fields":{"latency":4},"value":153}
+{"fields":{"latency":64},"value":21}
 
 # dn scan -b latency[aggr=quantize],operation,host
 LATENCY OPERATION           HOST    VALUE
@@ -1460,2566 +641,326 @@ LATENCY OPERATION           HOST    VALUE
    2048 putpublicobject     sherri      3
 
 # dn scan --points -b latency[aggr=quantize],operation,host
-{
-	"fields": {
-		"latency": 1,
-		"operation": "deletestorage",
-		"host": "wendell"
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"latency": 1,
-		"operation": "deletestorage",
-		"host": "ralph"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 1,
-		"operation": "deletestorage",
-		"host": "kearney"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 1,
-		"operation": "headstorage",
-		"host": "kearney"
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"latency": 1,
-		"operation": "headstorage",
-		"host": "janey"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 1,
-		"operation": "headstorage",
-		"host": "ralph"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 1,
-		"operation": "headstorage",
-		"host": "sherri"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 1,
-		"operation": "headstorage",
-		"host": "wendell"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 1,
-		"operation": "headpublicstorage",
-		"host": "janey"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 1,
-		"operation": "headpublicstorage",
-		"host": "wendell"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 1,
-		"operation": "headpublicstorage",
-		"host": "ralph"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 1,
-		"operation": "putobject",
-		"host": "kearney"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 1,
-		"operation": "putobject",
-		"host": "wendell"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 1,
-		"operation": "putobject",
-		"host": "janey"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 1,
-		"operation": "deletepublicstorage",
-		"host": "janey"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 1,
-		"operation": "deletepublicstorage",
-		"host": "wendell"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 1,
-		"operation": "deletepublicstorage",
-		"host": "kearney"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 1,
-		"operation": "putpublicobject",
-		"host": "sherri"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 1,
-		"operation": "putpublicobject",
-		"host": "ralph"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 1,
-		"operation": "getstorage",
-		"host": "wendell"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 1,
-		"operation": "getstorage",
-		"host": "kearney"
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"latency": 1,
-		"operation": "getpublicstorage",
-		"host": "janey"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 1,
-		"operation": "getpublicstorage",
-		"host": "kearney"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 1,
-		"operation": "getjoberrors",
-		"host": "kearney"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 1,
-		"operation": "getjoberrors",
-		"host": "janey"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 1,
-		"operation": "getjoberrors",
-		"host": "sherri"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 1,
-		"operation": "getjoberrors",
-		"host": "ralph"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "deletepublicstorage",
-		"host": "wendell"
-	},
-	"value": 8
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "deletepublicstorage",
-		"host": "ralph"
-	},
-	"value": 6
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "deletepublicstorage",
-		"host": "janey"
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "deletepublicstorage",
-		"host": "sherri"
-	},
-	"value": 7
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "deletepublicstorage",
-		"host": "kearney"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "putobject",
-		"host": "janey"
-	},
-	"value": 7
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "putobject",
-		"host": "wendell"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "putobject",
-		"host": "ralph"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "putobject",
-		"host": "sherri"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "deletestorage",
-		"host": "sherri"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "deletestorage",
-		"host": "janey"
-	},
-	"value": 6
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "deletestorage",
-		"host": "ralph"
-	},
-	"value": 8
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "deletestorage",
-		"host": "kearney"
-	},
-	"value": 8
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "deletestorage",
-		"host": "wendell"
-	},
-	"value": 6
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "putpublicobject",
-		"host": "sherri"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "putpublicobject",
-		"host": "wendell"
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "putpublicobject",
-		"host": "janey"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "putpublicobject",
-		"host": "ralph"
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "putpublicobject",
-		"host": "kearney"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "putdirectory",
-		"host": "wendell"
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "putdirectory",
-		"host": "janey"
-	},
-	"value": 6
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "putdirectory",
-		"host": "ralph"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "putdirectory",
-		"host": "kearney"
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "putdirectory",
-		"host": "sherri"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "headstorage",
-		"host": "ralph"
-	},
-	"value": 7
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "headstorage",
-		"host": "sherri"
-	},
-	"value": 8
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "headstorage",
-		"host": "janey"
-	},
-	"value": 8
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "headstorage",
-		"host": "wendell"
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "headstorage",
-		"host": "kearney"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "headpublicstorage",
-		"host": "sherri"
-	},
-	"value": 9
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "headpublicstorage",
-		"host": "kearney"
-	},
-	"value": 8
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "headpublicstorage",
-		"host": "ralph"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "headpublicstorage",
-		"host": "wendell"
-	},
-	"value": 6
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "headpublicstorage",
-		"host": "janey"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "getpublicstorage",
-		"host": "ralph"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "getpublicstorage",
-		"host": "janey"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "getpublicstorage",
-		"host": "wendell"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "getpublicstorage",
-		"host": "sherri"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "getpublicstorage",
-		"host": "kearney"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "getjoberrors",
-		"host": "janey"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "getjoberrors",
-		"host": "sherri"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "getjoberrors",
-		"host": "wendell"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "getjoberrors",
-		"host": "ralph"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "getjoberrors",
-		"host": "kearney"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "getstorage",
-		"host": "wendell"
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "getstorage",
-		"host": "ralph"
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "getstorage",
-		"host": "janey"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "getstorage",
-		"host": "kearney"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 2,
-		"operation": "getstorage",
-		"host": "sherri"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "deletestorage",
-		"host": "kearney"
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "deletestorage",
-		"host": "janey"
-	},
-	"value": 7
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "deletestorage",
-		"host": "ralph"
-	},
-	"value": 6
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "deletestorage",
-		"host": "sherri"
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "deletestorage",
-		"host": "wendell"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "putpublicobject",
-		"host": "wendell"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "putpublicobject",
-		"host": "kearney"
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "putpublicobject",
-		"host": "ralph"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "putpublicobject",
-		"host": "janey"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "headpublicstorage",
-		"host": "wendell"
-	},
-	"value": 6
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "headpublicstorage",
-		"host": "kearney"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "headpublicstorage",
-		"host": "sherri"
-	},
-	"value": 6
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "headpublicstorage",
-		"host": "janey"
-	},
-	"value": 6
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "headpublicstorage",
-		"host": "ralph"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "getpublicstorage",
-		"host": "ralph"
-	},
-	"value": 7
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "getpublicstorage",
-		"host": "kearney"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "getpublicstorage",
-		"host": "janey"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "getpublicstorage",
-		"host": "wendell"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "headstorage",
-		"host": "ralph"
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "headstorage",
-		"host": "janey"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "headstorage",
-		"host": "wendell"
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "headstorage",
-		"host": "sherri"
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "headstorage",
-		"host": "kearney"
-	},
-	"value": 6
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "putdirectory",
-		"host": "wendell"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "putdirectory",
-		"host": "janey"
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "putdirectory",
-		"host": "kearney"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "putdirectory",
-		"host": "sherri"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "putdirectory",
-		"host": "ralph"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "getjoberrors",
-		"host": "ralph"
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "getjoberrors",
-		"host": "sherri"
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "getjoberrors",
-		"host": "janey"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "getjoberrors",
-		"host": "kearney"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "getjoberrors",
-		"host": "wendell"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "putobject",
-		"host": "sherri"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "putobject",
-		"host": "janey"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "putobject",
-		"host": "wendell"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "putobject",
-		"host": "ralph"
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "putobject",
-		"host": "kearney"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "getstorage",
-		"host": "kearney"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "getstorage",
-		"host": "wendell"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "getstorage",
-		"host": "ralph"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "getstorage",
-		"host": "janey"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "getstorage",
-		"host": "sherri"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "deletepublicstorage",
-		"host": "sherri"
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "deletepublicstorage",
-		"host": "janey"
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "deletepublicstorage",
-		"host": "ralph"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "deletepublicstorage",
-		"host": "kearney"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 4,
-		"operation": "deletepublicstorage",
-		"host": "wendell"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "headpublicstorage",
-		"host": "wendell"
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "headpublicstorage",
-		"host": "sherri"
-	},
-	"value": 7
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "headpublicstorage",
-		"host": "kearney"
-	},
-	"value": 7
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "headpublicstorage",
-		"host": "janey"
-	},
-	"value": 10
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "headpublicstorage",
-		"host": "ralph"
-	},
-	"value": 10
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "deletepublicstorage",
-		"host": "janey"
-	},
-	"value": 8
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "deletepublicstorage",
-		"host": "wendell"
-	},
-	"value": 8
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "deletepublicstorage",
-		"host": "kearney"
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "deletepublicstorage",
-		"host": "ralph"
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "deletepublicstorage",
-		"host": "sherri"
-	},
-	"value": 12
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "headstorage",
-		"host": "kearney"
-	},
-	"value": 8
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "headstorage",
-		"host": "sherri"
-	},
-	"value": 11
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "headstorage",
-		"host": "janey"
-	},
-	"value": 10
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "headstorage",
-		"host": "ralph"
-	},
-	"value": 7
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "headstorage",
-		"host": "wendell"
-	},
-	"value": 7
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "putpublicobject",
-		"host": "ralph"
-	},
-	"value": 8
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "putpublicobject",
-		"host": "sherri"
-	},
-	"value": 6
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "putpublicobject",
-		"host": "wendell"
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "putpublicobject",
-		"host": "janey"
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "putpublicobject",
-		"host": "kearney"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "getpublicstorage",
-		"host": "wendell"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "getpublicstorage",
-		"host": "janey"
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "getpublicstorage",
-		"host": "sherri"
-	},
-	"value": 6
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "getpublicstorage",
-		"host": "ralph"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "getpublicstorage",
-		"host": "kearney"
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "putdirectory",
-		"host": "janey"
-	},
-	"value": 7
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "putdirectory",
-		"host": "ralph"
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "putdirectory",
-		"host": "kearney"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "putdirectory",
-		"host": "wendell"
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "putdirectory",
-		"host": "sherri"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "deletestorage",
-		"host": "kearney"
-	},
-	"value": 13
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "deletestorage",
-		"host": "janey"
-	},
-	"value": 7
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "deletestorage",
-		"host": "sherri"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "deletestorage",
-		"host": "ralph"
-	},
-	"value": 11
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "deletestorage",
-		"host": "wendell"
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "getstorage",
-		"host": "ralph"
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "getstorage",
-		"host": "kearney"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "getstorage",
-		"host": "janey"
-	},
-	"value": 9
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "getstorage",
-		"host": "wendell"
-	},
-	"value": 6
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "getstorage",
-		"host": "sherri"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "getjoberrors",
-		"host": "sherri"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "getjoberrors",
-		"host": "ralph"
-	},
-	"value": 8
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "getjoberrors",
-		"host": "wendell"
-	},
-	"value": 9
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "getjoberrors",
-		"host": "janey"
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "getjoberrors",
-		"host": "kearney"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "putobject",
-		"host": "janey"
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "putobject",
-		"host": "kearney"
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "putobject",
-		"host": "sherri"
-	},
-	"value": 6
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "putobject",
-		"host": "ralph"
-	},
-	"value": 6
-}
-{
-	"fields": {
-		"latency": 16,
-		"operation": "putobject",
-		"host": "wendell"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 64,
-		"operation": "headstorage",
-		"host": "sherri"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 64,
-		"operation": "putobject",
-		"host": "sherri"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 64,
-		"operation": "putobject",
-		"host": "ralph"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 64,
-		"operation": "putobject",
-		"host": "wendell"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 64,
-		"operation": "getjoberrors",
-		"host": "sherri"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 64,
-		"operation": "getjoberrors",
-		"host": "ralph"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 64,
-		"operation": "deletestorage",
-		"host": "ralph"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 64,
-		"operation": "getstorage",
-		"host": "ralph"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 64,
-		"operation": "getstorage",
-		"host": "kearney"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 64,
-		"operation": "headpublicstorage",
-		"host": "ralph"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 64,
-		"operation": "headpublicstorage",
-		"host": "wendell"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 64,
-		"operation": "headpublicstorage",
-		"host": "janey"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 64,
-		"operation": "headpublicstorage",
-		"host": "kearney"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 64,
-		"operation": "deletepublicstorage",
-		"host": "sherri"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 64,
-		"operation": "getpublicstorage",
-		"host": "ralph"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 64,
-		"operation": "putpublicobject",
-		"host": "wendell"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 64,
-		"operation": "putdirectory",
-		"host": "ralph"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 64,
-		"operation": "putdirectory",
-		"host": "janey"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 128,
-		"operation": "deletestorage",
-		"host": "sherri"
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"latency": 128,
-		"operation": "deletestorage",
-		"host": "janey"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 128,
-		"operation": "deletestorage",
-		"host": "wendell"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 128,
-		"operation": "deletestorage",
-		"host": "kearney"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 128,
-		"operation": "putdirectory",
-		"host": "ralph"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 128,
-		"operation": "putdirectory",
-		"host": "sherri"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 128,
-		"operation": "putdirectory",
-		"host": "kearney"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 128,
-		"operation": "headpublicstorage",
-		"host": "janey"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 128,
-		"operation": "headpublicstorage",
-		"host": "kearney"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 128,
-		"operation": "headpublicstorage",
-		"host": "ralph"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 128,
-		"operation": "headpublicstorage",
-		"host": "wendell"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 128,
-		"operation": "putobject",
-		"host": "kearney"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 128,
-		"operation": "putobject",
-		"host": "ralph"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 128,
-		"operation": "putobject",
-		"host": "wendell"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 128,
-		"operation": "putobject",
-		"host": "janey"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 128,
-		"operation": "putobject",
-		"host": "sherri"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 128,
-		"operation": "putpublicobject",
-		"host": "ralph"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 128,
-		"operation": "putpublicobject",
-		"host": "janey"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 128,
-		"operation": "putpublicobject",
-		"host": "kearney"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 128,
-		"operation": "putpublicobject",
-		"host": "sherri"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 128,
-		"operation": "getpublicstorage",
-		"host": "sherri"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 128,
-		"operation": "getpublicstorage",
-		"host": "janey"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 128,
-		"operation": "getpublicstorage",
-		"host": "wendell"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 128,
-		"operation": "getpublicstorage",
-		"host": "kearney"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 128,
-		"operation": "getpublicstorage",
-		"host": "ralph"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 128,
-		"operation": "headstorage",
-		"host": "ralph"
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"latency": 128,
-		"operation": "headstorage",
-		"host": "sherri"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 128,
-		"operation": "headstorage",
-		"host": "janey"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 128,
-		"operation": "headstorage",
-		"host": "kearney"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 128,
-		"operation": "getstorage",
-		"host": "wendell"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 128,
-		"operation": "getstorage",
-		"host": "kearney"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 128,
-		"operation": "getstorage",
-		"host": "ralph"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 128,
-		"operation": "getstorage",
-		"host": "sherri"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 128,
-		"operation": "getstorage",
-		"host": "janey"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 128,
-		"operation": "deletepublicstorage",
-		"host": "ralph"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 128,
-		"operation": "deletepublicstorage",
-		"host": "sherri"
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"latency": 128,
-		"operation": "deletepublicstorage",
-		"host": "kearney"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 128,
-		"operation": "getjoberrors",
-		"host": "wendell"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 128,
-		"operation": "getjoberrors",
-		"host": "sherri"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 128,
-		"operation": "getjoberrors",
-		"host": "janey"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 128,
-		"operation": "getjoberrors",
-		"host": "kearney"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 1024,
-		"operation": "putdirectory",
-		"host": "janey"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 1024,
-		"operation": "putdirectory",
-		"host": "wendell"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 1024,
-		"operation": "putdirectory",
-		"host": "ralph"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 1024,
-		"operation": "putdirectory",
-		"host": "sherri"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 1024,
-		"operation": "getjoberrors",
-		"host": "janey"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 1024,
-		"operation": "getjoberrors",
-		"host": "ralph"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 1024,
-		"operation": "getjoberrors",
-		"host": "kearney"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 1024,
-		"operation": "getjoberrors",
-		"host": "sherri"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 1024,
-		"operation": "headstorage",
-		"host": "kearney"
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"latency": 1024,
-		"operation": "headstorage",
-		"host": "janey"
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"latency": 1024,
-		"operation": "headstorage",
-		"host": "sherri"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 1024,
-		"operation": "headstorage",
-		"host": "wendell"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 1024,
-		"operation": "headstorage",
-		"host": "ralph"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 1024,
-		"operation": "deletepublicstorage",
-		"host": "ralph"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 1024,
-		"operation": "deletepublicstorage",
-		"host": "sherri"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 1024,
-		"operation": "deletepublicstorage",
-		"host": "kearney"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 1024,
-		"operation": "deletepublicstorage",
-		"host": "janey"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 1024,
-		"operation": "getpublicstorage",
-		"host": "ralph"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 1024,
-		"operation": "getpublicstorage",
-		"host": "kearney"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 1024,
-		"operation": "getpublicstorage",
-		"host": "sherri"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 1024,
-		"operation": "putpublicobject",
-		"host": "janey"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 1024,
-		"operation": "putpublicobject",
-		"host": "ralph"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 1024,
-		"operation": "putpublicobject",
-		"host": "kearney"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 1024,
-		"operation": "putpublicobject",
-		"host": "sherri"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 1024,
-		"operation": "putpublicobject",
-		"host": "wendell"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 1024,
-		"operation": "deletestorage",
-		"host": "wendell"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 1024,
-		"operation": "deletestorage",
-		"host": "kearney"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 1024,
-		"operation": "deletestorage",
-		"host": "sherri"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 1024,
-		"operation": "headpublicstorage",
-		"host": "wendell"
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"latency": 1024,
-		"operation": "headpublicstorage",
-		"host": "kearney"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 1024,
-		"operation": "headpublicstorage",
-		"host": "sherri"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 1024,
-		"operation": "headpublicstorage",
-		"host": "janey"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 1024,
-		"operation": "getstorage",
-		"host": "sherri"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 1024,
-		"operation": "getstorage",
-		"host": "janey"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 1024,
-		"operation": "getstorage",
-		"host": "wendell"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 1024,
-		"operation": "getstorage",
-		"host": "kearney"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 1024,
-		"operation": "putobject",
-		"host": "janey"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 1024,
-		"operation": "putobject",
-		"host": "wendell"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 1024,
-		"operation": "putobject",
-		"host": "sherri"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "putdirectory",
-		"host": "wendell"
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "putdirectory",
-		"host": "sherri"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "putdirectory",
-		"host": "kearney"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "putdirectory",
-		"host": "janey"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "putdirectory",
-		"host": "ralph"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "putpublicobject",
-		"host": "janey"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "putpublicobject",
-		"host": "kearney"
-	},
-	"value": 9
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "putpublicobject",
-		"host": "ralph"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "putpublicobject",
-		"host": "sherri"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "deletepublicstorage",
-		"host": "wendell"
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "deletepublicstorage",
-		"host": "sherri"
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "deletepublicstorage",
-		"host": "ralph"
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "deletepublicstorage",
-		"host": "kearney"
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "deletepublicstorage",
-		"host": "janey"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "getstorage",
-		"host": "janey"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "getstorage",
-		"host": "ralph"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "getstorage",
-		"host": "kearney"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "getstorage",
-		"host": "sherri"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "getstorage",
-		"host": "wendell"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "getjoberrors",
-		"host": "sherri"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "getjoberrors",
-		"host": "wendell"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "getjoberrors",
-		"host": "janey"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "getjoberrors",
-		"host": "ralph"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "getjoberrors",
-		"host": "kearney"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "deletestorage",
-		"host": "kearney"
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "deletestorage",
-		"host": "sherri"
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "deletestorage",
-		"host": "ralph"
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "deletestorage",
-		"host": "wendell"
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "deletestorage",
-		"host": "janey"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "putobject",
-		"host": "wendell"
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "putobject",
-		"host": "kearney"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "putobject",
-		"host": "janey"
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "putobject",
-		"host": "ralph"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "putobject",
-		"host": "sherri"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "headpublicstorage",
-		"host": "wendell"
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "headpublicstorage",
-		"host": "sherri"
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "headpublicstorage",
-		"host": "ralph"
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "headpublicstorage",
-		"host": "janey"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "headpublicstorage",
-		"host": "kearney"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "getpublicstorage",
-		"host": "wendell"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "getpublicstorage",
-		"host": "kearney"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "getpublicstorage",
-		"host": "janey"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "getpublicstorage",
-		"host": "sherri"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "getpublicstorage",
-		"host": "ralph"
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "headstorage",
-		"host": "wendell"
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "headstorage",
-		"host": "sherri"
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "headstorage",
-		"host": "ralph"
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 2048,
-		"operation": "headstorage",
-		"host": "janey"
-	},
-	"value": 4
-}
+{"fields":{"latency":1,"operation":"deletepublicstorage","host":"janey"},"value":3}
+{"fields":{"latency":1,"operation":"deletepublicstorage","host":"kearney"},"value":1}
+{"fields":{"latency":1,"operation":"deletepublicstorage","host":"wendell"},"value":1}
+{"fields":{"latency":1,"operation":"deletestorage","host":"kearney"},"value":1}
+{"fields":{"latency":1,"operation":"deletestorage","host":"ralph"},"value":3}
+{"fields":{"latency":1,"operation":"deletestorage","host":"wendell"},"value":4}
+{"fields":{"latency":1,"operation":"getjoberrors","host":"janey"},"value":1}
+{"fields":{"latency":1,"operation":"getjoberrors","host":"kearney"},"value":1}
+{"fields":{"latency":1,"operation":"getjoberrors","host":"ralph"},"value":1}
+{"fields":{"latency":1,"operation":"getjoberrors","host":"sherri"},"value":1}
+{"fields":{"latency":1,"operation":"getpublicstorage","host":"janey"},"value":1}
+{"fields":{"latency":1,"operation":"getpublicstorage","host":"kearney"},"value":1}
+{"fields":{"latency":1,"operation":"getstorage","host":"kearney"},"value":4}
+{"fields":{"latency":1,"operation":"getstorage","host":"wendell"},"value":1}
+{"fields":{"latency":1,"operation":"headpublicstorage","host":"janey"},"value":2}
+{"fields":{"latency":1,"operation":"headpublicstorage","host":"ralph"},"value":1}
+{"fields":{"latency":1,"operation":"headpublicstorage","host":"wendell"},"value":2}
+{"fields":{"latency":1,"operation":"headstorage","host":"janey"},"value":3}
+{"fields":{"latency":1,"operation":"headstorage","host":"kearney"},"value":4}
+{"fields":{"latency":1,"operation":"headstorage","host":"ralph"},"value":1}
+{"fields":{"latency":1,"operation":"headstorage","host":"sherri"},"value":2}
+{"fields":{"latency":1,"operation":"headstorage","host":"wendell"},"value":1}
+{"fields":{"latency":1,"operation":"putobject","host":"janey"},"value":3}
+{"fields":{"latency":1,"operation":"putobject","host":"kearney"},"value":1}
+{"fields":{"latency":1,"operation":"putobject","host":"wendell"},"value":1}
+{"fields":{"latency":1,"operation":"putpublicobject","host":"ralph"},"value":1}
+{"fields":{"latency":1,"operation":"putpublicobject","host":"sherri"},"value":2}
+{"fields":{"latency":1024,"operation":"deletepublicstorage","host":"janey"},"value":2}
+{"fields":{"latency":1024,"operation":"deletepublicstorage","host":"kearney"},"value":2}
+{"fields":{"latency":1024,"operation":"deletepublicstorage","host":"ralph"},"value":3}
+{"fields":{"latency":1024,"operation":"deletepublicstorage","host":"sherri"},"value":3}
+{"fields":{"latency":1024,"operation":"deletestorage","host":"kearney"},"value":1}
+{"fields":{"latency":1024,"operation":"deletestorage","host":"sherri"},"value":1}
+{"fields":{"latency":1024,"operation":"deletestorage","host":"wendell"},"value":2}
+{"fields":{"latency":1024,"operation":"getjoberrors","host":"janey"},"value":3}
+{"fields":{"latency":1024,"operation":"getjoberrors","host":"kearney"},"value":1}
+{"fields":{"latency":1024,"operation":"getjoberrors","host":"ralph"},"value":2}
+{"fields":{"latency":1024,"operation":"getjoberrors","host":"sherri"},"value":1}
+{"fields":{"latency":1024,"operation":"getpublicstorage","host":"kearney"},"value":1}
+{"fields":{"latency":1024,"operation":"getpublicstorage","host":"ralph"},"value":2}
+{"fields":{"latency":1024,"operation":"getpublicstorage","host":"sherri"},"value":1}
+{"fields":{"latency":1024,"operation":"getstorage","host":"janey"},"value":1}
+{"fields":{"latency":1024,"operation":"getstorage","host":"kearney"},"value":1}
+{"fields":{"latency":1024,"operation":"getstorage","host":"sherri"},"value":1}
+{"fields":{"latency":1024,"operation":"getstorage","host":"wendell"},"value":2}
+{"fields":{"latency":1024,"operation":"headpublicstorage","host":"janey"},"value":1}
+{"fields":{"latency":1024,"operation":"headpublicstorage","host":"kearney"},"value":2}
+{"fields":{"latency":1024,"operation":"headpublicstorage","host":"sherri"},"value":1}
+{"fields":{"latency":1024,"operation":"headpublicstorage","host":"wendell"},"value":4}
+{"fields":{"latency":1024,"operation":"headstorage","host":"janey"},"value":5}
+{"fields":{"latency":1024,"operation":"headstorage","host":"kearney"},"value":5}
+{"fields":{"latency":1024,"operation":"headstorage","host":"ralph"},"value":1}
+{"fields":{"latency":1024,"operation":"headstorage","host":"sherri"},"value":1}
+{"fields":{"latency":1024,"operation":"headstorage","host":"wendell"},"value":3}
+{"fields":{"latency":1024,"operation":"putdirectory","host":"janey"},"value":1}
+{"fields":{"latency":1024,"operation":"putdirectory","host":"ralph"},"value":1}
+{"fields":{"latency":1024,"operation":"putdirectory","host":"sherri"},"value":2}
+{"fields":{"latency":1024,"operation":"putdirectory","host":"wendell"},"value":1}
+{"fields":{"latency":1024,"operation":"putobject","host":"janey"},"value":1}
+{"fields":{"latency":1024,"operation":"putobject","host":"sherri"},"value":1}
+{"fields":{"latency":1024,"operation":"putobject","host":"wendell"},"value":1}
+{"fields":{"latency":1024,"operation":"putpublicobject","host":"janey"},"value":2}
+{"fields":{"latency":1024,"operation":"putpublicobject","host":"kearney"},"value":1}
+{"fields":{"latency":1024,"operation":"putpublicobject","host":"ralph"},"value":1}
+{"fields":{"latency":1024,"operation":"putpublicobject","host":"sherri"},"value":1}
+{"fields":{"latency":1024,"operation":"putpublicobject","host":"wendell"},"value":2}
+{"fields":{"latency":128,"operation":"deletepublicstorage","host":"kearney"},"value":3}
+{"fields":{"latency":128,"operation":"deletepublicstorage","host":"ralph"},"value":1}
+{"fields":{"latency":128,"operation":"deletepublicstorage","host":"sherri"},"value":4}
+{"fields":{"latency":128,"operation":"deletestorage","host":"janey"},"value":1}
+{"fields":{"latency":128,"operation":"deletestorage","host":"kearney"},"value":1}
+{"fields":{"latency":128,"operation":"deletestorage","host":"sherri"},"value":4}
+{"fields":{"latency":128,"operation":"deletestorage","host":"wendell"},"value":2}
+{"fields":{"latency":128,"operation":"getjoberrors","host":"janey"},"value":1}
+{"fields":{"latency":128,"operation":"getjoberrors","host":"kearney"},"value":1}
+{"fields":{"latency":128,"operation":"getjoberrors","host":"sherri"},"value":2}
+{"fields":{"latency":128,"operation":"getjoberrors","host":"wendell"},"value":1}
+{"fields":{"latency":128,"operation":"getpublicstorage","host":"janey"},"value":2}
+{"fields":{"latency":128,"operation":"getpublicstorage","host":"kearney"},"value":2}
+{"fields":{"latency":128,"operation":"getpublicstorage","host":"ralph"},"value":1}
+{"fields":{"latency":128,"operation":"getpublicstorage","host":"sherri"},"value":3}
+{"fields":{"latency":128,"operation":"getpublicstorage","host":"wendell"},"value":1}
+{"fields":{"latency":128,"operation":"getstorage","host":"janey"},"value":1}
+{"fields":{"latency":128,"operation":"getstorage","host":"kearney"},"value":1}
+{"fields":{"latency":128,"operation":"getstorage","host":"ralph"},"value":3}
+{"fields":{"latency":128,"operation":"getstorage","host":"sherri"},"value":1}
+{"fields":{"latency":128,"operation":"getstorage","host":"wendell"},"value":1}
+{"fields":{"latency":128,"operation":"headpublicstorage","host":"janey"},"value":3}
+{"fields":{"latency":128,"operation":"headpublicstorage","host":"kearney"},"value":2}
+{"fields":{"latency":128,"operation":"headpublicstorage","host":"ralph"},"value":1}
+{"fields":{"latency":128,"operation":"headpublicstorage","host":"wendell"},"value":2}
+{"fields":{"latency":128,"operation":"headstorage","host":"janey"},"value":2}
+{"fields":{"latency":128,"operation":"headstorage","host":"kearney"},"value":1}
+{"fields":{"latency":128,"operation":"headstorage","host":"ralph"},"value":4}
+{"fields":{"latency":128,"operation":"headstorage","host":"sherri"},"value":2}
+{"fields":{"latency":128,"operation":"putdirectory","host":"kearney"},"value":1}
+{"fields":{"latency":128,"operation":"putdirectory","host":"ralph"},"value":2}
+{"fields":{"latency":128,"operation":"putdirectory","host":"sherri"},"value":1}
+{"fields":{"latency":128,"operation":"putobject","host":"janey"},"value":1}
+{"fields":{"latency":128,"operation":"putobject","host":"kearney"},"value":2}
+{"fields":{"latency":128,"operation":"putobject","host":"ralph"},"value":2}
+{"fields":{"latency":128,"operation":"putobject","host":"sherri"},"value":1}
+{"fields":{"latency":128,"operation":"putobject","host":"wendell"},"value":2}
+{"fields":{"latency":128,"operation":"putpublicobject","host":"janey"},"value":3}
+{"fields":{"latency":128,"operation":"putpublicobject","host":"kearney"},"value":2}
+{"fields":{"latency":128,"operation":"putpublicobject","host":"ralph"},"value":1}
+{"fields":{"latency":128,"operation":"putpublicobject","host":"sherri"},"value":1}
+{"fields":{"latency":16,"operation":"deletepublicstorage","host":"janey"},"value":8}
+{"fields":{"latency":16,"operation":"deletepublicstorage","host":"kearney"},"value":5}
+{"fields":{"latency":16,"operation":"deletepublicstorage","host":"ralph"},"value":5}
+{"fields":{"latency":16,"operation":"deletepublicstorage","host":"sherri"},"value":12}
+{"fields":{"latency":16,"operation":"deletepublicstorage","host":"wendell"},"value":8}
+{"fields":{"latency":16,"operation":"deletestorage","host":"janey"},"value":7}
+{"fields":{"latency":16,"operation":"deletestorage","host":"kearney"},"value":13}
+{"fields":{"latency":16,"operation":"deletestorage","host":"ralph"},"value":11}
+{"fields":{"latency":16,"operation":"deletestorage","host":"sherri"},"value":3}
+{"fields":{"latency":16,"operation":"deletestorage","host":"wendell"},"value":4}
+{"fields":{"latency":16,"operation":"getjoberrors","host":"janey"},"value":5}
+{"fields":{"latency":16,"operation":"getjoberrors","host":"kearney"},"value":3}
+{"fields":{"latency":16,"operation":"getjoberrors","host":"ralph"},"value":8}
+{"fields":{"latency":16,"operation":"getjoberrors","host":"sherri"},"value":3}
+{"fields":{"latency":16,"operation":"getjoberrors","host":"wendell"},"value":9}
+{"fields":{"latency":16,"operation":"getpublicstorage","host":"janey"},"value":5}
+{"fields":{"latency":16,"operation":"getpublicstorage","host":"kearney"},"value":5}
+{"fields":{"latency":16,"operation":"getpublicstorage","host":"ralph"},"value":2}
+{"fields":{"latency":16,"operation":"getpublicstorage","host":"sherri"},"value":6}
+{"fields":{"latency":16,"operation":"getpublicstorage","host":"wendell"},"value":3}
+{"fields":{"latency":16,"operation":"getstorage","host":"janey"},"value":9}
+{"fields":{"latency":16,"operation":"getstorage","host":"kearney"},"value":2}
+{"fields":{"latency":16,"operation":"getstorage","host":"ralph"},"value":4}
+{"fields":{"latency":16,"operation":"getstorage","host":"sherri"},"value":3}
+{"fields":{"latency":16,"operation":"getstorage","host":"wendell"},"value":6}
+{"fields":{"latency":16,"operation":"headpublicstorage","host":"janey"},"value":10}
+{"fields":{"latency":16,"operation":"headpublicstorage","host":"kearney"},"value":7}
+{"fields":{"latency":16,"operation":"headpublicstorage","host":"ralph"},"value":10}
+{"fields":{"latency":16,"operation":"headpublicstorage","host":"sherri"},"value":7}
+{"fields":{"latency":16,"operation":"headpublicstorage","host":"wendell"},"value":5}
+{"fields":{"latency":16,"operation":"headstorage","host":"janey"},"value":10}
+{"fields":{"latency":16,"operation":"headstorage","host":"kearney"},"value":8}
+{"fields":{"latency":16,"operation":"headstorage","host":"ralph"},"value":7}
+{"fields":{"latency":16,"operation":"headstorage","host":"sherri"},"value":11}
+{"fields":{"latency":16,"operation":"headstorage","host":"wendell"},"value":7}
+{"fields":{"latency":16,"operation":"putdirectory","host":"janey"},"value":7}
+{"fields":{"latency":16,"operation":"putdirectory","host":"kearney"},"value":2}
+{"fields":{"latency":16,"operation":"putdirectory","host":"ralph"},"value":5}
+{"fields":{"latency":16,"operation":"putdirectory","host":"sherri"},"value":3}
+{"fields":{"latency":16,"operation":"putdirectory","host":"wendell"},"value":4}
+{"fields":{"latency":16,"operation":"putobject","host":"janey"},"value":5}
+{"fields":{"latency":16,"operation":"putobject","host":"kearney"},"value":4}
+{"fields":{"latency":16,"operation":"putobject","host":"ralph"},"value":6}
+{"fields":{"latency":16,"operation":"putobject","host":"sherri"},"value":6}
+{"fields":{"latency":16,"operation":"putobject","host":"wendell"},"value":3}
+{"fields":{"latency":16,"operation":"putpublicobject","host":"janey"},"value":4}
+{"fields":{"latency":16,"operation":"putpublicobject","host":"kearney"},"value":2}
+{"fields":{"latency":16,"operation":"putpublicobject","host":"ralph"},"value":8}
+{"fields":{"latency":16,"operation":"putpublicobject","host":"sherri"},"value":6}
+{"fields":{"latency":16,"operation":"putpublicobject","host":"wendell"},"value":5}
+{"fields":{"latency":2,"operation":"deletepublicstorage","host":"janey"},"value":4}
+{"fields":{"latency":2,"operation":"deletepublicstorage","host":"kearney"},"value":3}
+{"fields":{"latency":2,"operation":"deletepublicstorage","host":"ralph"},"value":6}
+{"fields":{"latency":2,"operation":"deletepublicstorage","host":"sherri"},"value":7}
+{"fields":{"latency":2,"operation":"deletepublicstorage","host":"wendell"},"value":8}
+{"fields":{"latency":2,"operation":"deletestorage","host":"janey"},"value":6}
+{"fields":{"latency":2,"operation":"deletestorage","host":"kearney"},"value":8}
+{"fields":{"latency":2,"operation":"deletestorage","host":"ralph"},"value":8}
+{"fields":{"latency":2,"operation":"deletestorage","host":"sherri"},"value":3}
+{"fields":{"latency":2,"operation":"deletestorage","host":"wendell"},"value":6}
+{"fields":{"latency":2,"operation":"getjoberrors","host":"janey"},"value":3}
+{"fields":{"latency":2,"operation":"getjoberrors","host":"kearney"},"value":2}
+{"fields":{"latency":2,"operation":"getjoberrors","host":"ralph"},"value":1}
+{"fields":{"latency":2,"operation":"getjoberrors","host":"sherri"},"value":3}
+{"fields":{"latency":2,"operation":"getjoberrors","host":"wendell"},"value":1}
+{"fields":{"latency":2,"operation":"getpublicstorage","host":"janey"},"value":1}
+{"fields":{"latency":2,"operation":"getpublicstorage","host":"kearney"},"value":3}
+{"fields":{"latency":2,"operation":"getpublicstorage","host":"ralph"},"value":3}
+{"fields":{"latency":2,"operation":"getpublicstorage","host":"sherri"},"value":2}
+{"fields":{"latency":2,"operation":"getpublicstorage","host":"wendell"},"value":2}
+{"fields":{"latency":2,"operation":"getstorage","host":"janey"},"value":1}
+{"fields":{"latency":2,"operation":"getstorage","host":"kearney"},"value":1}
+{"fields":{"latency":2,"operation":"getstorage","host":"ralph"},"value":4}
+{"fields":{"latency":2,"operation":"getstorage","host":"sherri"},"value":2}
+{"fields":{"latency":2,"operation":"getstorage","host":"wendell"},"value":4}
+{"fields":{"latency":2,"operation":"headpublicstorage","host":"janey"},"value":3}
+{"fields":{"latency":2,"operation":"headpublicstorage","host":"kearney"},"value":8}
+{"fields":{"latency":2,"operation":"headpublicstorage","host":"ralph"},"value":1}
+{"fields":{"latency":2,"operation":"headpublicstorage","host":"sherri"},"value":9}
+{"fields":{"latency":2,"operation":"headpublicstorage","host":"wendell"},"value":6}
+{"fields":{"latency":2,"operation":"headstorage","host":"janey"},"value":8}
+{"fields":{"latency":2,"operation":"headstorage","host":"kearney"},"value":1}
+{"fields":{"latency":2,"operation":"headstorage","host":"ralph"},"value":7}
+{"fields":{"latency":2,"operation":"headstorage","host":"sherri"},"value":8}
+{"fields":{"latency":2,"operation":"headstorage","host":"wendell"},"value":5}
+{"fields":{"latency":2,"operation":"putdirectory","host":"janey"},"value":6}
+{"fields":{"latency":2,"operation":"putdirectory","host":"kearney"},"value":5}
+{"fields":{"latency":2,"operation":"putdirectory","host":"ralph"},"value":2}
+{"fields":{"latency":2,"operation":"putdirectory","host":"sherri"},"value":1}
+{"fields":{"latency":2,"operation":"putdirectory","host":"wendell"},"value":5}
+{"fields":{"latency":2,"operation":"putobject","host":"janey"},"value":7}
+{"fields":{"latency":2,"operation":"putobject","host":"ralph"},"value":2}
+{"fields":{"latency":2,"operation":"putobject","host":"sherri"},"value":3}
+{"fields":{"latency":2,"operation":"putobject","host":"wendell"},"value":2}
+{"fields":{"latency":2,"operation":"putpublicobject","host":"janey"},"value":1}
+{"fields":{"latency":2,"operation":"putpublicobject","host":"kearney"},"value":2}
+{"fields":{"latency":2,"operation":"putpublicobject","host":"ralph"},"value":4}
+{"fields":{"latency":2,"operation":"putpublicobject","host":"sherri"},"value":2}
+{"fields":{"latency":2,"operation":"putpublicobject","host":"wendell"},"value":4}
+{"fields":{"latency":2048,"operation":"deletepublicstorage","host":"janey"},"value":2}
+{"fields":{"latency":2048,"operation":"deletepublicstorage","host":"kearney"},"value":4}
+{"fields":{"latency":2048,"operation":"deletepublicstorage","host":"ralph"},"value":5}
+{"fields":{"latency":2048,"operation":"deletepublicstorage","host":"sherri"},"value":4}
+{"fields":{"latency":2048,"operation":"deletepublicstorage","host":"wendell"},"value":4}
+{"fields":{"latency":2048,"operation":"deletestorage","host":"janey"},"value":3}
+{"fields":{"latency":2048,"operation":"deletestorage","host":"kearney"},"value":5}
+{"fields":{"latency":2048,"operation":"deletestorage","host":"ralph"},"value":4}
+{"fields":{"latency":2048,"operation":"deletestorage","host":"sherri"},"value":4}
+{"fields":{"latency":2048,"operation":"deletestorage","host":"wendell"},"value":4}
+{"fields":{"latency":2048,"operation":"getjoberrors","host":"janey"},"value":3}
+{"fields":{"latency":2048,"operation":"getjoberrors","host":"kearney"},"value":2}
+{"fields":{"latency":2048,"operation":"getjoberrors","host":"ralph"},"value":1}
+{"fields":{"latency":2048,"operation":"getjoberrors","host":"sherri"},"value":2}
+{"fields":{"latency":2048,"operation":"getjoberrors","host":"wendell"},"value":3}
+{"fields":{"latency":2048,"operation":"getpublicstorage","host":"janey"},"value":1}
+{"fields":{"latency":2048,"operation":"getpublicstorage","host":"kearney"},"value":1}
+{"fields":{"latency":2048,"operation":"getpublicstorage","host":"ralph"},"value":1}
+{"fields":{"latency":2048,"operation":"getpublicstorage","host":"sherri"},"value":2}
+{"fields":{"latency":2048,"operation":"getpublicstorage","host":"wendell"},"value":1}
+{"fields":{"latency":2048,"operation":"getstorage","host":"janey"},"value":2}
+{"fields":{"latency":2048,"operation":"getstorage","host":"kearney"},"value":3}
+{"fields":{"latency":2048,"operation":"getstorage","host":"ralph"},"value":2}
+{"fields":{"latency":2048,"operation":"getstorage","host":"sherri"},"value":2}
+{"fields":{"latency":2048,"operation":"getstorage","host":"wendell"},"value":1}
+{"fields":{"latency":2048,"operation":"headpublicstorage","host":"janey"},"value":2}
+{"fields":{"latency":2048,"operation":"headpublicstorage","host":"kearney"},"value":2}
+{"fields":{"latency":2048,"operation":"headpublicstorage","host":"ralph"},"value":4}
+{"fields":{"latency":2048,"operation":"headpublicstorage","host":"sherri"},"value":5}
+{"fields":{"latency":2048,"operation":"headpublicstorage","host":"wendell"},"value":5}
+{"fields":{"latency":2048,"operation":"headstorage","host":"janey"},"value":4}
+{"fields":{"latency":2048,"operation":"headstorage","host":"ralph"},"value":3}
+{"fields":{"latency":2048,"operation":"headstorage","host":"sherri"},"value":5}
+{"fields":{"latency":2048,"operation":"headstorage","host":"wendell"},"value":2}
+{"fields":{"latency":2048,"operation":"putdirectory","host":"janey"},"value":2}
+{"fields":{"latency":2048,"operation":"putdirectory","host":"kearney"},"value":2}
+{"fields":{"latency":2048,"operation":"putdirectory","host":"ralph"},"value":2}
+{"fields":{"latency":2048,"operation":"putdirectory","host":"sherri"},"value":3}
+{"fields":{"latency":2048,"operation":"putdirectory","host":"wendell"},"value":4}
+{"fields":{"latency":2048,"operation":"putobject","host":"janey"},"value":4}
+{"fields":{"latency":2048,"operation":"putobject","host":"kearney"},"value":3}
+{"fields":{"latency":2048,"operation":"putobject","host":"ralph"},"value":1}
+{"fields":{"latency":2048,"operation":"putobject","host":"sherri"},"value":1}
+{"fields":{"latency":2048,"operation":"putobject","host":"wendell"},"value":5}
+{"fields":{"latency":2048,"operation":"putpublicobject","host":"janey"},"value":2}
+{"fields":{"latency":2048,"operation":"putpublicobject","host":"kearney"},"value":9}
+{"fields":{"latency":2048,"operation":"putpublicobject","host":"ralph"},"value":3}
+{"fields":{"latency":2048,"operation":"putpublicobject","host":"sherri"},"value":3}
+{"fields":{"latency":4,"operation":"deletepublicstorage","host":"janey"},"value":5}
+{"fields":{"latency":4,"operation":"deletepublicstorage","host":"kearney"},"value":3}
+{"fields":{"latency":4,"operation":"deletepublicstorage","host":"ralph"},"value":3}
+{"fields":{"latency":4,"operation":"deletepublicstorage","host":"sherri"},"value":5}
+{"fields":{"latency":4,"operation":"deletepublicstorage","host":"wendell"},"value":2}
+{"fields":{"latency":4,"operation":"deletestorage","host":"janey"},"value":7}
+{"fields":{"latency":4,"operation":"deletestorage","host":"kearney"},"value":4}
+{"fields":{"latency":4,"operation":"deletestorage","host":"ralph"},"value":6}
+{"fields":{"latency":4,"operation":"deletestorage","host":"sherri"},"value":4}
+{"fields":{"latency":4,"operation":"deletestorage","host":"wendell"},"value":1}
+{"fields":{"latency":4,"operation":"getjoberrors","host":"janey"},"value":2}
+{"fields":{"latency":4,"operation":"getjoberrors","host":"kearney"},"value":2}
+{"fields":{"latency":4,"operation":"getjoberrors","host":"ralph"},"value":5}
+{"fields":{"latency":4,"operation":"getjoberrors","host":"sherri"},"value":4}
+{"fields":{"latency":4,"operation":"getjoberrors","host":"wendell"},"value":1}
+{"fields":{"latency":4,"operation":"getpublicstorage","host":"janey"},"value":2}
+{"fields":{"latency":4,"operation":"getpublicstorage","host":"kearney"},"value":3}
+{"fields":{"latency":4,"operation":"getpublicstorage","host":"ralph"},"value":7}
+{"fields":{"latency":4,"operation":"getpublicstorage","host":"wendell"},"value":1}
+{"fields":{"latency":4,"operation":"getstorage","host":"janey"},"value":1}
+{"fields":{"latency":4,"operation":"getstorage","host":"kearney"},"value":2}
+{"fields":{"latency":4,"operation":"getstorage","host":"ralph"},"value":3}
+{"fields":{"latency":4,"operation":"getstorage","host":"sherri"},"value":3}
+{"fields":{"latency":4,"operation":"getstorage","host":"wendell"},"value":2}
+{"fields":{"latency":4,"operation":"headpublicstorage","host":"janey"},"value":6}
+{"fields":{"latency":4,"operation":"headpublicstorage","host":"kearney"},"value":3}
+{"fields":{"latency":4,"operation":"headpublicstorage","host":"ralph"},"value":1}
+{"fields":{"latency":4,"operation":"headpublicstorage","host":"sherri"},"value":6}
+{"fields":{"latency":4,"operation":"headpublicstorage","host":"wendell"},"value":6}
+{"fields":{"latency":4,"operation":"headstorage","host":"janey"},"value":2}
+{"fields":{"latency":4,"operation":"headstorage","host":"kearney"},"value":6}
+{"fields":{"latency":4,"operation":"headstorage","host":"ralph"},"value":5}
+{"fields":{"latency":4,"operation":"headstorage","host":"sherri"},"value":4}
+{"fields":{"latency":4,"operation":"headstorage","host":"wendell"},"value":4}
+{"fields":{"latency":4,"operation":"putdirectory","host":"janey"},"value":5}
+{"fields":{"latency":4,"operation":"putdirectory","host":"kearney"},"value":2}
+{"fields":{"latency":4,"operation":"putdirectory","host":"ralph"},"value":1}
+{"fields":{"latency":4,"operation":"putdirectory","host":"sherri"},"value":2}
+{"fields":{"latency":4,"operation":"putdirectory","host":"wendell"},"value":1}
+{"fields":{"latency":4,"operation":"putobject","host":"janey"},"value":1}
+{"fields":{"latency":4,"operation":"putobject","host":"kearney"},"value":2}
+{"fields":{"latency":4,"operation":"putobject","host":"ralph"},"value":4}
+{"fields":{"latency":4,"operation":"putobject","host":"sherri"},"value":2}
+{"fields":{"latency":4,"operation":"putobject","host":"wendell"},"value":1}
+{"fields":{"latency":4,"operation":"putpublicobject","host":"janey"},"value":1}
+{"fields":{"latency":4,"operation":"putpublicobject","host":"kearney"},"value":4}
+{"fields":{"latency":4,"operation":"putpublicobject","host":"ralph"},"value":3}
+{"fields":{"latency":4,"operation":"putpublicobject","host":"wendell"},"value":3}
+{"fields":{"latency":64,"operation":"deletepublicstorage","host":"sherri"},"value":1}
+{"fields":{"latency":64,"operation":"deletestorage","host":"ralph"},"value":1}
+{"fields":{"latency":64,"operation":"getjoberrors","host":"ralph"},"value":1}
+{"fields":{"latency":64,"operation":"getjoberrors","host":"sherri"},"value":1}
+{"fields":{"latency":64,"operation":"getpublicstorage","host":"ralph"},"value":1}
+{"fields":{"latency":64,"operation":"getstorage","host":"kearney"},"value":1}
+{"fields":{"latency":64,"operation":"getstorage","host":"ralph"},"value":1}
+{"fields":{"latency":64,"operation":"headpublicstorage","host":"janey"},"value":1}
+{"fields":{"latency":64,"operation":"headpublicstorage","host":"kearney"},"value":1}
+{"fields":{"latency":64,"operation":"headpublicstorage","host":"ralph"},"value":2}
+{"fields":{"latency":64,"operation":"headpublicstorage","host":"wendell"},"value":2}
+{"fields":{"latency":64,"operation":"headstorage","host":"sherri"},"value":2}
+{"fields":{"latency":64,"operation":"putdirectory","host":"janey"},"value":1}
+{"fields":{"latency":64,"operation":"putdirectory","host":"ralph"},"value":1}
+{"fields":{"latency":64,"operation":"putobject","host":"ralph"},"value":1}
+{"fields":{"latency":64,"operation":"putobject","host":"sherri"},"value":1}
+{"fields":{"latency":64,"operation":"putobject","host":"wendell"},"value":1}
+{"fields":{"latency":64,"operation":"putpublicobject","host":"wendell"},"value":1}
 
 # dn scan -b host,operation,latency[aggr=quantize]
 wendell, deletestorage
@@ -4871,2566 +1812,326 @@ ralph, putobject
             4096 |                                         0
 
 # dn scan --points -b host,operation,latency[aggr=quantize]
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "deletestorage",
-		"latency": 1
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "deletestorage",
-		"latency": 2
-	},
-	"value": 6
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "deletestorage",
-		"latency": 4
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "deletestorage",
-		"latency": 16
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "deletestorage",
-		"latency": 128
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "deletestorage",
-		"latency": 1024
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "deletestorage",
-		"latency": 2048
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "putdirectory",
-		"latency": 2
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "putdirectory",
-		"latency": 4
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "putdirectory",
-		"latency": 16
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "putdirectory",
-		"latency": 1024
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "putdirectory",
-		"latency": 2048
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "headpublicstorage",
-		"latency": 1
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "headpublicstorage",
-		"latency": 2
-	},
-	"value": 6
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "headpublicstorage",
-		"latency": 4
-	},
-	"value": 6
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "headpublicstorage",
-		"latency": 16
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "headpublicstorage",
-		"latency": 64
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "headpublicstorage",
-		"latency": 128
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "headpublicstorage",
-		"latency": 1024
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "headpublicstorage",
-		"latency": 2048
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "putpublicobject",
-		"latency": 2
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "putpublicobject",
-		"latency": 4
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "putpublicobject",
-		"latency": 16
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "putpublicobject",
-		"latency": 64
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "putpublicobject",
-		"latency": 1024
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "deletepublicstorage",
-		"latency": 1
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "deletepublicstorage",
-		"latency": 2
-	},
-	"value": 8
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "deletepublicstorage",
-		"latency": 4
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "deletepublicstorage",
-		"latency": 16
-	},
-	"value": 8
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "deletepublicstorage",
-		"latency": 2048
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "getpublicstorage",
-		"latency": 2
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "getpublicstorage",
-		"latency": 4
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "getpublicstorage",
-		"latency": 16
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "getpublicstorage",
-		"latency": 128
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "getpublicstorage",
-		"latency": 2048
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "getjoberrors",
-		"latency": 2
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "getjoberrors",
-		"latency": 4
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "getjoberrors",
-		"latency": 16
-	},
-	"value": 9
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "getjoberrors",
-		"latency": 128
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "getjoberrors",
-		"latency": 2048
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "putobject",
-		"latency": 1
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "putobject",
-		"latency": 2
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "putobject",
-		"latency": 4
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "putobject",
-		"latency": 16
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "putobject",
-		"latency": 64
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "putobject",
-		"latency": 128
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "putobject",
-		"latency": 1024
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "putobject",
-		"latency": 2048
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "headstorage",
-		"latency": 1
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "headstorage",
-		"latency": 2
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "headstorage",
-		"latency": 4
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "headstorage",
-		"latency": 16
-	},
-	"value": 7
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "headstorage",
-		"latency": 1024
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "headstorage",
-		"latency": 2048
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "getstorage",
-		"latency": 1
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "getstorage",
-		"latency": 2
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "getstorage",
-		"latency": 4
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "getstorage",
-		"latency": 16
-	},
-	"value": 6
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "getstorage",
-		"latency": 128
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "getstorage",
-		"latency": 1024
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "wendell",
-		"operation": "getstorage",
-		"latency": 2048
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "deletestorage",
-		"latency": 2
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "deletestorage",
-		"latency": 4
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "deletestorage",
-		"latency": 16
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "deletestorage",
-		"latency": 128
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "deletestorage",
-		"latency": 1024
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "deletestorage",
-		"latency": 2048
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "headstorage",
-		"latency": 1
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "headstorage",
-		"latency": 2
-	},
-	"value": 8
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "headstorage",
-		"latency": 4
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "headstorage",
-		"latency": 16
-	},
-	"value": 11
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "headstorage",
-		"latency": 64
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "headstorage",
-		"latency": 128
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "headstorage",
-		"latency": 1024
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "headstorage",
-		"latency": 2048
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "putobject",
-		"latency": 2
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "putobject",
-		"latency": 4
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "putobject",
-		"latency": 16
-	},
-	"value": 6
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "putobject",
-		"latency": 64
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "putobject",
-		"latency": 128
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "putobject",
-		"latency": 1024
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "putobject",
-		"latency": 2048
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "putpublicobject",
-		"latency": 1
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "putpublicobject",
-		"latency": 2
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "putpublicobject",
-		"latency": 16
-	},
-	"value": 6
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "putpublicobject",
-		"latency": 128
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "putpublicobject",
-		"latency": 1024
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "putpublicobject",
-		"latency": 2048
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "getjoberrors",
-		"latency": 1
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "getjoberrors",
-		"latency": 2
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "getjoberrors",
-		"latency": 4
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "getjoberrors",
-		"latency": 16
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "getjoberrors",
-		"latency": 64
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "getjoberrors",
-		"latency": 128
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "getjoberrors",
-		"latency": 1024
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "getjoberrors",
-		"latency": 2048
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "deletepublicstorage",
-		"latency": 2
-	},
-	"value": 7
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "deletepublicstorage",
-		"latency": 4
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "deletepublicstorage",
-		"latency": 16
-	},
-	"value": 12
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "deletepublicstorage",
-		"latency": 64
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "deletepublicstorage",
-		"latency": 128
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "deletepublicstorage",
-		"latency": 1024
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "deletepublicstorage",
-		"latency": 2048
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "headpublicstorage",
-		"latency": 2
-	},
-	"value": 9
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "headpublicstorage",
-		"latency": 4
-	},
-	"value": 6
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "headpublicstorage",
-		"latency": 16
-	},
-	"value": 7
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "headpublicstorage",
-		"latency": 1024
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "headpublicstorage",
-		"latency": 2048
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "getpublicstorage",
-		"latency": 2
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "getpublicstorage",
-		"latency": 16
-	},
-	"value": 6
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "getpublicstorage",
-		"latency": 128
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "getpublicstorage",
-		"latency": 1024
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "getpublicstorage",
-		"latency": 2048
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "putdirectory",
-		"latency": 2
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "putdirectory",
-		"latency": 4
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "putdirectory",
-		"latency": 16
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "putdirectory",
-		"latency": 128
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "putdirectory",
-		"latency": 1024
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "putdirectory",
-		"latency": 2048
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "getstorage",
-		"latency": 2
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "getstorage",
-		"latency": 4
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "getstorage",
-		"latency": 16
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "getstorage",
-		"latency": 128
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "getstorage",
-		"latency": 1024
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "sherri",
-		"operation": "getstorage",
-		"latency": 2048
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "deletestorage",
-		"latency": 1
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "deletestorage",
-		"latency": 2
-	},
-	"value": 8
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "deletestorage",
-		"latency": 4
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "deletestorage",
-		"latency": 16
-	},
-	"value": 13
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "deletestorage",
-		"latency": 128
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "deletestorage",
-		"latency": 1024
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "deletestorage",
-		"latency": 2048
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "headstorage",
-		"latency": 1
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "headstorage",
-		"latency": 2
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "headstorage",
-		"latency": 4
-	},
-	"value": 6
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "headstorage",
-		"latency": 16
-	},
-	"value": 8
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "headstorage",
-		"latency": 128
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "headstorage",
-		"latency": 1024
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "putobject",
-		"latency": 1
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "putobject",
-		"latency": 4
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "putobject",
-		"latency": 16
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "putobject",
-		"latency": 128
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "putobject",
-		"latency": 2048
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "putpublicobject",
-		"latency": 2
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "putpublicobject",
-		"latency": 4
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "putpublicobject",
-		"latency": 16
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "putpublicobject",
-		"latency": 128
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "putpublicobject",
-		"latency": 1024
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "putpublicobject",
-		"latency": 2048
-	},
-	"value": 9
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "headpublicstorage",
-		"latency": 2
-	},
-	"value": 8
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "headpublicstorage",
-		"latency": 4
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "headpublicstorage",
-		"latency": 16
-	},
-	"value": 7
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "headpublicstorage",
-		"latency": 64
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "headpublicstorage",
-		"latency": 128
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "headpublicstorage",
-		"latency": 1024
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "headpublicstorage",
-		"latency": 2048
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "deletepublicstorage",
-		"latency": 1
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "deletepublicstorage",
-		"latency": 2
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "deletepublicstorage",
-		"latency": 4
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "deletepublicstorage",
-		"latency": 16
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "deletepublicstorage",
-		"latency": 128
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "deletepublicstorage",
-		"latency": 1024
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "deletepublicstorage",
-		"latency": 2048
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "putdirectory",
-		"latency": 2
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "putdirectory",
-		"latency": 4
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "putdirectory",
-		"latency": 16
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "putdirectory",
-		"latency": 128
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "putdirectory",
-		"latency": 2048
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "getstorage",
-		"latency": 1
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "getstorage",
-		"latency": 2
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "getstorage",
-		"latency": 4
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "getstorage",
-		"latency": 16
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "getstorage",
-		"latency": 64
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "getstorage",
-		"latency": 128
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "getstorage",
-		"latency": 1024
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "getstorage",
-		"latency": 2048
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "getpublicstorage",
-		"latency": 1
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "getpublicstorage",
-		"latency": 2
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "getpublicstorage",
-		"latency": 4
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "getpublicstorage",
-		"latency": 16
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "getpublicstorage",
-		"latency": 128
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "getpublicstorage",
-		"latency": 1024
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "getpublicstorage",
-		"latency": 2048
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "getjoberrors",
-		"latency": 1
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "getjoberrors",
-		"latency": 2
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "getjoberrors",
-		"latency": 4
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "getjoberrors",
-		"latency": 16
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "getjoberrors",
-		"latency": 128
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "getjoberrors",
-		"latency": 1024
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "kearney",
-		"operation": "getjoberrors",
-		"latency": 2048
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "deletestorage",
-		"latency": 2
-	},
-	"value": 6
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "deletestorage",
-		"latency": 4
-	},
-	"value": 7
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "deletestorage",
-		"latency": 16
-	},
-	"value": 7
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "deletestorage",
-		"latency": 128
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "deletestorage",
-		"latency": 2048
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "putpublicobject",
-		"latency": 2
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "putpublicobject",
-		"latency": 4
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "putpublicobject",
-		"latency": 16
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "putpublicobject",
-		"latency": 128
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "putpublicobject",
-		"latency": 1024
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "putpublicobject",
-		"latency": 2048
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "deletepublicstorage",
-		"latency": 1
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "deletepublicstorage",
-		"latency": 2
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "deletepublicstorage",
-		"latency": 4
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "deletepublicstorage",
-		"latency": 16
-	},
-	"value": 8
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "deletepublicstorage",
-		"latency": 1024
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "deletepublicstorage",
-		"latency": 2048
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "putdirectory",
-		"latency": 2
-	},
-	"value": 6
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "putdirectory",
-		"latency": 4
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "putdirectory",
-		"latency": 16
-	},
-	"value": 7
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "putdirectory",
-		"latency": 64
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "putdirectory",
-		"latency": 1024
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "putdirectory",
-		"latency": 2048
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "getjoberrors",
-		"latency": 1
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "getjoberrors",
-		"latency": 2
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "getjoberrors",
-		"latency": 4
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "getjoberrors",
-		"latency": 16
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "getjoberrors",
-		"latency": 128
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "getjoberrors",
-		"latency": 1024
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "getjoberrors",
-		"latency": 2048
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "putobject",
-		"latency": 1
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "putobject",
-		"latency": 2
-	},
-	"value": 7
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "putobject",
-		"latency": 4
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "putobject",
-		"latency": 16
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "putobject",
-		"latency": 128
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "putobject",
-		"latency": 1024
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "putobject",
-		"latency": 2048
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "headpublicstorage",
-		"latency": 1
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "headpublicstorage",
-		"latency": 2
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "headpublicstorage",
-		"latency": 4
-	},
-	"value": 6
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "headpublicstorage",
-		"latency": 16
-	},
-	"value": 10
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "headpublicstorage",
-		"latency": 64
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "headpublicstorage",
-		"latency": 128
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "headpublicstorage",
-		"latency": 1024
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "headpublicstorage",
-		"latency": 2048
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "getstorage",
-		"latency": 2
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "getstorage",
-		"latency": 4
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "getstorage",
-		"latency": 16
-	},
-	"value": 9
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "getstorage",
-		"latency": 128
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "getstorage",
-		"latency": 1024
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "getstorage",
-		"latency": 2048
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "headstorage",
-		"latency": 1
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "headstorage",
-		"latency": 2
-	},
-	"value": 8
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "headstorage",
-		"latency": 4
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "headstorage",
-		"latency": 16
-	},
-	"value": 10
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "headstorage",
-		"latency": 128
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "headstorage",
-		"latency": 1024
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "headstorage",
-		"latency": 2048
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "getpublicstorage",
-		"latency": 1
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "getpublicstorage",
-		"latency": 2
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "getpublicstorage",
-		"latency": 4
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "getpublicstorage",
-		"latency": 16
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "getpublicstorage",
-		"latency": 128
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "janey",
-		"operation": "getpublicstorage",
-		"latency": 2048
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "putdirectory",
-		"latency": 2
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "putdirectory",
-		"latency": 4
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "putdirectory",
-		"latency": 16
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "putdirectory",
-		"latency": 64
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "putdirectory",
-		"latency": 128
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "putdirectory",
-		"latency": 1024
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "putdirectory",
-		"latency": 2048
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "putpublicobject",
-		"latency": 1
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "putpublicobject",
-		"latency": 2
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "putpublicobject",
-		"latency": 4
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "putpublicobject",
-		"latency": 16
-	},
-	"value": 8
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "putpublicobject",
-		"latency": 128
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "putpublicobject",
-		"latency": 1024
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "putpublicobject",
-		"latency": 2048
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "deletestorage",
-		"latency": 1
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "deletestorage",
-		"latency": 2
-	},
-	"value": 8
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "deletestorage",
-		"latency": 4
-	},
-	"value": 6
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "deletestorage",
-		"latency": 16
-	},
-	"value": 11
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "deletestorage",
-		"latency": 64
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "deletestorage",
-		"latency": 2048
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "deletepublicstorage",
-		"latency": 2
-	},
-	"value": 6
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "deletepublicstorage",
-		"latency": 4
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "deletepublicstorage",
-		"latency": 16
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "deletepublicstorage",
-		"latency": 128
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "deletepublicstorage",
-		"latency": 1024
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "deletepublicstorage",
-		"latency": 2048
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "getstorage",
-		"latency": 2
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "getstorage",
-		"latency": 4
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "getstorage",
-		"latency": 16
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "getstorage",
-		"latency": 64
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "getstorage",
-		"latency": 128
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "getstorage",
-		"latency": 2048
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "getpublicstorage",
-		"latency": 2
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "getpublicstorage",
-		"latency": 4
-	},
-	"value": 7
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "getpublicstorage",
-		"latency": 16
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "getpublicstorage",
-		"latency": 64
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "getpublicstorage",
-		"latency": 128
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "getpublicstorage",
-		"latency": 1024
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "getpublicstorage",
-		"latency": 2048
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "headstorage",
-		"latency": 1
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "headstorage",
-		"latency": 2
-	},
-	"value": 7
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "headstorage",
-		"latency": 4
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "headstorage",
-		"latency": 16
-	},
-	"value": 7
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "headstorage",
-		"latency": 128
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "headstorage",
-		"latency": 1024
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "headstorage",
-		"latency": 2048
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "getjoberrors",
-		"latency": 1
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "getjoberrors",
-		"latency": 2
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "getjoberrors",
-		"latency": 4
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "getjoberrors",
-		"latency": 16
-	},
-	"value": 8
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "getjoberrors",
-		"latency": 64
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "getjoberrors",
-		"latency": 1024
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "getjoberrors",
-		"latency": 2048
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "headpublicstorage",
-		"latency": 1
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "headpublicstorage",
-		"latency": 2
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "headpublicstorage",
-		"latency": 4
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "headpublicstorage",
-		"latency": 16
-	},
-	"value": 10
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "headpublicstorage",
-		"latency": 64
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "headpublicstorage",
-		"latency": 128
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "headpublicstorage",
-		"latency": 2048
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "putobject",
-		"latency": 2
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "putobject",
-		"latency": 4
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "putobject",
-		"latency": 16
-	},
-	"value": 6
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "putobject",
-		"latency": 64
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "putobject",
-		"latency": 128
-	},
-	"value": 2
-}
-{
-	"fields": {
-		"host": "ralph",
-		"operation": "putobject",
-		"latency": 2048
-	},
-	"value": 1
-}
+{"fields":{"host":"janey","operation":"deletepublicstorage","latency":1},"value":3}
+{"fields":{"host":"janey","operation":"deletepublicstorage","latency":1024},"value":2}
+{"fields":{"host":"janey","operation":"deletepublicstorage","latency":16},"value":8}
+{"fields":{"host":"janey","operation":"deletepublicstorage","latency":2},"value":4}
+{"fields":{"host":"janey","operation":"deletepublicstorage","latency":2048},"value":2}
+{"fields":{"host":"janey","operation":"deletepublicstorage","latency":4},"value":5}
+{"fields":{"host":"janey","operation":"deletestorage","latency":128},"value":1}
+{"fields":{"host":"janey","operation":"deletestorage","latency":16},"value":7}
+{"fields":{"host":"janey","operation":"deletestorage","latency":2},"value":6}
+{"fields":{"host":"janey","operation":"deletestorage","latency":2048},"value":3}
+{"fields":{"host":"janey","operation":"deletestorage","latency":4},"value":7}
+{"fields":{"host":"janey","operation":"getjoberrors","latency":1},"value":1}
+{"fields":{"host":"janey","operation":"getjoberrors","latency":1024},"value":3}
+{"fields":{"host":"janey","operation":"getjoberrors","latency":128},"value":1}
+{"fields":{"host":"janey","operation":"getjoberrors","latency":16},"value":5}
+{"fields":{"host":"janey","operation":"getjoberrors","latency":2},"value":3}
+{"fields":{"host":"janey","operation":"getjoberrors","latency":2048},"value":3}
+{"fields":{"host":"janey","operation":"getjoberrors","latency":4},"value":2}
+{"fields":{"host":"janey","operation":"getpublicstorage","latency":1},"value":1}
+{"fields":{"host":"janey","operation":"getpublicstorage","latency":128},"value":2}
+{"fields":{"host":"janey","operation":"getpublicstorage","latency":16},"value":5}
+{"fields":{"host":"janey","operation":"getpublicstorage","latency":2},"value":1}
+{"fields":{"host":"janey","operation":"getpublicstorage","latency":2048},"value":1}
+{"fields":{"host":"janey","operation":"getpublicstorage","latency":4},"value":2}
+{"fields":{"host":"janey","operation":"getstorage","latency":1024},"value":1}
+{"fields":{"host":"janey","operation":"getstorage","latency":128},"value":1}
+{"fields":{"host":"janey","operation":"getstorage","latency":16},"value":9}
+{"fields":{"host":"janey","operation":"getstorage","latency":2},"value":1}
+{"fields":{"host":"janey","operation":"getstorage","latency":2048},"value":2}
+{"fields":{"host":"janey","operation":"getstorage","latency":4},"value":1}
+{"fields":{"host":"janey","operation":"headpublicstorage","latency":1},"value":2}
+{"fields":{"host":"janey","operation":"headpublicstorage","latency":1024},"value":1}
+{"fields":{"host":"janey","operation":"headpublicstorage","latency":128},"value":3}
+{"fields":{"host":"janey","operation":"headpublicstorage","latency":16},"value":10}
+{"fields":{"host":"janey","operation":"headpublicstorage","latency":2},"value":3}
+{"fields":{"host":"janey","operation":"headpublicstorage","latency":2048},"value":2}
+{"fields":{"host":"janey","operation":"headpublicstorage","latency":4},"value":6}
+{"fields":{"host":"janey","operation":"headpublicstorage","latency":64},"value":1}
+{"fields":{"host":"janey","operation":"headstorage","latency":1},"value":3}
+{"fields":{"host":"janey","operation":"headstorage","latency":1024},"value":5}
+{"fields":{"host":"janey","operation":"headstorage","latency":128},"value":2}
+{"fields":{"host":"janey","operation":"headstorage","latency":16},"value":10}
+{"fields":{"host":"janey","operation":"headstorage","latency":2},"value":8}
+{"fields":{"host":"janey","operation":"headstorage","latency":2048},"value":4}
+{"fields":{"host":"janey","operation":"headstorage","latency":4},"value":2}
+{"fields":{"host":"janey","operation":"putdirectory","latency":1024},"value":1}
+{"fields":{"host":"janey","operation":"putdirectory","latency":16},"value":7}
+{"fields":{"host":"janey","operation":"putdirectory","latency":2},"value":6}
+{"fields":{"host":"janey","operation":"putdirectory","latency":2048},"value":2}
+{"fields":{"host":"janey","operation":"putdirectory","latency":4},"value":5}
+{"fields":{"host":"janey","operation":"putdirectory","latency":64},"value":1}
+{"fields":{"host":"janey","operation":"putobject","latency":1},"value":3}
+{"fields":{"host":"janey","operation":"putobject","latency":1024},"value":1}
+{"fields":{"host":"janey","operation":"putobject","latency":128},"value":1}
+{"fields":{"host":"janey","operation":"putobject","latency":16},"value":5}
+{"fields":{"host":"janey","operation":"putobject","latency":2},"value":7}
+{"fields":{"host":"janey","operation":"putobject","latency":2048},"value":4}
+{"fields":{"host":"janey","operation":"putobject","latency":4},"value":1}
+{"fields":{"host":"janey","operation":"putpublicobject","latency":1024},"value":2}
+{"fields":{"host":"janey","operation":"putpublicobject","latency":128},"value":3}
+{"fields":{"host":"janey","operation":"putpublicobject","latency":16},"value":4}
+{"fields":{"host":"janey","operation":"putpublicobject","latency":2},"value":1}
+{"fields":{"host":"janey","operation":"putpublicobject","latency":2048},"value":2}
+{"fields":{"host":"janey","operation":"putpublicobject","latency":4},"value":1}
+{"fields":{"host":"kearney","operation":"deletepublicstorage","latency":1},"value":1}
+{"fields":{"host":"kearney","operation":"deletepublicstorage","latency":1024},"value":2}
+{"fields":{"host":"kearney","operation":"deletepublicstorage","latency":128},"value":3}
+{"fields":{"host":"kearney","operation":"deletepublicstorage","latency":16},"value":5}
+{"fields":{"host":"kearney","operation":"deletepublicstorage","latency":2},"value":3}
+{"fields":{"host":"kearney","operation":"deletepublicstorage","latency":2048},"value":4}
+{"fields":{"host":"kearney","operation":"deletepublicstorage","latency":4},"value":3}
+{"fields":{"host":"kearney","operation":"deletestorage","latency":1},"value":1}
+{"fields":{"host":"kearney","operation":"deletestorage","latency":1024},"value":1}
+{"fields":{"host":"kearney","operation":"deletestorage","latency":128},"value":1}
+{"fields":{"host":"kearney","operation":"deletestorage","latency":16},"value":13}
+{"fields":{"host":"kearney","operation":"deletestorage","latency":2},"value":8}
+{"fields":{"host":"kearney","operation":"deletestorage","latency":2048},"value":5}
+{"fields":{"host":"kearney","operation":"deletestorage","latency":4},"value":4}
+{"fields":{"host":"kearney","operation":"getjoberrors","latency":1},"value":1}
+{"fields":{"host":"kearney","operation":"getjoberrors","latency":1024},"value":1}
+{"fields":{"host":"kearney","operation":"getjoberrors","latency":128},"value":1}
+{"fields":{"host":"kearney","operation":"getjoberrors","latency":16},"value":3}
+{"fields":{"host":"kearney","operation":"getjoberrors","latency":2},"value":2}
+{"fields":{"host":"kearney","operation":"getjoberrors","latency":2048},"value":2}
+{"fields":{"host":"kearney","operation":"getjoberrors","latency":4},"value":2}
+{"fields":{"host":"kearney","operation":"getpublicstorage","latency":1},"value":1}
+{"fields":{"host":"kearney","operation":"getpublicstorage","latency":1024},"value":1}
+{"fields":{"host":"kearney","operation":"getpublicstorage","latency":128},"value":2}
+{"fields":{"host":"kearney","operation":"getpublicstorage","latency":16},"value":5}
+{"fields":{"host":"kearney","operation":"getpublicstorage","latency":2},"value":3}
+{"fields":{"host":"kearney","operation":"getpublicstorage","latency":2048},"value":1}
+{"fields":{"host":"kearney","operation":"getpublicstorage","latency":4},"value":3}
+{"fields":{"host":"kearney","operation":"getstorage","latency":1},"value":4}
+{"fields":{"host":"kearney","operation":"getstorage","latency":1024},"value":1}
+{"fields":{"host":"kearney","operation":"getstorage","latency":128},"value":1}
+{"fields":{"host":"kearney","operation":"getstorage","latency":16},"value":2}
+{"fields":{"host":"kearney","operation":"getstorage","latency":2},"value":1}
+{"fields":{"host":"kearney","operation":"getstorage","latency":2048},"value":3}
+{"fields":{"host":"kearney","operation":"getstorage","latency":4},"value":2}
+{"fields":{"host":"kearney","operation":"getstorage","latency":64},"value":1}
+{"fields":{"host":"kearney","operation":"headpublicstorage","latency":1024},"value":2}
+{"fields":{"host":"kearney","operation":"headpublicstorage","latency":128},"value":2}
+{"fields":{"host":"kearney","operation":"headpublicstorage","latency":16},"value":7}
+{"fields":{"host":"kearney","operation":"headpublicstorage","latency":2},"value":8}
+{"fields":{"host":"kearney","operation":"headpublicstorage","latency":2048},"value":2}
+{"fields":{"host":"kearney","operation":"headpublicstorage","latency":4},"value":3}
+{"fields":{"host":"kearney","operation":"headpublicstorage","latency":64},"value":1}
+{"fields":{"host":"kearney","operation":"headstorage","latency":1},"value":4}
+{"fields":{"host":"kearney","operation":"headstorage","latency":1024},"value":5}
+{"fields":{"host":"kearney","operation":"headstorage","latency":128},"value":1}
+{"fields":{"host":"kearney","operation":"headstorage","latency":16},"value":8}
+{"fields":{"host":"kearney","operation":"headstorage","latency":2},"value":1}
+{"fields":{"host":"kearney","operation":"headstorage","latency":4},"value":6}
+{"fields":{"host":"kearney","operation":"putdirectory","latency":128},"value":1}
+{"fields":{"host":"kearney","operation":"putdirectory","latency":16},"value":2}
+{"fields":{"host":"kearney","operation":"putdirectory","latency":2},"value":5}
+{"fields":{"host":"kearney","operation":"putdirectory","latency":2048},"value":2}
+{"fields":{"host":"kearney","operation":"putdirectory","latency":4},"value":2}
+{"fields":{"host":"kearney","operation":"putobject","latency":1},"value":1}
+{"fields":{"host":"kearney","operation":"putobject","latency":128},"value":2}
+{"fields":{"host":"kearney","operation":"putobject","latency":16},"value":4}
+{"fields":{"host":"kearney","operation":"putobject","latency":2048},"value":3}
+{"fields":{"host":"kearney","operation":"putobject","latency":4},"value":2}
+{"fields":{"host":"kearney","operation":"putpublicobject","latency":1024},"value":1}
+{"fields":{"host":"kearney","operation":"putpublicobject","latency":128},"value":2}
+{"fields":{"host":"kearney","operation":"putpublicobject","latency":16},"value":2}
+{"fields":{"host":"kearney","operation":"putpublicobject","latency":2},"value":2}
+{"fields":{"host":"kearney","operation":"putpublicobject","latency":2048},"value":9}
+{"fields":{"host":"kearney","operation":"putpublicobject","latency":4},"value":4}
+{"fields":{"host":"ralph","operation":"deletepublicstorage","latency":1024},"value":3}
+{"fields":{"host":"ralph","operation":"deletepublicstorage","latency":128},"value":1}
+{"fields":{"host":"ralph","operation":"deletepublicstorage","latency":16},"value":5}
+{"fields":{"host":"ralph","operation":"deletepublicstorage","latency":2},"value":6}
+{"fields":{"host":"ralph","operation":"deletepublicstorage","latency":2048},"value":5}
+{"fields":{"host":"ralph","operation":"deletepublicstorage","latency":4},"value":3}
+{"fields":{"host":"ralph","operation":"deletestorage","latency":1},"value":3}
+{"fields":{"host":"ralph","operation":"deletestorage","latency":16},"value":11}
+{"fields":{"host":"ralph","operation":"deletestorage","latency":2},"value":8}
+{"fields":{"host":"ralph","operation":"deletestorage","latency":2048},"value":4}
+{"fields":{"host":"ralph","operation":"deletestorage","latency":4},"value":6}
+{"fields":{"host":"ralph","operation":"deletestorage","latency":64},"value":1}
+{"fields":{"host":"ralph","operation":"getjoberrors","latency":1},"value":1}
+{"fields":{"host":"ralph","operation":"getjoberrors","latency":1024},"value":2}
+{"fields":{"host":"ralph","operation":"getjoberrors","latency":16},"value":8}
+{"fields":{"host":"ralph","operation":"getjoberrors","latency":2},"value":1}
+{"fields":{"host":"ralph","operation":"getjoberrors","latency":2048},"value":1}
+{"fields":{"host":"ralph","operation":"getjoberrors","latency":4},"value":5}
+{"fields":{"host":"ralph","operation":"getjoberrors","latency":64},"value":1}
+{"fields":{"host":"ralph","operation":"getpublicstorage","latency":1024},"value":2}
+{"fields":{"host":"ralph","operation":"getpublicstorage","latency":128},"value":1}
+{"fields":{"host":"ralph","operation":"getpublicstorage","latency":16},"value":2}
+{"fields":{"host":"ralph","operation":"getpublicstorage","latency":2},"value":3}
+{"fields":{"host":"ralph","operation":"getpublicstorage","latency":2048},"value":1}
+{"fields":{"host":"ralph","operation":"getpublicstorage","latency":4},"value":7}
+{"fields":{"host":"ralph","operation":"getpublicstorage","latency":64},"value":1}
+{"fields":{"host":"ralph","operation":"getstorage","latency":128},"value":3}
+{"fields":{"host":"ralph","operation":"getstorage","latency":16},"value":4}
+{"fields":{"host":"ralph","operation":"getstorage","latency":2},"value":4}
+{"fields":{"host":"ralph","operation":"getstorage","latency":2048},"value":2}
+{"fields":{"host":"ralph","operation":"getstorage","latency":4},"value":3}
+{"fields":{"host":"ralph","operation":"getstorage","latency":64},"value":1}
+{"fields":{"host":"ralph","operation":"headpublicstorage","latency":1},"value":1}
+{"fields":{"host":"ralph","operation":"headpublicstorage","latency":128},"value":1}
+{"fields":{"host":"ralph","operation":"headpublicstorage","latency":16},"value":10}
+{"fields":{"host":"ralph","operation":"headpublicstorage","latency":2},"value":1}
+{"fields":{"host":"ralph","operation":"headpublicstorage","latency":2048},"value":4}
+{"fields":{"host":"ralph","operation":"headpublicstorage","latency":4},"value":1}
+{"fields":{"host":"ralph","operation":"headpublicstorage","latency":64},"value":2}
+{"fields":{"host":"ralph","operation":"headstorage","latency":1},"value":1}
+{"fields":{"host":"ralph","operation":"headstorage","latency":1024},"value":1}
+{"fields":{"host":"ralph","operation":"headstorage","latency":128},"value":4}
+{"fields":{"host":"ralph","operation":"headstorage","latency":16},"value":7}
+{"fields":{"host":"ralph","operation":"headstorage","latency":2},"value":7}
+{"fields":{"host":"ralph","operation":"headstorage","latency":2048},"value":3}
+{"fields":{"host":"ralph","operation":"headstorage","latency":4},"value":5}
+{"fields":{"host":"ralph","operation":"putdirectory","latency":1024},"value":1}
+{"fields":{"host":"ralph","operation":"putdirectory","latency":128},"value":2}
+{"fields":{"host":"ralph","operation":"putdirectory","latency":16},"value":5}
+{"fields":{"host":"ralph","operation":"putdirectory","latency":2},"value":2}
+{"fields":{"host":"ralph","operation":"putdirectory","latency":2048},"value":2}
+{"fields":{"host":"ralph","operation":"putdirectory","latency":4},"value":1}
+{"fields":{"host":"ralph","operation":"putdirectory","latency":64},"value":1}
+{"fields":{"host":"ralph","operation":"putobject","latency":128},"value":2}
+{"fields":{"host":"ralph","operation":"putobject","latency":16},"value":6}
+{"fields":{"host":"ralph","operation":"putobject","latency":2},"value":2}
+{"fields":{"host":"ralph","operation":"putobject","latency":2048},"value":1}
+{"fields":{"host":"ralph","operation":"putobject","latency":4},"value":4}
+{"fields":{"host":"ralph","operation":"putobject","latency":64},"value":1}
+{"fields":{"host":"ralph","operation":"putpublicobject","latency":1},"value":1}
+{"fields":{"host":"ralph","operation":"putpublicobject","latency":1024},"value":1}
+{"fields":{"host":"ralph","operation":"putpublicobject","latency":128},"value":1}
+{"fields":{"host":"ralph","operation":"putpublicobject","latency":16},"value":8}
+{"fields":{"host":"ralph","operation":"putpublicobject","latency":2},"value":4}
+{"fields":{"host":"ralph","operation":"putpublicobject","latency":2048},"value":3}
+{"fields":{"host":"ralph","operation":"putpublicobject","latency":4},"value":3}
+{"fields":{"host":"sherri","operation":"deletepublicstorage","latency":1024},"value":3}
+{"fields":{"host":"sherri","operation":"deletepublicstorage","latency":128},"value":4}
+{"fields":{"host":"sherri","operation":"deletepublicstorage","latency":16},"value":12}
+{"fields":{"host":"sherri","operation":"deletepublicstorage","latency":2},"value":7}
+{"fields":{"host":"sherri","operation":"deletepublicstorage","latency":2048},"value":4}
+{"fields":{"host":"sherri","operation":"deletepublicstorage","latency":4},"value":5}
+{"fields":{"host":"sherri","operation":"deletepublicstorage","latency":64},"value":1}
+{"fields":{"host":"sherri","operation":"deletestorage","latency":1024},"value":1}
+{"fields":{"host":"sherri","operation":"deletestorage","latency":128},"value":4}
+{"fields":{"host":"sherri","operation":"deletestorage","latency":16},"value":3}
+{"fields":{"host":"sherri","operation":"deletestorage","latency":2},"value":3}
+{"fields":{"host":"sherri","operation":"deletestorage","latency":2048},"value":4}
+{"fields":{"host":"sherri","operation":"deletestorage","latency":4},"value":4}
+{"fields":{"host":"sherri","operation":"getjoberrors","latency":1},"value":1}
+{"fields":{"host":"sherri","operation":"getjoberrors","latency":1024},"value":1}
+{"fields":{"host":"sherri","operation":"getjoberrors","latency":128},"value":2}
+{"fields":{"host":"sherri","operation":"getjoberrors","latency":16},"value":3}
+{"fields":{"host":"sherri","operation":"getjoberrors","latency":2},"value":3}
+{"fields":{"host":"sherri","operation":"getjoberrors","latency":2048},"value":2}
+{"fields":{"host":"sherri","operation":"getjoberrors","latency":4},"value":4}
+{"fields":{"host":"sherri","operation":"getjoberrors","latency":64},"value":1}
+{"fields":{"host":"sherri","operation":"getpublicstorage","latency":1024},"value":1}
+{"fields":{"host":"sherri","operation":"getpublicstorage","latency":128},"value":3}
+{"fields":{"host":"sherri","operation":"getpublicstorage","latency":16},"value":6}
+{"fields":{"host":"sherri","operation":"getpublicstorage","latency":2},"value":2}
+{"fields":{"host":"sherri","operation":"getpublicstorage","latency":2048},"value":2}
+{"fields":{"host":"sherri","operation":"getstorage","latency":1024},"value":1}
+{"fields":{"host":"sherri","operation":"getstorage","latency":128},"value":1}
+{"fields":{"host":"sherri","operation":"getstorage","latency":16},"value":3}
+{"fields":{"host":"sherri","operation":"getstorage","latency":2},"value":2}
+{"fields":{"host":"sherri","operation":"getstorage","latency":2048},"value":2}
+{"fields":{"host":"sherri","operation":"getstorage","latency":4},"value":3}
+{"fields":{"host":"sherri","operation":"headpublicstorage","latency":1024},"value":1}
+{"fields":{"host":"sherri","operation":"headpublicstorage","latency":16},"value":7}
+{"fields":{"host":"sherri","operation":"headpublicstorage","latency":2},"value":9}
+{"fields":{"host":"sherri","operation":"headpublicstorage","latency":2048},"value":5}
+{"fields":{"host":"sherri","operation":"headpublicstorage","latency":4},"value":6}
+{"fields":{"host":"sherri","operation":"headstorage","latency":1},"value":2}
+{"fields":{"host":"sherri","operation":"headstorage","latency":1024},"value":1}
+{"fields":{"host":"sherri","operation":"headstorage","latency":128},"value":2}
+{"fields":{"host":"sherri","operation":"headstorage","latency":16},"value":11}
+{"fields":{"host":"sherri","operation":"headstorage","latency":2},"value":8}
+{"fields":{"host":"sherri","operation":"headstorage","latency":2048},"value":5}
+{"fields":{"host":"sherri","operation":"headstorage","latency":4},"value":4}
+{"fields":{"host":"sherri","operation":"headstorage","latency":64},"value":2}
+{"fields":{"host":"sherri","operation":"putdirectory","latency":1024},"value":2}
+{"fields":{"host":"sherri","operation":"putdirectory","latency":128},"value":1}
+{"fields":{"host":"sherri","operation":"putdirectory","latency":16},"value":3}
+{"fields":{"host":"sherri","operation":"putdirectory","latency":2},"value":1}
+{"fields":{"host":"sherri","operation":"putdirectory","latency":2048},"value":3}
+{"fields":{"host":"sherri","operation":"putdirectory","latency":4},"value":2}
+{"fields":{"host":"sherri","operation":"putobject","latency":1024},"value":1}
+{"fields":{"host":"sherri","operation":"putobject","latency":128},"value":1}
+{"fields":{"host":"sherri","operation":"putobject","latency":16},"value":6}
+{"fields":{"host":"sherri","operation":"putobject","latency":2},"value":3}
+{"fields":{"host":"sherri","operation":"putobject","latency":2048},"value":1}
+{"fields":{"host":"sherri","operation":"putobject","latency":4},"value":2}
+{"fields":{"host":"sherri","operation":"putobject","latency":64},"value":1}
+{"fields":{"host":"sherri","operation":"putpublicobject","latency":1},"value":2}
+{"fields":{"host":"sherri","operation":"putpublicobject","latency":1024},"value":1}
+{"fields":{"host":"sherri","operation":"putpublicobject","latency":128},"value":1}
+{"fields":{"host":"sherri","operation":"putpublicobject","latency":16},"value":6}
+{"fields":{"host":"sherri","operation":"putpublicobject","latency":2},"value":2}
+{"fields":{"host":"sherri","operation":"putpublicobject","latency":2048},"value":3}
+{"fields":{"host":"wendell","operation":"deletepublicstorage","latency":1},"value":1}
+{"fields":{"host":"wendell","operation":"deletepublicstorage","latency":16},"value":8}
+{"fields":{"host":"wendell","operation":"deletepublicstorage","latency":2},"value":8}
+{"fields":{"host":"wendell","operation":"deletepublicstorage","latency":2048},"value":4}
+{"fields":{"host":"wendell","operation":"deletepublicstorage","latency":4},"value":2}
+{"fields":{"host":"wendell","operation":"deletestorage","latency":1},"value":4}
+{"fields":{"host":"wendell","operation":"deletestorage","latency":1024},"value":2}
+{"fields":{"host":"wendell","operation":"deletestorage","latency":128},"value":2}
+{"fields":{"host":"wendell","operation":"deletestorage","latency":16},"value":4}
+{"fields":{"host":"wendell","operation":"deletestorage","latency":2},"value":6}
+{"fields":{"host":"wendell","operation":"deletestorage","latency":2048},"value":4}
+{"fields":{"host":"wendell","operation":"deletestorage","latency":4},"value":1}
+{"fields":{"host":"wendell","operation":"getjoberrors","latency":128},"value":1}
+{"fields":{"host":"wendell","operation":"getjoberrors","latency":16},"value":9}
+{"fields":{"host":"wendell","operation":"getjoberrors","latency":2},"value":1}
+{"fields":{"host":"wendell","operation":"getjoberrors","latency":2048},"value":3}
+{"fields":{"host":"wendell","operation":"getjoberrors","latency":4},"value":1}
+{"fields":{"host":"wendell","operation":"getpublicstorage","latency":128},"value":1}
+{"fields":{"host":"wendell","operation":"getpublicstorage","latency":16},"value":3}
+{"fields":{"host":"wendell","operation":"getpublicstorage","latency":2},"value":2}
+{"fields":{"host":"wendell","operation":"getpublicstorage","latency":2048},"value":1}
+{"fields":{"host":"wendell","operation":"getpublicstorage","latency":4},"value":1}
+{"fields":{"host":"wendell","operation":"getstorage","latency":1},"value":1}
+{"fields":{"host":"wendell","operation":"getstorage","latency":1024},"value":2}
+{"fields":{"host":"wendell","operation":"getstorage","latency":128},"value":1}
+{"fields":{"host":"wendell","operation":"getstorage","latency":16},"value":6}
+{"fields":{"host":"wendell","operation":"getstorage","latency":2},"value":4}
+{"fields":{"host":"wendell","operation":"getstorage","latency":2048},"value":1}
+{"fields":{"host":"wendell","operation":"getstorage","latency":4},"value":2}
+{"fields":{"host":"wendell","operation":"headpublicstorage","latency":1},"value":2}
+{"fields":{"host":"wendell","operation":"headpublicstorage","latency":1024},"value":4}
+{"fields":{"host":"wendell","operation":"headpublicstorage","latency":128},"value":2}
+{"fields":{"host":"wendell","operation":"headpublicstorage","latency":16},"value":5}
+{"fields":{"host":"wendell","operation":"headpublicstorage","latency":2},"value":6}
+{"fields":{"host":"wendell","operation":"headpublicstorage","latency":2048},"value":5}
+{"fields":{"host":"wendell","operation":"headpublicstorage","latency":4},"value":6}
+{"fields":{"host":"wendell","operation":"headpublicstorage","latency":64},"value":2}
+{"fields":{"host":"wendell","operation":"headstorage","latency":1},"value":1}
+{"fields":{"host":"wendell","operation":"headstorage","latency":1024},"value":3}
+{"fields":{"host":"wendell","operation":"headstorage","latency":16},"value":7}
+{"fields":{"host":"wendell","operation":"headstorage","latency":2},"value":5}
+{"fields":{"host":"wendell","operation":"headstorage","latency":2048},"value":2}
+{"fields":{"host":"wendell","operation":"headstorage","latency":4},"value":4}
+{"fields":{"host":"wendell","operation":"putdirectory","latency":1024},"value":1}
+{"fields":{"host":"wendell","operation":"putdirectory","latency":16},"value":4}
+{"fields":{"host":"wendell","operation":"putdirectory","latency":2},"value":5}
+{"fields":{"host":"wendell","operation":"putdirectory","latency":2048},"value":4}
+{"fields":{"host":"wendell","operation":"putdirectory","latency":4},"value":1}
+{"fields":{"host":"wendell","operation":"putobject","latency":1},"value":1}
+{"fields":{"host":"wendell","operation":"putobject","latency":1024},"value":1}
+{"fields":{"host":"wendell","operation":"putobject","latency":128},"value":2}
+{"fields":{"host":"wendell","operation":"putobject","latency":16},"value":3}
+{"fields":{"host":"wendell","operation":"putobject","latency":2},"value":2}
+{"fields":{"host":"wendell","operation":"putobject","latency":2048},"value":5}
+{"fields":{"host":"wendell","operation":"putobject","latency":4},"value":1}
+{"fields":{"host":"wendell","operation":"putobject","latency":64},"value":1}
+{"fields":{"host":"wendell","operation":"putpublicobject","latency":1024},"value":2}
+{"fields":{"host":"wendell","operation":"putpublicobject","latency":16},"value":5}
+{"fields":{"host":"wendell","operation":"putpublicobject","latency":2},"value":4}
+{"fields":{"host":"wendell","operation":"putpublicobject","latency":4},"value":3}
+{"fields":{"host":"wendell","operation":"putpublicobject","latency":64},"value":1}
 
 # dn scan -b latency[aggr=lquantize;step=100]
 
@@ -7479,208 +2180,38 @@ ralph, putobject
             4100 |                                         0
 
 # dn scan --points -b latency[aggr=lquantize;step=100]
-{
-	"fields": {
-		"latency": 0
-	},
-	"value": 696
-}
-{
-	"fields": {
-		"latency": 100
-	},
-	"value": 93
-}
-{
-	"fields": {
-		"latency": 200
-	},
-	"value": 1
-}
-{
-	"fields": {
-		"latency": 1000
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"latency": 1100
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 1200
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"latency": 1300
-	},
-	"value": 6
-}
-{
-	"fields": {
-		"latency": 1400
-	},
-	"value": 7
-}
-{
-	"fields": {
-		"latency": 1500
-	},
-	"value": 9
-}
-{
-	"fields": {
-		"latency": 1600
-	},
-	"value": 9
-}
-{
-	"fields": {
-		"latency": 1700
-	},
-	"value": 8
-}
-{
-	"fields": {
-		"latency": 1800
-	},
-	"value": 6
-}
-{
-	"fields": {
-		"latency": 1900
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"latency": 2000
-	},
-	"value": 8
-}
-{
-	"fields": {
-		"latency": 2100
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"latency": 2200
-	},
-	"value": 6
-}
-{
-	"fields": {
-		"latency": 2300
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"latency": 2400
-	},
-	"value": 9
-}
-{
-	"fields": {
-		"latency": 2500
-	},
-	"value": 4
-}
-{
-	"fields": {
-		"latency": 2600
-	},
-	"value": 6
-}
-{
-	"fields": {
-		"latency": 2700
-	},
-	"value": 6
-}
-{
-	"fields": {
-		"latency": 2800
-	},
-	"value": 3
-}
-{
-	"fields": {
-		"latency": 2900
-	},
-	"value": 5
-}
-{
-	"fields": {
-		"latency": 3000
-	},
-	"value": 9
-}
-{
-	"fields": {
-		"latency": 3100
-	},
-	"value": 8
-}
-{
-	"fields": {
-		"latency": 3200
-	},
-	"value": 9
-}
-{
-	"fields": {
-		"latency": 3300
-	},
-	"value": 8
-}
-{
-	"fields": {
-		"latency": 3400
-	},
-	"value": 8
-}
-{
-	"fields": {
-		"latency": 3500
-	},
-	"value": 9
-}
-{
-	"fields": {
-		"latency": 3600
-	},
-	"value": 9
-}
-{
-	"fields": {
-		"latency": 3700
-	},
-	"value": 8
-}
-{
-	"fields": {
-		"latency": 3800
-	},
-	"value": 7
-}
-{
-	"fields": {
-		"latency": 3900
-	},
-	"value": 7
-}
-{
-	"fields": {
-		"latency": 4000
-	},
-	"value": 9
-}
+{"fields":{"latency":0},"value":696}
+{"fields":{"latency":100},"value":93}
+{"fields":{"latency":1000},"value":5}
+{"fields":{"latency":1100},"value":3}
+{"fields":{"latency":1200},"value":5}
+{"fields":{"latency":1300},"value":6}
+{"fields":{"latency":1400},"value":7}
+{"fields":{"latency":1500},"value":9}
+{"fields":{"latency":1600},"value":9}
+{"fields":{"latency":1700},"value":8}
+{"fields":{"latency":1800},"value":6}
+{"fields":{"latency":1900},"value":4}
+{"fields":{"latency":200},"value":1}
+{"fields":{"latency":2000},"value":8}
+{"fields":{"latency":2100},"value":5}
+{"fields":{"latency":2200},"value":6}
+{"fields":{"latency":2300},"value":5}
+{"fields":{"latency":2400},"value":9}
+{"fields":{"latency":2500},"value":4}
+{"fields":{"latency":2600},"value":6}
+{"fields":{"latency":2700},"value":6}
+{"fields":{"latency":2800},"value":3}
+{"fields":{"latency":2900},"value":5}
+{"fields":{"latency":3000},"value":9}
+{"fields":{"latency":3100},"value":8}
+{"fields":{"latency":3200},"value":9}
+{"fields":{"latency":3300},"value":8}
+{"fields":{"latency":3400},"value":8}
+{"fields":{"latency":3500},"value":9}
+{"fields":{"latency":3600},"value":9}
+{"fields":{"latency":3700},"value":8}
+{"fields":{"latency":3800},"value":7}
+{"fields":{"latency":3900},"value":7}
+{"fields":{"latency":4000},"value":9}
 

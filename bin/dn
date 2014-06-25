@@ -428,7 +428,7 @@ function cmdScan(cmdname, argv)
 
 function cmdScanOutputRaw(results)
 {
-	console.log(JSON.stringify(results.rows, null, '\t'));
+	console.log(JSON.stringify(results.rows));
 }
 
 function cmdScanOutputPretty(results)

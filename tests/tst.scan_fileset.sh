@@ -13,7 +13,7 @@ function scan
 	echo
 
 	echo "# dn scan --points" "$@"
-	dn scan -R $DATADIR --points "$@"
+	dn scan -R $DATADIR --points "$@" | sort
 	echo
 }
 
