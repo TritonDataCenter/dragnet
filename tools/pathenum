@@ -1,0 +1,26 @@
+#!/usr/bin/env node
+/* vim: set syn=javascript: */
+
+/*
+ * pathenum.js: exercise the path enumerator
+ */
+
+var mod_pathenum = require('../lib/path-enum');
+var pattern, start, end, stream;
+
+pattern = process.argv[2];
+start = new Date(process.argv[3]);
+end = new Date(process.argv[4]);
+stream = mod_pathenum.createPathEnumerator({
+    'pattern': pattern,
+    'timeStart': start,
+    'timeEnd': end
+});
+
+if (stream instanceof Error) {
+	console.error(stream.message);
+	process.exit(1);
+}
+
+stream.on('data', function (chunk) { console.log(chunk); });
+stream.on('end', function () { console.log('(end)'); });
