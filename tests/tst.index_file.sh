@@ -18,11 +18,12 @@ function scan
 
 # Try all the "scan" test cases with an index that should handle them all.
 dn index -c host,operation,req.caller,req.method,latency[aggr=quantize] \
-    $DATADIR/one.log $tmpfile
+    $DATADIR/2014/05-01/one.log $tmpfile
 . $(dirname $0)/scan_testcases.sh
 
 # That should have been pretty exhaustive, but try an index with a filter on it.
-dn index -f '{ "eq": [ "req.method", "GET" ] }' $DATADIR/one.log $tmpfile
+dn index -f '{ "eq": [ "req.method", "GET" ] }' \
+    $DATADIR/2014/05-01/one.log $tmpfile
 scan
 
 rm -f $tmpfile
