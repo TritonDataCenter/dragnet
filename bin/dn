@@ -238,12 +238,13 @@ function cmdQuery(cmdname, argv)
 	var output = cmdScanOutputPretty;
 	var query, queryargs, results, stream;
 	var source, sourceclass, sourceargs;
+	var showcounters = false;
 
 	sourceargs = { 'log': dnLog };
 	queryargs = {};
 	argv.unshift('', '');
 	optparser = new OptionParser(':b:(breakdowns)f:(filter)r(raw)' +
-	    'A:(after)B:(before)I:(indexroot)R:(root)', argv);
+	    'A:(after)B:(before)C(counters)I:(indexroot)R:(root)', argv);
 	while ((option = optparser.getopt()) !== undefined) {
 		switch (option.option) {
 		case 'f':
@@ -270,6 +271,10 @@ function cmdQuery(cmdname, argv)
 
 		case 'B':
 			queryConf['timeBefore'] = option.optarg;
+			break;
+
+		case 'C':
+			showcounters = true;
 			break;
 
 		case 'I':
@@ -341,6 +346,8 @@ function cmdQuery(cmdname, argv)
 	});
 
 	stream.on('end', function () {
+		if (showcounters)
+			cmdScanPrintCounters(results.stats(), true);
 		dnDone = true;
 	});
 }
@@ -613,10 +620,12 @@ function cmdScanOutputPrettyQuantized(results)
 		distr.push([ row[coldefs.length - 1], row[coldefs.length] ]);
 	});
 
-	groups.push({
-	    'label': last,
-	    'distr': distr
-	});
+	if (last !== null) {
+		groups.push({
+		    'label': last,
+		    'distr': distr
+		});
+	}
 
 	groups.sort(function (a, b) {
 		return (a.label.localeCompare(b.label));

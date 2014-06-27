@@ -1545,3 +1545,32 @@ wendell, putpublicobject
 VALUE
   556
 
+# dn query --counters -b __dn_ts[aggr=lquantize;step=86400]
+
+           value  ------------- Distribution ------------- count
+      1398902400 |@@@@@@@@@                                500
+      1398988800 |@@@@@@@@@                                500
+      1399075200 |@@@@@@@@@                                500
+      1399161600 |@@@@@@@@@                                500
+      1399248000 |@@@@                                     250
+      1399334400 |                                         0
+ninputs:          120
+nerr_nonnumeric:  0
+nscanned:         120
+
+# dn query --counters --after 2014-05-02 --before 2014-05-03
+VALUE
+  500
+ninputs:          24
+nerr_nonnumeric:  0
+nscanned:         24
+
+# dn query --counters -b __dn_ts[aggr=lquantize;step=60] --after 2014-05-02T04:05:06.123 --before 2014-05-02T04:15:10
+
+           value  ------------- Distribution ------------- count
+      1399003200 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 22
+      1399003260 |                                         0
+ninputs:          1
+nerr_nonnumeric:  0
+nscanned:         1
+

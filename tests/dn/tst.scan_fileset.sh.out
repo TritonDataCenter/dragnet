@@ -2381,3 +2381,79 @@ wendell, putpublicobject
 {"fields":{"latency":3900},"value":15}
 {"fields":{"latency":4000},"value":13}
 
+# dn scan --counters -b __dn_ts[aggr=lquantize;step=86400]
+
+           value  ------------- Distribution ------------- count
+      1398902400 |@@@@@@@@@                                500
+      1398988800 |@@@@@@@@@                                500
+      1399075200 |@@@@@@@@@                                500
+      1399161600 |@@@@@@@@@                                500
+      1399248000 |@@@@                                     250
+      1399334400 |                                         0
+query_filter_nremoved:  0
+query_filter_nerrors:   0
+ninputs:                2250
+aggr_nprocessed:        2250
+aggr_nerr_nonnumeric:   0
+nscanned:               9
+
+# dn scan --points --counters -b __dn_ts[aggr=lquantize;step=86400]
+query_filter_nremoved:  0
+query_filter_nerrors:   0
+ninputs:                2250
+aggr_nprocessed:        2250
+aggr_nerr_nonnumeric:   0
+nscanned:               9
+{"fields":{"__dn_ts":1398902400},"value":500}
+{"fields":{"__dn_ts":1398988800},"value":500}
+{"fields":{"__dn_ts":1399075200},"value":500}
+{"fields":{"__dn_ts":1399161600},"value":500}
+{"fields":{"__dn_ts":1399248000},"value":250}
+
+# dn scan --counters --time-format=%Y/%m-%d --after 2014-05-02 --before 2014-05-03
+VALUE
+  500
+query_filter_nremoved:  0
+query_filter_nerrors:   0
+ninputs:                500
+aggr_nprocessed:        500
+aggr_nerr_nonnumeric:   0
+nscanned:               2
+
+# dn scan --points --counters --time-format=%Y/%m-%d --after 2014-05-02 --before 2014-05-03
+query_filter_nremoved:  0
+query_filter_nerrors:   0
+ninputs:                500
+aggr_nprocessed:        500
+aggr_nerr_nonnumeric:   0
+nscanned:               2
+{"fields":{},"value":500}
+
+# dn scan --counters --time-format=%Y/%m-%d -b __dn_ts[aggr=lquantize;step=60] --after 2014-05-02T04:05:06.123 --before 2014-05-02T04:15:10
+
+           value  ------------- Distribution ------------- count
+      1399003620 |@@@@@@@@@@@@@@@@@@@@                     2
+      1399003680 |                                         0
+      1399003740 |                                         0
+      1399003800 |                                         0
+      1399003860 |                                         0
+      1399003920 |                                         0
+      1399003980 |@@@@@@@@@@@@@@@@@@@@                     2
+      1399004040 |                                         0
+query_filter_nremoved:  0
+query_filter_nerrors:   0
+ninputs:                4
+aggr_nprocessed:        4
+aggr_nerr_nonnumeric:   0
+nscanned:               2
+
+# dn scan --points --counters --time-format=%Y/%m-%d -b __dn_ts[aggr=lquantize;step=60] --after 2014-05-02T04:05:06.123 --before 2014-05-02T04:15:10
+query_filter_nremoved:  0
+query_filter_nerrors:   0
+ninputs:                4
+aggr_nprocessed:        4
+aggr_nerr_nonnumeric:   0
+nscanned:               2
+{"fields":{"__dn_ts":1399003620},"value":2}
+{"fields":{"__dn_ts":1399003980},"value":2}
+
