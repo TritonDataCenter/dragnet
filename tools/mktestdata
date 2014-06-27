@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* vim: set syn=javascript: */
 
 /*
  * Generate sample data that looks roughly like muskie logs.  The goal is to be
@@ -98,7 +99,9 @@ var config = [ {
 
 function usage()
 {
-	console.error('usage: mktestdata.js NRECORDS');
+	console.error('usage: mktestdata');
+	console.error('       mktestdata NRECORDS');
+	console.error('       mktestdata NRECORDS START_TIME END_TIME');
 	process.exit(2);
 }
 
@@ -106,13 +109,23 @@ function main()
 {
 	var j;
 
-	if (process.argv.length > 3)
+	if (process.argv.length > 5)
 		usage();
 
-	if (process.argv.length == 3) {
+	if (process.argv.length > 2) {
 		nrecords = parseInt(process.argv[2], 10);
 		if (isNaN(nrecords) || nrecords < 0)
 			usage();
+
+		if (process.argv.length > 3) {
+			if (process.argv.length != 5)
+				usage();
+
+			mindate = Date.parse(process.argv[3]);
+			maxdate = Date.parse(process.argv[4]);
+			if (isNaN(mindate) || isNaN(maxdate))
+				usage();
+		}
 	} else {
 		nrecords = 1000;
 	}

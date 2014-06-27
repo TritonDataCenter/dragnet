@@ -22,7 +22,7 @@ JSON_FILES	 = package.json
 JS_FILES	:= $(shell find lib schema -name '*.js')
 JS_FILES	+= bin/dn \
 		   tools/pathenum \
-		   tools/mktestdata.js \
+		   tools/mktestdata \
 		   tools/validate-schema
 JSL_FILES_NODE   = $(JS_FILES)
 JSSTYLE_FILES	 = $(JS_FILES)
