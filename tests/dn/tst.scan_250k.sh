@@ -2,8 +2,11 @@
 # tst.scan_250k.sh: tests memory usage scanning 250K records
 #
 
+set -o errexit
+. $(dirname $0)/common.sh
+
 # location of tools, relative to this test file
-tst_toolsdir="$(dirname $0)/../tools"
+tst_toolsdir="$(dirname $0)/../../tools"
 
 # number of records to process
 tst_nrecords=250000

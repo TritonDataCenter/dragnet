@@ -5,15 +5,16 @@
 #
 
 set -o errexit
+. $(dirname $0)/common.sh
 
 function scan
 {
 	echo "# dn scan" "$@"
-	dn scan -R $DATADIR "$@"
+	dn scan -R $DN_DATADIR "$@"
 	echo
 
 	echo "# dn scan --points" "$@"
-	dn scan -R $DATADIR --points "$@" | sort -d
+	dn scan -R $DN_DATADIR --points "$@" | sort -d
 	echo
 }
 
