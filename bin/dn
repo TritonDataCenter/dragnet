@@ -100,13 +100,14 @@ function cmdIndex(cmdname, argv)
 	var showcounters = false;
 	var sourceclass, sourceargs;
 	var source, index, indexop;
-	var indexargs;
+	var indexargs, timefmt;
 
 	sourceargs = { 'log': dnLog };
 	indexargs = {};
 	argv.unshift('', '');
-	optparser = new OptionParser(':c:(columns)f:(filter)C(counters)' +
-	    'I:(indexroot)R:(dataroot)S(show-invalid)', argv);
+	optparser = new OptionParser(':c:(columns)f:(filter)A:(after)' +
+	    'B:(before)C(counters)I:(indexroot)R:(dataroot)' +
+	    'S(show-invalid)T:(time-format)', argv);
 	while ((option = optparser.getopt()) !== undefined) {
 		switch (option.option) {
 		case 'c':
@@ -121,6 +122,14 @@ function cmdIndex(cmdname, argv)
 			} catch (ex) {
 				usage(new VError(ex, 'invalid filter'));
 			}
+			break;
+
+		case 'A':
+			indexConf['timeAfter'] = option.optarg;
+			break;
+
+		case 'B':
+			indexConf['timeBefore'] = option.optarg;
 			break;
 
 		case 'C':
@@ -140,10 +149,21 @@ function cmdIndex(cmdname, argv)
 			showinvalid = true;
 			break;
 
+		case 'T':
+			timefmt = option.optarg;
+			break;
+
 		default:
 			usage();
 			break;
 		}
+	}
+
+	if (timefmt === undefined &&
+	    (indexConf['timeAfter'] !== undefined ||
+	    indexConf['timeBefore'] !== undefined)) {
+		usage(new VError('must specify --time-format ' +
+		    'with --before or --after'));
 	}
 
 	optind = optparser.optind();
@@ -175,10 +195,16 @@ function cmdIndex(cmdname, argv)
 	indexargs['index'] = index;
 	indexargs['format'] = 'json';
 	indexargs['timeField'] = dnTimeField;
+	indexargs['timeFormat'] = timefmt;
 	indexop = source.index(indexargs);
 	indexop.on('error', fatal);
 
 	if (showinvalid) {
+		indexop.on('find_error', function (fileinfo) {
+			console.error('warn: "%s": %s', fileinfo.path,
+			    fileinfo.error.message);
+		});
+
 		indexop.on('invalid_record', function (str, perr, idx) {
 			console.error('warn: bad record at line %d: %s',
 			    idx, perr.toString());
@@ -212,7 +238,6 @@ function cmdQuery(cmdname, argv)
 	var output = cmdScanOutputPretty;
 	var query, queryargs, results, stream;
 	var source, sourceclass, sourceargs;
-	var timebefore, timeafter;
 
 	sourceargs = { 'log': dnLog };
 	queryargs = {};
@@ -240,17 +265,11 @@ function cmdQuery(cmdname, argv)
 			break;
 
 		case 'A':
-			timeafter = new Date(option.optarg);
-			if (isNaN(timeafter.getTime()))
-				usage(new VError('invalid "after" time: "%s"',
-				    option.optarg));
+			queryConf['timeAfter'] = option.optarg;
 			break;
 
 		case 'B':
-			timebefore = new Date(option.optarg);
-			if (isNaN(timebefore.getTime()))
-				usage(new VError('invalid "before" time: "%s"',
-				    option.optarg));
+			queryConf['timeBefore'] = option.optarg;
 			break;
 
 		case 'I':
@@ -278,12 +297,6 @@ function cmdQuery(cmdname, argv)
 		}
 	}
 
-	if (timebefore !== undefined && timeafter === undefined)
-		usage(new VError('must specify --after with --before'));
-
-	if (timebefore === undefined && timeafter !== undefined)
-		usage(new VError('must specify --before with --after'));
-
 	if (sourceclass === undefined) {
 		if (optparser.optind() != argv.length - 1)
 			usage();
@@ -305,8 +318,6 @@ function cmdQuery(cmdname, argv)
 		fatal(query);
 
 	queryargs['query'] = query;
-	queryargs['timeBefore'] = timebefore;
-	queryargs['timeAfter'] = timeafter;
 	source = new sourceclass(sourceargs);
 	stream = new SkinnerFlattener({
 	    'skinnerOptions': mod_dragnet_impl.queryAggrStreamConfig({
@@ -315,6 +326,11 @@ function cmdQuery(cmdname, argv)
 	});
 	results = source.query(queryargs);
 	results.pipe(stream);
+
+	results.on('find_error', function (fileinfo) {
+		console.error('warn: "%s": %s', fileinfo.path,
+		    fileinfo.error.message);
+	});
 
 	stream.on('data', function (rows) {
 		output({
@@ -341,7 +357,7 @@ function cmdScan(cmdname, argv)
 	var aspoints = false;
 	var sourceclass, sourceargs;
 	var source, query, scan, stream, tail;
-	var timefmt, timebefore, timeafter;
+	var timefmt;
 
 	sourceargs = { 'log': dnLog };
 	argv.unshift('', '');
@@ -374,17 +390,11 @@ function cmdScan(cmdname, argv)
 			break;
 
 		case 'A':
-			timeafter = new Date(option.optarg);
-			if (isNaN(timeafter.getTime()))
-				usage(new VError('invalid "after" time: "%s"',
-				    option.optarg));
+			queryConf['timeAfter'] = option.optarg;
 			break;
 
 		case 'B':
-			timebefore = new Date(option.optarg);
-			if (isNaN(timebefore.getTime()))
-				usage(new VError('invalid "before" time: "%s"',
-				    option.optarg));
+			queryConf['timeBefore'] = option.optarg;
 			break;
 
 		case 'C':
@@ -411,16 +421,11 @@ function cmdScan(cmdname, argv)
 	}
 
 	if (timefmt === undefined &&
-	    (timebefore !== undefined || timeafter !== undefined)) {
+	    (queryConf['timeAfter'] !== undefined ||
+	    queryConf['timeBefore'] !== undefined)) {
 		usage(new VError('must specify --time-format ' +
 		    'with --before or --after'));
 	}
-
-	if (timebefore !== undefined && timeafter === undefined)
-		usage(new VError('must specify --after with --before'));
-
-	if (timebefore === undefined && timeafter !== undefined)
-		usage(new VError('must specify --before with --after'));
 
 	if (sourceclass === undefined) {
 		if (optparser.optind() != argv.length - 1)
@@ -438,13 +443,16 @@ function cmdScan(cmdname, argv)
 	    'query': query,
 	    'format': 'json',
 	    'timeField': dnTimeField,
-	    'timeBefore': timebefore,
-	    'timeFormat': timefmt,
-	    'timeAfter': timeafter
+	    'timeFormat': timefmt
 	});
 	scan.on('error', fatal);
 
 	if (showinvalid) {
+		scan.on('find_error', function (fileinfo) {
+			console.error('warn: "%s": %s', fileinfo.path,
+			    fileinfo.error.message);
+		});
+
 		scan.on('invalid_record', function (str, perr, idx) {
 			console.error('warn: bad record at line %d: %s',
 			    idx, perr.toString());
