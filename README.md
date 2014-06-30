@@ -200,15 +200,13 @@ last one:
          64 GET        getstorage           3
         128 GET        getstorage           1
 
-Although it's a little janky, you can get per-interval results by aggregating on
-the built-in "\_\_dn\_ts" field.  This is a synthetic field added by "dn" based
-on parsing the "time" field of each JSON object.  It's a Unix timestamp.  **This
-is an implementation detail, so don't hardcode it into anything**.  It will be
-replaced with a better interface.  But for an example, here's how you can get
-per-hour data from a 3-hour log file:
+You can get per-interval results by specifying one of the fields as a "date"
+parsed from some other field and then aggregating on it.  The value of such a
+field is a Unix timestamp.  For an example, here's how you can get per-hour data
+from a 3-hour log file, where the timestamp is stored in a field called "time":
 
-    $ dn scan -b '__dn_ts[aggr=lquantize;step=3600],req.method' mydata.log
-       __DN_TS REQ.METHOD VALUE
+    $ dn scan -b 'timestamp[date;field=time;aggr=lquantize;step=3600],req.method' mydata.log
+     TIMESTAMP REQ.METHOD VALUE
     1401570000 DELETE        82
     1401570000 GET           84
     1401570000 HEAD          86

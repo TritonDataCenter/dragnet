@@ -35,7 +35,6 @@ var dnUsage = [
     '       dn query QUERY_OPTIONS INDEX_FILENAME'
 ].join('');
 var dnDone = false;
-var dnTimeField = 'time'; /* XXX */
 var dnTrackTime = false;
 var dnLog;
 
@@ -194,7 +193,6 @@ function cmdIndex(cmdname, argv)
 
 	indexargs['index'] = index;
 	indexargs['format'] = 'json';
-	indexargs['timeField'] = dnTimeField;
 	indexargs['timeFormat'] = timefmt;
 	indexop = source.index(indexargs);
 	indexop.on('error', fatal);
@@ -244,7 +242,8 @@ function cmdQuery(cmdname, argv)
 	queryargs = {};
 	argv.unshift('', '');
 	optparser = new OptionParser(':b:(breakdowns)f:(filter)r(raw)' +
-	    'A:(after)B:(before)C(counters)I:(indexroot)R:(root)', argv);
+	    'A:(after)B:(before)C(counters)F:(time-field)I:(indexroot)R:(root)',
+	    argv);
 	while ((option = optparser.getopt()) !== undefined) {
 		switch (option.option) {
 		case 'f':
@@ -275,6 +274,15 @@ function cmdQuery(cmdname, argv)
 
 		case 'C':
 			showcounters = true;
+			break;
+
+		case 'F':
+			/*
+			 * XXX This shouldn't be necessary.  We should record
+			 * the time field into an index configuration file and
+			 * then read that here.
+			 */
+			queryConf['timeField'] = option.optarg;
 			break;
 
 		case 'I':
@@ -369,8 +377,8 @@ function cmdScan(cmdname, argv)
 	sourceargs = { 'log': dnLog };
 	argv.unshift('', '');
 	optparser = new OptionParser(':b:(breakdowns)f:(filter)p(points)' +
-	    'r(raw)A:(after)B:(before)C(counters)R:(root)S(show-invalid)' +
-	    'T:(time-format)', argv);
+	    'r(raw)A:(after)B:(before)C(counters)F:(time-field)R:(root)' +
+	    'S(show-invalid)T:(time-format)', argv);
 	while ((option = optparser.getopt()) !== undefined) {
 		switch (option.option) {
 		case 'f':
@@ -406,6 +414,10 @@ function cmdScan(cmdname, argv)
 
 		case 'C':
 			showcounters = true;
+			break;
+
+		case 'F':
+			queryConf.timeField = option.optarg;
 			break;
 
 		case 'R':
@@ -449,7 +461,6 @@ function cmdScan(cmdname, argv)
 	scan = source.scan({
 	    'query': query,
 	    'format': 'json',
-	    'timeField': dnTimeField,
 	    'timeFormat': timefmt
 	});
 	scan.on('error', fatal);

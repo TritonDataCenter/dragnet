@@ -2381,7 +2381,7 @@ wendell, putpublicobject
 {"fields":{"latency":3900},"value":15}
 {"fields":{"latency":4000},"value":13}
 
-# dn scan --counters -b __dn_ts[aggr=lquantize;step=86400]
+# dn scan --counters -b timestamp[date;field=time;aggr=lquantize;step=86400]
 
            value  ------------- Distribution ------------- count
       1398902400 |@@@@@@@@@                                500
@@ -2397,20 +2397,20 @@ aggr_nprocessed:        2250
 aggr_nerr_nonnumeric:   0
 nscanned:               9
 
-# dn scan --points --counters -b __dn_ts[aggr=lquantize;step=86400]
+# dn scan --points --counters -b timestamp[date;field=time;aggr=lquantize;step=86400]
 query_filter_nremoved:  0
 query_filter_nerrors:   0
 ninputs:                2250
 aggr_nprocessed:        2250
 aggr_nerr_nonnumeric:   0
 nscanned:               9
-{"fields":{"__dn_ts":1398902400},"value":500}
-{"fields":{"__dn_ts":1398988800},"value":500}
-{"fields":{"__dn_ts":1399075200},"value":500}
-{"fields":{"__dn_ts":1399161600},"value":500}
-{"fields":{"__dn_ts":1399248000},"value":250}
+{"fields":{"timestamp":1398902400},"value":500}
+{"fields":{"timestamp":1398988800},"value":500}
+{"fields":{"timestamp":1399075200},"value":500}
+{"fields":{"timestamp":1399161600},"value":500}
+{"fields":{"timestamp":1399248000},"value":250}
 
-# dn scan --counters --time-format=%Y/%m-%d --after 2014-05-02 --before 2014-05-03
+# dn scan --counters --time-format=%Y/%m-%d --time-field=time --after 2014-05-02 --before 2014-05-03
 VALUE
   500
 query_filter_nremoved:  0
@@ -2420,7 +2420,7 @@ aggr_nprocessed:        500
 aggr_nerr_nonnumeric:   0
 nscanned:               2
 
-# dn scan --points --counters --time-format=%Y/%m-%d --after 2014-05-02 --before 2014-05-03
+# dn scan --points --counters --time-format=%Y/%m-%d --time-field=time --after 2014-05-02 --before 2014-05-03
 query_filter_nremoved:  0
 query_filter_nerrors:   0
 ninputs:                500
@@ -2429,7 +2429,7 @@ aggr_nerr_nonnumeric:   0
 nscanned:               2
 {"fields":{},"value":500}
 
-# dn scan --counters --time-format=%Y/%m-%d -b __dn_ts[aggr=lquantize;step=60] --after 2014-05-02T04:05:06.123 --before 2014-05-02T04:15:10
+# dn scan --counters --time-format=%Y/%m-%d -b timestamp[date;field=time;aggr=lquantize;step=60] --after 2014-05-02T04:05:06.123 --before 2014-05-02T04:15:10
 
            value  ------------- Distribution ------------- count
       1399003620 |@@@@@@@@@@@@@@@@@@@@                     2
@@ -2447,13 +2447,13 @@ aggr_nprocessed:        4
 aggr_nerr_nonnumeric:   0
 nscanned:               2
 
-# dn scan --points --counters --time-format=%Y/%m-%d -b __dn_ts[aggr=lquantize;step=60] --after 2014-05-02T04:05:06.123 --before 2014-05-02T04:15:10
+# dn scan --points --counters --time-format=%Y/%m-%d -b timestamp[date;field=time;aggr=lquantize;step=60] --after 2014-05-02T04:05:06.123 --before 2014-05-02T04:15:10
 query_filter_nremoved:  0
 query_filter_nerrors:   0
 ninputs:                4
 aggr_nprocessed:        4
 aggr_nerr_nonnumeric:   0
 nscanned:               2
-{"fields":{"__dn_ts":1399003620},"value":2}
-{"fields":{"__dn_ts":1399003980},"value":2}
+{"fields":{"timestamp":1399003620},"value":2}
+{"fields":{"timestamp":1399003980},"value":2}
 
