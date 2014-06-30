@@ -222,7 +222,7 @@ function cmdIndex(cmdname, argv)
 			    indexargs['filename']);
 		}
 
-		cmdScanPrintCounters(indexop.stats(), showcounters);
+		dnPrintCounters(indexop.stats(), showcounters);
 		dnDone = true;
 	});
 }
@@ -233,7 +233,7 @@ function cmdQuery(cmdname, argv)
 	var queryConf = {
 	    'breakdowns': []
 	};
-	var output = cmdScanOutputPretty;
+	var output = dnOutputPretty;
 	var query, queryargs, results, stream;
 	var source, sourceclass, sourceargs;
 	var showcounters = false;
@@ -261,7 +261,7 @@ function cmdQuery(cmdname, argv)
 			break;
 
 		case 'r':
-			output = cmdScanOutputRaw;
+			output = dnOutputRaw;
 			break;
 
 		case 'A':
@@ -347,15 +347,14 @@ function cmdQuery(cmdname, argv)
 
 	stream.on('data', function (rows) {
 		output({
-		    'rows': rows,
-		    'columns': query.qc_breakdowns,
-		    'bucketizers': query.qc_bucketizers
+		    'query': query,
+		    'rows': rows
 		});
 	});
 
 	stream.on('end', function () {
 		if (showcounters)
-			cmdScanPrintCounters(results.stats(), true);
+			dnPrintCounters(results.stats(), true);
 		dnDone = true;
 	});
 }
@@ -366,7 +365,7 @@ function cmdScan(cmdname, argv)
 	var queryConf = {
 	    'breakdowns': []
 	};
-	var output = cmdScanOutputPretty;
+	var output = dnOutputPretty;
 	var showinvalid = false;
 	var showcounters = false;
 	var aspoints = false;
@@ -396,12 +395,12 @@ function cmdScan(cmdname, argv)
 			break;
 
 		case 'p':
-			output = cmdScanOutputRaw;
+			output = dnOutputRaw;
 			aspoints = true;
 			break;
 
 		case 'r':
-			output = cmdScanOutputRaw;
+			output = dnOutputRaw;
 			break;
 
 		case 'A':
@@ -498,30 +497,29 @@ function cmdScan(cmdname, argv)
 
 	tail.on('data', function (rows) {
 		output({
-		    'rows': rows,
-		    'columns': query.qc_breakdowns,
-		    'bucketizers': query.qc_bucketizers
+		    'query': query,
+		    'rows': rows
 		});
 	});
 
 	tail.on('end', function () {
-		cmdScanPrintCounters(scan.stats(), showcounters);
+		dnPrintCounters(scan.stats(), showcounters);
 		dnDone = true;
 	});
 }
 
-function cmdScanOutputRaw(results)
+function dnOutputRaw(results)
 {
 	console.log(JSON.stringify(results.rows));
 }
 
-function cmdScanOutputPretty(results)
+function dnOutputPretty(results)
 {
 	var coldefs, tablefields;
 
-	coldefs = results.columns;
+	coldefs = results.query.qc_breakdowns;
 	if (coldefs.length > 0 && coldefs[coldefs.length - 1].aggr) {
-		cmdScanOutputPrettyQuantized(results);
+		dnOutputPrettyQuantized(results);
 		return;
 	}
 
@@ -542,16 +540,23 @@ function cmdScanOutputPretty(results)
 
 	/*
 	 * Take a pass over the results and replace quantized values with the
-	 * real values.
+	 * real values.  Do the same to replace timestamps.
 	 */
 	coldefs.forEach(function (c, j) {
-		if (!results.bucketizers.hasOwnProperty(c.name))
-			return;
+		var bucketizer;
 
-		var bucketizer = results.bucketizers[c.name];
-		results.rows.forEach(function (row) {
-			row[j] = bucketizer.bucketMin(row[j]);
-		});
+		if (results.query.qc_bucketizers.hasOwnProperty(c.name)) {
+			bucketizer = results.query.qc_bucketizers[c.name];
+			results.rows.forEach(function (row) {
+				row[j] = bucketizer.bucketMin(row[j]);
+			});
+		}
+
+		if (c.hasOwnProperty('date')) {
+			results.rows.forEach(function (row) {
+				row[j] = new Date(row[j] * 1000).toISOString();
+			});
+		}
 	});
 
 	if (results.rows.length == 1 && typeof (results.rows[0]) == 'number')
@@ -600,14 +605,14 @@ function cmdScanOutputPretty(results)
 	});
 }
 
-function cmdScanOutputPrettyQuantized(results)
+function dnOutputPrettyQuantized(results)
 {
 	var coldefs, quantizedcol, stream, bucketizer, last, distr, groups;
 
-	coldefs = results.columns;
+	coldefs = results.query.qc_breakdowns;
 	quantizedcol = coldefs[coldefs.length - 1];
 	mod_assert.equal(typeof (quantizedcol.aggr), 'string');
-	bucketizer = results.bucketizers[quantizedcol.name];
+	bucketizer = results.query.qc_bucketizers[quantizedcol.name];
 	mod_assert.ok(bucketizer !== null);
 	stream = process.stdout;
 	groups = [];
@@ -645,15 +650,22 @@ function cmdScanOutputPrettyQuantized(results)
 		if (i !== 0)
 			stream.write('\n');
 		stream.write(g.label);
-		printDistribution(stream, g.distr, bucketizer);
+		dnPrintDistribution(stream, g.distr, bucketizer,
+		    quantizedcol.hasOwnProperty('date'));
 	});
 }
 
-function printDistribution(stream, distr, bucketizer)
+function dnPrintDistribution(stream, distr, bucketizer, asdate)
 {
-	var total, count, normalized, dots;
+	var fmt, total, count, normalized, dots;
 	var bi, di, i, min;
 
+	if (asdate) {
+		stream.write('          ');
+		fmt = '  %24s |%s %s\n';
+	} else {
+		fmt = '%16s |%s %s\n';
+	}
 	stream.write('           ');
 	stream.write(
 	    'value  ------------- Distribution ------------- count\n');
@@ -694,12 +706,13 @@ function printDistribution(stream, distr, bucketizer)
 			dots += ' ';
 
 		min = bucketizer.bucketMin(bi);
-		stream.write(sprintf('%16s |%s %s\n',
-		    min.toString(), dots, count));
+		stream.write(sprintf(fmt, asdate ?
+		    new Date(min * 1000).toISOString() : min.toString(),
+		    dots, count));
 	}
 }
 
-function cmdScanPrintCounters(c, showall)
+function dnPrintCounters(c, showall)
 {
 	if (!showall) {
 		if (c.aggr_nerr_nonnumeric !== 0) {
