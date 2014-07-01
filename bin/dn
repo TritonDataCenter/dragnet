@@ -93,7 +93,7 @@ function cmdIndex(cmdname, argv)
 	var optparser, option, optind;
 	var indexConf = {
 	    'columns': [],
-	    'resolution': 'hour'
+	    'interval': 'hour'
 	};
 	var showinvalid = false;
 	var showcounters = false;
