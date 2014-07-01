@@ -102,11 +102,11 @@ function cmdIndex(cmdname, argv)
 	var indexargs, timefmt;
 
 	sourceargs = { 'log': dnLog };
-	indexargs = {};
+	indexargs = { 'source': 'raw' };
 	argv.unshift('', '');
-	optparser = new OptionParser(':c:(columns)f:(filter)A:(after)' +
-	    'B:(before)C(counters)I:(indexroot)R:(dataroot)' +
-	    'S(show-invalid)T:(time-format)', argv);
+	optparser = new OptionParser(':c:(columns)f:(filter)' +
+	    'i:(interval)s:(source)A:(after)B:(before)C(counters)' +
+	    'I:(indexroot)R:(dataroot)S(show-invalid)T:(time-format)', argv);
 	while ((option = optparser.getopt()) !== undefined) {
 		switch (option.option) {
 		case 'c':
@@ -121,6 +121,14 @@ function cmdIndex(cmdname, argv)
 			} catch (ex) {
 				usage(new VError(ex, 'invalid filter'));
 			}
+			break;
+
+		case 'i':
+			indexConf['interval'] = option.optarg;
+			break;
+
+		case 's':
+			indexargs['source'] = option.optarg;
 			break;
 
 		case 'A':
