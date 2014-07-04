@@ -10,6 +10,18 @@ function list_indexes
 	(cd $tmpdir && find . -type f | sort)
 }
 
+function index
+{
+	echo "# dn index --counters -R ... -I ... $@"
+	dn index --counters -R "$DN_DATADIR" -I "$tmpdir" "$@"
+}
+
+function query
+{
+	echo "# dn query --counters -I ... $@"
+	dn query --counters -I "$tmpdir" "$@"
+}
+
 set -o errexit
 . $(dirname $0)/common.sh
 
@@ -19,35 +31,33 @@ dayfields='timestamp[aggr=lquantize;step=3600],host,operation,req.caller,req.met
 echo "using tmpdir \"$tmpdir" >&2
 
 echo "creating hourly index" >&2
-dn index --counters -c "$fields" -R $DN_DATADIR -I "$tmpdir" 2>&1
+index -c "$fields" 2>&1
 list_indexes
 
 # simple query
-dn query -I "$tmpdir" --counters -b host,operation 2>&1
+query -b host,operation 2>&1
 
 # generate daily indexes from raw files
 echo "creating daily indexes from raw files" >&2
-dn index --counters --interval=day -c "$fields" \
-    -R $DN_DATADIR -I "$tmpdir" 2>&1
+index --interval=day -c "$fields" 2>&1
 list_indexes
 
 # repeat simple query
-dn query -I "$tmpdir" --counters -b host,operation 2>&1
+query -b host,operation 2>&1
 
 # remove the daily indexes and make sure they're gone
 rm -rf "$tmpdir/by_day"
 list_indexes
-dn query -I "$tmpdir" --counters -b host,operation 2>&1
+query -b host,operation 2>&1
 
 # generate daily indexes again, this time using the hourly indexes
 echo "creating daily indexes from hourly indexes" >&2
-dn index --counters --interval=day --source=hour \
-    -c "$dayfields" -R $DN_DATADIR -I "$tmpdir" 2>&1
+index --interval=day --source=hour -c "$dayfields" 2>&1
 list_indexes
-dn query -I "$tmpdir" --counters -b host,operation 2>&1
+query -b host,operation 2>&1
 
 # run a query using filters, --before, and --after, too.
-dn query -I "$tmpdir" --counters -f '{ "eq": [ "host", "ralph" ] }' \
+query -f '{ "eq": [ "host", "ralph" ] }' \
     --time-field=timestamp --after=2014-05-03T12:00:00 \
     --before=2014-05-03T18:00:00 2>&1
 

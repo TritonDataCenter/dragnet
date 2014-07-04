@@ -1,3 +1,4 @@
+# dn index --counters -R ... -I ... -c timestamp[date;field=time;aggr=lquantize;step=3600],host,operation,req.caller,req.method,latency[aggr=quantize]
 query_filter_nremoved:  0
 query_filter_nerrors:   0
 ninputs:                2250
@@ -124,6 +125,7 @@ nscanned:               9
 ./by_hour/2014-05-05-21.sqlite
 ./by_hour/2014-05-05-22.sqlite
 ./by_hour/2014-05-05-23.sqlite
+# dn query --counters -I ... -b host,operation
 HOST    OPERATION           VALUE
 janey   deletepublicstorage    57
 janey   deletestorage          63
@@ -178,6 +180,7 @@ wendell putpublicobject        41
 ninputs:          1854
 nerr_nonnumeric:  0
 nscanned:         120
+# dn index --counters -R ... -I ... --interval=day -c timestamp[date;field=time;aggr=lquantize;step=3600],host,operation,req.caller,req.method,latency[aggr=quantize]
 query_filter_nremoved:  0
 query_filter_nerrors:   0
 ninputs:                2250
@@ -309,6 +312,7 @@ nscanned:               9
 ./by_hour/2014-05-05-21.sqlite
 ./by_hour/2014-05-05-22.sqlite
 ./by_hour/2014-05-05-23.sqlite
+# dn query --counters -I ... -b host,operation
 HOST    OPERATION           VALUE
 janey   deletepublicstorage    57
 janey   deletestorage          63
@@ -483,6 +487,7 @@ nscanned:         5
 ./by_hour/2014-05-05-21.sqlite
 ./by_hour/2014-05-05-22.sqlite
 ./by_hour/2014-05-05-23.sqlite
+# dn query --counters -I ... -b host,operation
 HOST    OPERATION           VALUE
 janey   deletepublicstorage    57
 janey   deletestorage          63
@@ -537,6 +542,7 @@ wendell putpublicobject        41
 ninputs:          1854
 nerr_nonnumeric:  0
 nscanned:         120
+# dn index --counters -R ... -I ... --interval=day --source=hour -c timestamp[aggr=lquantize;step=3600],host,operation,req.caller,req.method,latency[aggr=quantize]
 ninputs:          2224
 nerr_nonnumeric:  0
 nscanned:         120
@@ -665,6 +671,7 @@ nscanned:         120
 ./by_hour/2014-05-05-21.sqlite
 ./by_hour/2014-05-05-22.sqlite
 ./by_hour/2014-05-05-23.sqlite
+# dn query --counters -I ... -b host,operation
 HOST    OPERATION           VALUE
 janey   deletepublicstorage    57
 janey   deletestorage          63
@@ -719,6 +726,7 @@ wendell putpublicobject        41
 ninputs:          250
 nerr_nonnumeric:  0
 nscanned:         5
+# dn query --counters -I ... -f { "eq": [ "host", "ralph" ] } --time-field=timestamp --after=2014-05-03T12:00:00 --before=2014-05-03T18:00:00
 VALUE
    20
 ninputs:          1
