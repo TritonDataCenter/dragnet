@@ -1,0 +1,726 @@
+query_filter_nremoved:  0
+query_filter_nerrors:   0
+ninputs:                2250
+aggr_nprocessed:        2250
+aggr_nerr_nonnumeric:   0
+nscanned:               9
+./by_hour/2014-05-01-00.sqlite
+./by_hour/2014-05-01-01.sqlite
+./by_hour/2014-05-01-02.sqlite
+./by_hour/2014-05-01-03.sqlite
+./by_hour/2014-05-01-04.sqlite
+./by_hour/2014-05-01-05.sqlite
+./by_hour/2014-05-01-06.sqlite
+./by_hour/2014-05-01-07.sqlite
+./by_hour/2014-05-01-08.sqlite
+./by_hour/2014-05-01-09.sqlite
+./by_hour/2014-05-01-10.sqlite
+./by_hour/2014-05-01-11.sqlite
+./by_hour/2014-05-01-12.sqlite
+./by_hour/2014-05-01-13.sqlite
+./by_hour/2014-05-01-14.sqlite
+./by_hour/2014-05-01-15.sqlite
+./by_hour/2014-05-01-16.sqlite
+./by_hour/2014-05-01-17.sqlite
+./by_hour/2014-05-01-18.sqlite
+./by_hour/2014-05-01-19.sqlite
+./by_hour/2014-05-01-20.sqlite
+./by_hour/2014-05-01-21.sqlite
+./by_hour/2014-05-01-22.sqlite
+./by_hour/2014-05-01-23.sqlite
+./by_hour/2014-05-02-00.sqlite
+./by_hour/2014-05-02-01.sqlite
+./by_hour/2014-05-02-02.sqlite
+./by_hour/2014-05-02-03.sqlite
+./by_hour/2014-05-02-04.sqlite
+./by_hour/2014-05-02-05.sqlite
+./by_hour/2014-05-02-06.sqlite
+./by_hour/2014-05-02-07.sqlite
+./by_hour/2014-05-02-08.sqlite
+./by_hour/2014-05-02-09.sqlite
+./by_hour/2014-05-02-10.sqlite
+./by_hour/2014-05-02-11.sqlite
+./by_hour/2014-05-02-12.sqlite
+./by_hour/2014-05-02-13.sqlite
+./by_hour/2014-05-02-14.sqlite
+./by_hour/2014-05-02-15.sqlite
+./by_hour/2014-05-02-16.sqlite
+./by_hour/2014-05-02-17.sqlite
+./by_hour/2014-05-02-18.sqlite
+./by_hour/2014-05-02-19.sqlite
+./by_hour/2014-05-02-20.sqlite
+./by_hour/2014-05-02-21.sqlite
+./by_hour/2014-05-02-22.sqlite
+./by_hour/2014-05-02-23.sqlite
+./by_hour/2014-05-03-00.sqlite
+./by_hour/2014-05-03-01.sqlite
+./by_hour/2014-05-03-02.sqlite
+./by_hour/2014-05-03-03.sqlite
+./by_hour/2014-05-03-04.sqlite
+./by_hour/2014-05-03-05.sqlite
+./by_hour/2014-05-03-06.sqlite
+./by_hour/2014-05-03-07.sqlite
+./by_hour/2014-05-03-08.sqlite
+./by_hour/2014-05-03-09.sqlite
+./by_hour/2014-05-03-10.sqlite
+./by_hour/2014-05-03-11.sqlite
+./by_hour/2014-05-03-12.sqlite
+./by_hour/2014-05-03-13.sqlite
+./by_hour/2014-05-03-14.sqlite
+./by_hour/2014-05-03-15.sqlite
+./by_hour/2014-05-03-16.sqlite
+./by_hour/2014-05-03-17.sqlite
+./by_hour/2014-05-03-18.sqlite
+./by_hour/2014-05-03-19.sqlite
+./by_hour/2014-05-03-20.sqlite
+./by_hour/2014-05-03-21.sqlite
+./by_hour/2014-05-03-22.sqlite
+./by_hour/2014-05-03-23.sqlite
+./by_hour/2014-05-04-00.sqlite
+./by_hour/2014-05-04-01.sqlite
+./by_hour/2014-05-04-02.sqlite
+./by_hour/2014-05-04-03.sqlite
+./by_hour/2014-05-04-04.sqlite
+./by_hour/2014-05-04-05.sqlite
+./by_hour/2014-05-04-06.sqlite
+./by_hour/2014-05-04-07.sqlite
+./by_hour/2014-05-04-08.sqlite
+./by_hour/2014-05-04-09.sqlite
+./by_hour/2014-05-04-10.sqlite
+./by_hour/2014-05-04-11.sqlite
+./by_hour/2014-05-04-12.sqlite
+./by_hour/2014-05-04-13.sqlite
+./by_hour/2014-05-04-14.sqlite
+./by_hour/2014-05-04-15.sqlite
+./by_hour/2014-05-04-16.sqlite
+./by_hour/2014-05-04-17.sqlite
+./by_hour/2014-05-04-18.sqlite
+./by_hour/2014-05-04-19.sqlite
+./by_hour/2014-05-04-20.sqlite
+./by_hour/2014-05-04-21.sqlite
+./by_hour/2014-05-04-22.sqlite
+./by_hour/2014-05-04-23.sqlite
+./by_hour/2014-05-05-00.sqlite
+./by_hour/2014-05-05-01.sqlite
+./by_hour/2014-05-05-02.sqlite
+./by_hour/2014-05-05-03.sqlite
+./by_hour/2014-05-05-04.sqlite
+./by_hour/2014-05-05-05.sqlite
+./by_hour/2014-05-05-06.sqlite
+./by_hour/2014-05-05-07.sqlite
+./by_hour/2014-05-05-08.sqlite
+./by_hour/2014-05-05-09.sqlite
+./by_hour/2014-05-05-10.sqlite
+./by_hour/2014-05-05-11.sqlite
+./by_hour/2014-05-05-12.sqlite
+./by_hour/2014-05-05-13.sqlite
+./by_hour/2014-05-05-14.sqlite
+./by_hour/2014-05-05-15.sqlite
+./by_hour/2014-05-05-16.sqlite
+./by_hour/2014-05-05-17.sqlite
+./by_hour/2014-05-05-18.sqlite
+./by_hour/2014-05-05-19.sqlite
+./by_hour/2014-05-05-20.sqlite
+./by_hour/2014-05-05-21.sqlite
+./by_hour/2014-05-05-22.sqlite
+./by_hour/2014-05-05-23.sqlite
+HOST    OPERATION           VALUE
+janey   deletepublicstorage    57
+janey   deletestorage          63
+janey   getjoberrors           38
+janey   getpublicstorage       27
+janey   getstorage             43
+janey   headpublicstorage      52
+janey   headstorage            50
+janey   putdirectory           31
+janey   putobject              34
+janey   putpublicobject        34
+kearney deletepublicstorage    70
+kearney deletestorage          60
+kearney getjoberrors           33
+kearney getpublicstorage       42
+kearney getstorage             35
+kearney headpublicstorage      49
+kearney headstorage            50
+kearney putdirectory           42
+kearney putobject              42
+kearney putpublicobject        32
+ralph   deletepublicstorage    53
+ralph   deletestorage          53
+ralph   getjoberrors           38
+ralph   getpublicstorage       28
+ralph   getstorage             39
+ralph   headpublicstorage      48
+ralph   headstorage            68
+ralph   putdirectory           36
+ralph   putobject              43
+ralph   putpublicobject        34
+sherri  deletepublicstorage    60
+sherri  deletestorage          59
+sherri  getjoberrors           36
+sherri  getpublicstorage       39
+sherri  getstorage             39
+sherri  headpublicstorage      61
+sherri  headstorage            63
+sherri  putdirectory           41
+sherri  putobject              35
+sherri  putpublicobject        43
+wendell deletepublicstorage    54
+wendell deletestorage          51
+wendell getjoberrors           36
+wendell getpublicstorage       40
+wendell getstorage             43
+wendell headpublicstorage      65
+wendell headstorage            45
+wendell putdirectory           34
+wendell putobject              41
+wendell putpublicobject        41
+ninputs:          1854
+nerr_nonnumeric:  0
+nscanned:         120
+query_filter_nremoved:  0
+query_filter_nerrors:   0
+ninputs:                2250
+aggr_nprocessed:        2250
+aggr_nerr_nonnumeric:   0
+nscanned:               9
+./by_day/2014-05-01.sqlite
+./by_day/2014-05-02.sqlite
+./by_day/2014-05-03.sqlite
+./by_day/2014-05-04.sqlite
+./by_day/2014-05-05.sqlite
+./by_hour/2014-05-01-00.sqlite
+./by_hour/2014-05-01-01.sqlite
+./by_hour/2014-05-01-02.sqlite
+./by_hour/2014-05-01-03.sqlite
+./by_hour/2014-05-01-04.sqlite
+./by_hour/2014-05-01-05.sqlite
+./by_hour/2014-05-01-06.sqlite
+./by_hour/2014-05-01-07.sqlite
+./by_hour/2014-05-01-08.sqlite
+./by_hour/2014-05-01-09.sqlite
+./by_hour/2014-05-01-10.sqlite
+./by_hour/2014-05-01-11.sqlite
+./by_hour/2014-05-01-12.sqlite
+./by_hour/2014-05-01-13.sqlite
+./by_hour/2014-05-01-14.sqlite
+./by_hour/2014-05-01-15.sqlite
+./by_hour/2014-05-01-16.sqlite
+./by_hour/2014-05-01-17.sqlite
+./by_hour/2014-05-01-18.sqlite
+./by_hour/2014-05-01-19.sqlite
+./by_hour/2014-05-01-20.sqlite
+./by_hour/2014-05-01-21.sqlite
+./by_hour/2014-05-01-22.sqlite
+./by_hour/2014-05-01-23.sqlite
+./by_hour/2014-05-02-00.sqlite
+./by_hour/2014-05-02-01.sqlite
+./by_hour/2014-05-02-02.sqlite
+./by_hour/2014-05-02-03.sqlite
+./by_hour/2014-05-02-04.sqlite
+./by_hour/2014-05-02-05.sqlite
+./by_hour/2014-05-02-06.sqlite
+./by_hour/2014-05-02-07.sqlite
+./by_hour/2014-05-02-08.sqlite
+./by_hour/2014-05-02-09.sqlite
+./by_hour/2014-05-02-10.sqlite
+./by_hour/2014-05-02-11.sqlite
+./by_hour/2014-05-02-12.sqlite
+./by_hour/2014-05-02-13.sqlite
+./by_hour/2014-05-02-14.sqlite
+./by_hour/2014-05-02-15.sqlite
+./by_hour/2014-05-02-16.sqlite
+./by_hour/2014-05-02-17.sqlite
+./by_hour/2014-05-02-18.sqlite
+./by_hour/2014-05-02-19.sqlite
+./by_hour/2014-05-02-20.sqlite
+./by_hour/2014-05-02-21.sqlite
+./by_hour/2014-05-02-22.sqlite
+./by_hour/2014-05-02-23.sqlite
+./by_hour/2014-05-03-00.sqlite
+./by_hour/2014-05-03-01.sqlite
+./by_hour/2014-05-03-02.sqlite
+./by_hour/2014-05-03-03.sqlite
+./by_hour/2014-05-03-04.sqlite
+./by_hour/2014-05-03-05.sqlite
+./by_hour/2014-05-03-06.sqlite
+./by_hour/2014-05-03-07.sqlite
+./by_hour/2014-05-03-08.sqlite
+./by_hour/2014-05-03-09.sqlite
+./by_hour/2014-05-03-10.sqlite
+./by_hour/2014-05-03-11.sqlite
+./by_hour/2014-05-03-12.sqlite
+./by_hour/2014-05-03-13.sqlite
+./by_hour/2014-05-03-14.sqlite
+./by_hour/2014-05-03-15.sqlite
+./by_hour/2014-05-03-16.sqlite
+./by_hour/2014-05-03-17.sqlite
+./by_hour/2014-05-03-18.sqlite
+./by_hour/2014-05-03-19.sqlite
+./by_hour/2014-05-03-20.sqlite
+./by_hour/2014-05-03-21.sqlite
+./by_hour/2014-05-03-22.sqlite
+./by_hour/2014-05-03-23.sqlite
+./by_hour/2014-05-04-00.sqlite
+./by_hour/2014-05-04-01.sqlite
+./by_hour/2014-05-04-02.sqlite
+./by_hour/2014-05-04-03.sqlite
+./by_hour/2014-05-04-04.sqlite
+./by_hour/2014-05-04-05.sqlite
+./by_hour/2014-05-04-06.sqlite
+./by_hour/2014-05-04-07.sqlite
+./by_hour/2014-05-04-08.sqlite
+./by_hour/2014-05-04-09.sqlite
+./by_hour/2014-05-04-10.sqlite
+./by_hour/2014-05-04-11.sqlite
+./by_hour/2014-05-04-12.sqlite
+./by_hour/2014-05-04-13.sqlite
+./by_hour/2014-05-04-14.sqlite
+./by_hour/2014-05-04-15.sqlite
+./by_hour/2014-05-04-16.sqlite
+./by_hour/2014-05-04-17.sqlite
+./by_hour/2014-05-04-18.sqlite
+./by_hour/2014-05-04-19.sqlite
+./by_hour/2014-05-04-20.sqlite
+./by_hour/2014-05-04-21.sqlite
+./by_hour/2014-05-04-22.sqlite
+./by_hour/2014-05-04-23.sqlite
+./by_hour/2014-05-05-00.sqlite
+./by_hour/2014-05-05-01.sqlite
+./by_hour/2014-05-05-02.sqlite
+./by_hour/2014-05-05-03.sqlite
+./by_hour/2014-05-05-04.sqlite
+./by_hour/2014-05-05-05.sqlite
+./by_hour/2014-05-05-06.sqlite
+./by_hour/2014-05-05-07.sqlite
+./by_hour/2014-05-05-08.sqlite
+./by_hour/2014-05-05-09.sqlite
+./by_hour/2014-05-05-10.sqlite
+./by_hour/2014-05-05-11.sqlite
+./by_hour/2014-05-05-12.sqlite
+./by_hour/2014-05-05-13.sqlite
+./by_hour/2014-05-05-14.sqlite
+./by_hour/2014-05-05-15.sqlite
+./by_hour/2014-05-05-16.sqlite
+./by_hour/2014-05-05-17.sqlite
+./by_hour/2014-05-05-18.sqlite
+./by_hour/2014-05-05-19.sqlite
+./by_hour/2014-05-05-20.sqlite
+./by_hour/2014-05-05-21.sqlite
+./by_hour/2014-05-05-22.sqlite
+./by_hour/2014-05-05-23.sqlite
+HOST    OPERATION           VALUE
+janey   deletepublicstorage    57
+janey   deletestorage          63
+janey   getjoberrors           38
+janey   getpublicstorage       27
+janey   getstorage             43
+janey   headpublicstorage      52
+janey   headstorage            50
+janey   putdirectory           31
+janey   putobject              34
+janey   putpublicobject        34
+kearney deletepublicstorage    70
+kearney deletestorage          60
+kearney getjoberrors           33
+kearney getpublicstorage       42
+kearney getstorage             35
+kearney headpublicstorage      49
+kearney headstorage            50
+kearney putdirectory           42
+kearney putobject              42
+kearney putpublicobject        32
+ralph   deletepublicstorage    53
+ralph   deletestorage          53
+ralph   getjoberrors           38
+ralph   getpublicstorage       28
+ralph   getstorage             39
+ralph   headpublicstorage      48
+ralph   headstorage            68
+ralph   putdirectory           36
+ralph   putobject              43
+ralph   putpublicobject        34
+sherri  deletepublicstorage    60
+sherri  deletestorage          59
+sherri  getjoberrors           36
+sherri  getpublicstorage       39
+sherri  getstorage             39
+sherri  headpublicstorage      61
+sherri  headstorage            63
+sherri  putdirectory           41
+sherri  putobject              35
+sherri  putpublicobject        43
+wendell deletepublicstorage    54
+wendell deletestorage          51
+wendell getjoberrors           36
+wendell getpublicstorage       40
+wendell getstorage             43
+wendell headpublicstorage      65
+wendell headstorage            45
+wendell putdirectory           34
+wendell putobject              41
+wendell putpublicobject        41
+ninputs:          250
+nerr_nonnumeric:  0
+nscanned:         5
+./by_hour/2014-05-01-00.sqlite
+./by_hour/2014-05-01-01.sqlite
+./by_hour/2014-05-01-02.sqlite
+./by_hour/2014-05-01-03.sqlite
+./by_hour/2014-05-01-04.sqlite
+./by_hour/2014-05-01-05.sqlite
+./by_hour/2014-05-01-06.sqlite
+./by_hour/2014-05-01-07.sqlite
+./by_hour/2014-05-01-08.sqlite
+./by_hour/2014-05-01-09.sqlite
+./by_hour/2014-05-01-10.sqlite
+./by_hour/2014-05-01-11.sqlite
+./by_hour/2014-05-01-12.sqlite
+./by_hour/2014-05-01-13.sqlite
+./by_hour/2014-05-01-14.sqlite
+./by_hour/2014-05-01-15.sqlite
+./by_hour/2014-05-01-16.sqlite
+./by_hour/2014-05-01-17.sqlite
+./by_hour/2014-05-01-18.sqlite
+./by_hour/2014-05-01-19.sqlite
+./by_hour/2014-05-01-20.sqlite
+./by_hour/2014-05-01-21.sqlite
+./by_hour/2014-05-01-22.sqlite
+./by_hour/2014-05-01-23.sqlite
+./by_hour/2014-05-02-00.sqlite
+./by_hour/2014-05-02-01.sqlite
+./by_hour/2014-05-02-02.sqlite
+./by_hour/2014-05-02-03.sqlite
+./by_hour/2014-05-02-04.sqlite
+./by_hour/2014-05-02-05.sqlite
+./by_hour/2014-05-02-06.sqlite
+./by_hour/2014-05-02-07.sqlite
+./by_hour/2014-05-02-08.sqlite
+./by_hour/2014-05-02-09.sqlite
+./by_hour/2014-05-02-10.sqlite
+./by_hour/2014-05-02-11.sqlite
+./by_hour/2014-05-02-12.sqlite
+./by_hour/2014-05-02-13.sqlite
+./by_hour/2014-05-02-14.sqlite
+./by_hour/2014-05-02-15.sqlite
+./by_hour/2014-05-02-16.sqlite
+./by_hour/2014-05-02-17.sqlite
+./by_hour/2014-05-02-18.sqlite
+./by_hour/2014-05-02-19.sqlite
+./by_hour/2014-05-02-20.sqlite
+./by_hour/2014-05-02-21.sqlite
+./by_hour/2014-05-02-22.sqlite
+./by_hour/2014-05-02-23.sqlite
+./by_hour/2014-05-03-00.sqlite
+./by_hour/2014-05-03-01.sqlite
+./by_hour/2014-05-03-02.sqlite
+./by_hour/2014-05-03-03.sqlite
+./by_hour/2014-05-03-04.sqlite
+./by_hour/2014-05-03-05.sqlite
+./by_hour/2014-05-03-06.sqlite
+./by_hour/2014-05-03-07.sqlite
+./by_hour/2014-05-03-08.sqlite
+./by_hour/2014-05-03-09.sqlite
+./by_hour/2014-05-03-10.sqlite
+./by_hour/2014-05-03-11.sqlite
+./by_hour/2014-05-03-12.sqlite
+./by_hour/2014-05-03-13.sqlite
+./by_hour/2014-05-03-14.sqlite
+./by_hour/2014-05-03-15.sqlite
+./by_hour/2014-05-03-16.sqlite
+./by_hour/2014-05-03-17.sqlite
+./by_hour/2014-05-03-18.sqlite
+./by_hour/2014-05-03-19.sqlite
+./by_hour/2014-05-03-20.sqlite
+./by_hour/2014-05-03-21.sqlite
+./by_hour/2014-05-03-22.sqlite
+./by_hour/2014-05-03-23.sqlite
+./by_hour/2014-05-04-00.sqlite
+./by_hour/2014-05-04-01.sqlite
+./by_hour/2014-05-04-02.sqlite
+./by_hour/2014-05-04-03.sqlite
+./by_hour/2014-05-04-04.sqlite
+./by_hour/2014-05-04-05.sqlite
+./by_hour/2014-05-04-06.sqlite
+./by_hour/2014-05-04-07.sqlite
+./by_hour/2014-05-04-08.sqlite
+./by_hour/2014-05-04-09.sqlite
+./by_hour/2014-05-04-10.sqlite
+./by_hour/2014-05-04-11.sqlite
+./by_hour/2014-05-04-12.sqlite
+./by_hour/2014-05-04-13.sqlite
+./by_hour/2014-05-04-14.sqlite
+./by_hour/2014-05-04-15.sqlite
+./by_hour/2014-05-04-16.sqlite
+./by_hour/2014-05-04-17.sqlite
+./by_hour/2014-05-04-18.sqlite
+./by_hour/2014-05-04-19.sqlite
+./by_hour/2014-05-04-20.sqlite
+./by_hour/2014-05-04-21.sqlite
+./by_hour/2014-05-04-22.sqlite
+./by_hour/2014-05-04-23.sqlite
+./by_hour/2014-05-05-00.sqlite
+./by_hour/2014-05-05-01.sqlite
+./by_hour/2014-05-05-02.sqlite
+./by_hour/2014-05-05-03.sqlite
+./by_hour/2014-05-05-04.sqlite
+./by_hour/2014-05-05-05.sqlite
+./by_hour/2014-05-05-06.sqlite
+./by_hour/2014-05-05-07.sqlite
+./by_hour/2014-05-05-08.sqlite
+./by_hour/2014-05-05-09.sqlite
+./by_hour/2014-05-05-10.sqlite
+./by_hour/2014-05-05-11.sqlite
+./by_hour/2014-05-05-12.sqlite
+./by_hour/2014-05-05-13.sqlite
+./by_hour/2014-05-05-14.sqlite
+./by_hour/2014-05-05-15.sqlite
+./by_hour/2014-05-05-16.sqlite
+./by_hour/2014-05-05-17.sqlite
+./by_hour/2014-05-05-18.sqlite
+./by_hour/2014-05-05-19.sqlite
+./by_hour/2014-05-05-20.sqlite
+./by_hour/2014-05-05-21.sqlite
+./by_hour/2014-05-05-22.sqlite
+./by_hour/2014-05-05-23.sqlite
+HOST    OPERATION           VALUE
+janey   deletepublicstorage    57
+janey   deletestorage          63
+janey   getjoberrors           38
+janey   getpublicstorage       27
+janey   getstorage             43
+janey   headpublicstorage      52
+janey   headstorage            50
+janey   putdirectory           31
+janey   putobject              34
+janey   putpublicobject        34
+kearney deletepublicstorage    70
+kearney deletestorage          60
+kearney getjoberrors           33
+kearney getpublicstorage       42
+kearney getstorage             35
+kearney headpublicstorage      49
+kearney headstorage            50
+kearney putdirectory           42
+kearney putobject              42
+kearney putpublicobject        32
+ralph   deletepublicstorage    53
+ralph   deletestorage          53
+ralph   getjoberrors           38
+ralph   getpublicstorage       28
+ralph   getstorage             39
+ralph   headpublicstorage      48
+ralph   headstorage            68
+ralph   putdirectory           36
+ralph   putobject              43
+ralph   putpublicobject        34
+sherri  deletepublicstorage    60
+sherri  deletestorage          59
+sherri  getjoberrors           36
+sherri  getpublicstorage       39
+sherri  getstorage             39
+sherri  headpublicstorage      61
+sherri  headstorage            63
+sherri  putdirectory           41
+sherri  putobject              35
+sherri  putpublicobject        43
+wendell deletepublicstorage    54
+wendell deletestorage          51
+wendell getjoberrors           36
+wendell getpublicstorage       40
+wendell getstorage             43
+wendell headpublicstorage      65
+wendell headstorage            45
+wendell putdirectory           34
+wendell putobject              41
+wendell putpublicobject        41
+ninputs:          1854
+nerr_nonnumeric:  0
+nscanned:         120
+ninputs:          2224
+nerr_nonnumeric:  0
+nscanned:         120
+./by_day/2014-05-01.sqlite
+./by_day/2014-05-02.sqlite
+./by_day/2014-05-03.sqlite
+./by_day/2014-05-04.sqlite
+./by_day/2014-05-05.sqlite
+./by_hour/2014-05-01-00.sqlite
+./by_hour/2014-05-01-01.sqlite
+./by_hour/2014-05-01-02.sqlite
+./by_hour/2014-05-01-03.sqlite
+./by_hour/2014-05-01-04.sqlite
+./by_hour/2014-05-01-05.sqlite
+./by_hour/2014-05-01-06.sqlite
+./by_hour/2014-05-01-07.sqlite
+./by_hour/2014-05-01-08.sqlite
+./by_hour/2014-05-01-09.sqlite
+./by_hour/2014-05-01-10.sqlite
+./by_hour/2014-05-01-11.sqlite
+./by_hour/2014-05-01-12.sqlite
+./by_hour/2014-05-01-13.sqlite
+./by_hour/2014-05-01-14.sqlite
+./by_hour/2014-05-01-15.sqlite
+./by_hour/2014-05-01-16.sqlite
+./by_hour/2014-05-01-17.sqlite
+./by_hour/2014-05-01-18.sqlite
+./by_hour/2014-05-01-19.sqlite
+./by_hour/2014-05-01-20.sqlite
+./by_hour/2014-05-01-21.sqlite
+./by_hour/2014-05-01-22.sqlite
+./by_hour/2014-05-01-23.sqlite
+./by_hour/2014-05-02-00.sqlite
+./by_hour/2014-05-02-01.sqlite
+./by_hour/2014-05-02-02.sqlite
+./by_hour/2014-05-02-03.sqlite
+./by_hour/2014-05-02-04.sqlite
+./by_hour/2014-05-02-05.sqlite
+./by_hour/2014-05-02-06.sqlite
+./by_hour/2014-05-02-07.sqlite
+./by_hour/2014-05-02-08.sqlite
+./by_hour/2014-05-02-09.sqlite
+./by_hour/2014-05-02-10.sqlite
+./by_hour/2014-05-02-11.sqlite
+./by_hour/2014-05-02-12.sqlite
+./by_hour/2014-05-02-13.sqlite
+./by_hour/2014-05-02-14.sqlite
+./by_hour/2014-05-02-15.sqlite
+./by_hour/2014-05-02-16.sqlite
+./by_hour/2014-05-02-17.sqlite
+./by_hour/2014-05-02-18.sqlite
+./by_hour/2014-05-02-19.sqlite
+./by_hour/2014-05-02-20.sqlite
+./by_hour/2014-05-02-21.sqlite
+./by_hour/2014-05-02-22.sqlite
+./by_hour/2014-05-02-23.sqlite
+./by_hour/2014-05-03-00.sqlite
+./by_hour/2014-05-03-01.sqlite
+./by_hour/2014-05-03-02.sqlite
+./by_hour/2014-05-03-03.sqlite
+./by_hour/2014-05-03-04.sqlite
+./by_hour/2014-05-03-05.sqlite
+./by_hour/2014-05-03-06.sqlite
+./by_hour/2014-05-03-07.sqlite
+./by_hour/2014-05-03-08.sqlite
+./by_hour/2014-05-03-09.sqlite
+./by_hour/2014-05-03-10.sqlite
+./by_hour/2014-05-03-11.sqlite
+./by_hour/2014-05-03-12.sqlite
+./by_hour/2014-05-03-13.sqlite
+./by_hour/2014-05-03-14.sqlite
+./by_hour/2014-05-03-15.sqlite
+./by_hour/2014-05-03-16.sqlite
+./by_hour/2014-05-03-17.sqlite
+./by_hour/2014-05-03-18.sqlite
+./by_hour/2014-05-03-19.sqlite
+./by_hour/2014-05-03-20.sqlite
+./by_hour/2014-05-03-21.sqlite
+./by_hour/2014-05-03-22.sqlite
+./by_hour/2014-05-03-23.sqlite
+./by_hour/2014-05-04-00.sqlite
+./by_hour/2014-05-04-01.sqlite
+./by_hour/2014-05-04-02.sqlite
+./by_hour/2014-05-04-03.sqlite
+./by_hour/2014-05-04-04.sqlite
+./by_hour/2014-05-04-05.sqlite
+./by_hour/2014-05-04-06.sqlite
+./by_hour/2014-05-04-07.sqlite
+./by_hour/2014-05-04-08.sqlite
+./by_hour/2014-05-04-09.sqlite
+./by_hour/2014-05-04-10.sqlite
+./by_hour/2014-05-04-11.sqlite
+./by_hour/2014-05-04-12.sqlite
+./by_hour/2014-05-04-13.sqlite
+./by_hour/2014-05-04-14.sqlite
+./by_hour/2014-05-04-15.sqlite
+./by_hour/2014-05-04-16.sqlite
+./by_hour/2014-05-04-17.sqlite
+./by_hour/2014-05-04-18.sqlite
+./by_hour/2014-05-04-19.sqlite
+./by_hour/2014-05-04-20.sqlite
+./by_hour/2014-05-04-21.sqlite
+./by_hour/2014-05-04-22.sqlite
+./by_hour/2014-05-04-23.sqlite
+./by_hour/2014-05-05-00.sqlite
+./by_hour/2014-05-05-01.sqlite
+./by_hour/2014-05-05-02.sqlite
+./by_hour/2014-05-05-03.sqlite
+./by_hour/2014-05-05-04.sqlite
+./by_hour/2014-05-05-05.sqlite
+./by_hour/2014-05-05-06.sqlite
+./by_hour/2014-05-05-07.sqlite
+./by_hour/2014-05-05-08.sqlite
+./by_hour/2014-05-05-09.sqlite
+./by_hour/2014-05-05-10.sqlite
+./by_hour/2014-05-05-11.sqlite
+./by_hour/2014-05-05-12.sqlite
+./by_hour/2014-05-05-13.sqlite
+./by_hour/2014-05-05-14.sqlite
+./by_hour/2014-05-05-15.sqlite
+./by_hour/2014-05-05-16.sqlite
+./by_hour/2014-05-05-17.sqlite
+./by_hour/2014-05-05-18.sqlite
+./by_hour/2014-05-05-19.sqlite
+./by_hour/2014-05-05-20.sqlite
+./by_hour/2014-05-05-21.sqlite
+./by_hour/2014-05-05-22.sqlite
+./by_hour/2014-05-05-23.sqlite
+HOST    OPERATION           VALUE
+janey   deletepublicstorage    57
+janey   deletestorage          63
+janey   getjoberrors           38
+janey   getpublicstorage       27
+janey   getstorage             43
+janey   headpublicstorage      52
+janey   headstorage            50
+janey   putdirectory           31
+janey   putobject              34
+janey   putpublicobject        34
+kearney deletepublicstorage    70
+kearney deletestorage          60
+kearney getjoberrors           33
+kearney getpublicstorage       42
+kearney getstorage             35
+kearney headpublicstorage      49
+kearney headstorage            50
+kearney putdirectory           42
+kearney putobject              42
+kearney putpublicobject        32
+ralph   deletepublicstorage    53
+ralph   deletestorage          53
+ralph   getjoberrors           38
+ralph   getpublicstorage       28
+ralph   getstorage             39
+ralph   headpublicstorage      48
+ralph   headstorage            68
+ralph   putdirectory           36
+ralph   putobject              43
+ralph   putpublicobject        34
+sherri  deletepublicstorage    60
+sherri  deletestorage          59
+sherri  getjoberrors           36
+sherri  getpublicstorage       39
+sherri  getstorage             39
+sherri  headpublicstorage      61
+sherri  headstorage            63
+sherri  putdirectory           41
+sherri  putobject              35
+sherri  putpublicobject        43
+wendell deletepublicstorage    54
+wendell deletestorage          51
+wendell getjoberrors           36
+wendell getpublicstorage       40
+wendell getstorage             43
+wendell headpublicstorage      65
+wendell headstorage            45
+wendell putdirectory           34
+wendell putobject              41
+wendell putpublicobject        41
+ninputs:          250
+nerr_nonnumeric:  0
+nscanned:         5
+VALUE
+   20
+ninputs:          1
+nerr_nonnumeric:  0
+nscanned:         1
