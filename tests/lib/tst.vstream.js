@@ -120,17 +120,17 @@ function testSimple(_, callback)
 		}, {
 		    'pv_value': 'flush',
 		    'pv_provenance': [ {
-		        'pvp_source': 't1', 'pvp_input': 4
+		        'pvp_source': 't1', 'pvp_input': 3
 		    } ]
 		}, {
 		    'pv_value': 'flush',
 		    'pv_provenance': [ {
-		        'pvp_source': 't1', 'pvp_input': 4
+		        'pvp_source': 't1', 'pvp_input': 3
 		    } ]
 		}, {
 		    'pv_value': 'flush',
 		    'pv_provenance': [ {
-		        'pvp_source': 't1', 'pvp_input': 4
+		        'pvp_source': 't1', 'pvp_input': 3
 		    } ]
 		} ]);
 
@@ -229,49 +229,49 @@ var testPipelineResults = [ {
 		       { 'pvp_source': 't2', 'pvp_input': 6 } ]
 }, {
     'pv_value': '5',
-    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 3 },
+    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 2 },
 		       { 'pvp_source': 't2', 'pvp_input': 7 } ]
 }, {
     'pv_value': '5',
-    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 3 },
+    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 2 },
 		       { 'pvp_source': 't2', 'pvp_input': 7 } ]
 }, {
     'pv_value': '5',
-    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 3 },
+    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 2 },
 		       { 'pvp_source': 't2', 'pvp_input': 7 } ]
 }, {
     'pv_value': '5',
-    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 3 },
+    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 2 },
 		       { 'pvp_source': 't2', 'pvp_input': 8 } ]
 }, {
     'pv_value': '5',
-    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 3 },
+    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 2 },
 		       { 'pvp_source': 't2', 'pvp_input': 8 } ]
 }, {
     'pv_value': '5',
-    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 3 },
+    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 2 },
 		       { 'pvp_source': 't2', 'pvp_input': 8 } ]
 }, {
     'pv_value': '5',
-    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 3 },
+    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 2 },
 		       { 'pvp_source': 't2', 'pvp_input': 9 } ]
 }, {
     'pv_value': '5',
-    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 3 },
+    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 2 },
 		       { 'pvp_source': 't2', 'pvp_input': 9 } ]
 }, {
     'pv_value': '5',
-    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 3 },
+    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 2 },
 		       { 'pvp_source': 't2', 'pvp_input': 9 } ]
 }, {
     'pv_value': 'flush',
-    'pv_provenance': [ { 'pvp_source': 't2', 'pvp_input': 10 } ]
+    'pv_provenance': [ { 'pvp_source': 't2', 'pvp_input': 9 } ]
 }, {
     'pv_value': 'flush',
-    'pv_provenance': [ { 'pvp_source': 't2', 'pvp_input': 10 } ]
+    'pv_provenance': [ { 'pvp_source': 't2', 'pvp_input': 9 } ]
 }, {
     'pv_value': 'flush',
-    'pv_provenance': [ { 'pvp_source': 't2', 'pvp_input': 10 } ]
+    'pv_provenance': [ { 'pvp_source': 't2', 'pvp_input': 9 } ]
 } ];
 
 function testPipeline(_, callback)
@@ -285,20 +285,30 @@ function testPipeline(_, callback)
 	t1 = new TestTransform();
 	mod_vstream.instrumentObject(t1, { 'name': 't1' });
 	mod_vstream.instrumentTransform(t1);
+	mod_vstream.instrumentPipelineOps(t1);
 
 	t2 = new TestTransform();
 	mod_vstream.instrumentObject(t2, { 'name': 't2' });
 	mod_vstream.instrumentTransform(t2, { 'unmarshalIn': false });
+	mod_vstream.instrumentPipelineOps(t2);
 
 	t2.on('data', function (chunk) { results.push(chunk); });
 	t2.on('end', function () {
+		mod_vstream.streamIter(t1,
+		    mod_vstream.streamDump.bind(null, process.stderr));
 		mod_assert.deepEqual(results, testPipelineResults);
 		callback();
 	});
 
 	t1.pipe(t2);
+	mod_vstream.streamIter(mod_vstream.streamHead(t2),
+	    mod_vstream.streamDump.bind(null, process.stderr));
 	t1.write('two_hello');
+	mod_vstream.streamIter(mod_vstream.streamHead(t2),
+	    mod_vstream.streamDump.bind(null, process.stderr));
 	t1.end('two_worlds');
+	mod_vstream.streamIter(mod_vstream.streamHead(t2),
+	    mod_vstream.streamDump.bind(null, process.stderr));
 }
 
 /*
