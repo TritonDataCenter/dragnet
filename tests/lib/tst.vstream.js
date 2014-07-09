@@ -24,8 +24,13 @@ mod_util.inherits(TestTransform, mod_stream.Transform);
 TestTransform.prototype._transform = function (chunk, _, callback) {
 	var self = this;
 
-	self.push(chunk.length.toString());
+	if (chunk == 'dropme') {
+		this.pushDrop(new Error('explicit drop'), 'explicit');
+		callback();
+		return;
+	}
 
+	self.push(chunk.length.toString());
 	setImmediate(function () {
 		var i;
 
@@ -41,9 +46,8 @@ TestTransform.prototype._flush = function (callback) {
 	this.push('flush');
 
 	setImmediate(function () {
-		for (i = 0; i < 2; i++)
-			self.push('flush');
-
+		self.push('flush');
+		self.push('dropme');
 		callback();
 	});
 };
@@ -105,32 +109,32 @@ function testSimple(_, callback)
 		}, {
 		    'pv_value': '3',
 		    'pv_provenance': [ {
-		        'pvp_source': 't1', 'pvp_input': 3
+		        'pvp_source': 't1', 'pvp_input': 4
 		    } ]
 		}, {
 		    'pv_value': '3',
 		    'pv_provenance': [ {
-		        'pvp_source': 't1', 'pvp_input': 3
+		        'pvp_source': 't1', 'pvp_input': 4
 		    } ]
 		}, {
 		    'pv_value': '3',
 		    'pv_provenance': [ {
-		        'pvp_source': 't1', 'pvp_input': 3
+		        'pvp_source': 't1', 'pvp_input': 4
 		    } ]
 		}, {
 		    'pv_value': 'flush',
 		    'pv_provenance': [ {
-		        'pvp_source': 't1', 'pvp_input': 3
+		        'pvp_source': 't1', 'pvp_input': 4
 		    } ]
 		}, {
 		    'pv_value': 'flush',
 		    'pv_provenance': [ {
-		        'pvp_source': 't1', 'pvp_input': 3
+		        'pvp_source': 't1', 'pvp_input': 4
 		    } ]
 		}, {
-		    'pv_value': 'flush',
+		    'pv_value': 'dropme',
 		    'pv_provenance': [ {
-		        'pvp_source': 't1', 'pvp_input': 3
+		        'pvp_source': 't1', 'pvp_input': 4
 		    } ]
 		} ]);
 
@@ -139,6 +143,7 @@ function testSimple(_, callback)
 
 	t1.write('h');
 	t1.write('he');
+	t1.write('dropme');
 	t1.end('hel');
 }
 
@@ -193,76 +198,64 @@ var testPipelineResults = [ {
 		       { 'pvp_source': 't2', 'pvp_input': 3 } ]
 }, {
     'pv_value': '2',
-    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 2 },
+    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 3 },
 		       { 'pvp_source': 't2', 'pvp_input': 4 } ]
 }, {
     'pv_value': '2',
-    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 2 },
+    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 3 },
 		       { 'pvp_source': 't2', 'pvp_input': 4 } ]
 }, {
     'pv_value': '2',
-    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 2 },
+    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 3 },
 		       { 'pvp_source': 't2', 'pvp_input': 4 } ]
 }, {
     'pv_value': '2',
-    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 2 },
+    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 3 },
 		       { 'pvp_source': 't2', 'pvp_input': 5 } ]
 }, {
     'pv_value': '2',
-    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 2 },
+    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 3 },
 		       { 'pvp_source': 't2', 'pvp_input': 5 } ]
 }, {
     'pv_value': '2',
-    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 2 },
+    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 3 },
 		       { 'pvp_source': 't2', 'pvp_input': 5 } ]
 }, {
     'pv_value': '2',
-    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 2 },
+    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 3 },
 		       { 'pvp_source': 't2', 'pvp_input': 6 } ]
 }, {
     'pv_value': '2',
-    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 2 },
+    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 3 },
 		       { 'pvp_source': 't2', 'pvp_input': 6 } ]
 }, {
     'pv_value': '2',
-    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 2 },
+    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 3 },
 		       { 'pvp_source': 't2', 'pvp_input': 6 } ]
 }, {
     'pv_value': '5',
-    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 2 },
+    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 3 },
 		       { 'pvp_source': 't2', 'pvp_input': 7 } ]
 }, {
     'pv_value': '5',
-    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 2 },
+    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 3 },
 		       { 'pvp_source': 't2', 'pvp_input': 7 } ]
 }, {
     'pv_value': '5',
-    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 2 },
+    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 3 },
 		       { 'pvp_source': 't2', 'pvp_input': 7 } ]
 }, {
     'pv_value': '5',
-    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 2 },
+    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 3 },
 		       { 'pvp_source': 't2', 'pvp_input': 8 } ]
 }, {
     'pv_value': '5',
-    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 2 },
+    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 3 },
 		       { 'pvp_source': 't2', 'pvp_input': 8 } ]
 }, {
     'pv_value': '5',
-    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 2 },
+    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 3 },
 		       { 'pvp_source': 't2', 'pvp_input': 8 } ]
-}, {
-    'pv_value': '5',
-    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 2 },
-		       { 'pvp_source': 't2', 'pvp_input': 9 } ]
-}, {
-    'pv_value': '5',
-    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 2 },
-		       { 'pvp_source': 't2', 'pvp_input': 9 } ]
-}, {
-    'pv_value': '5',
-    'pv_provenance': [ { 'pvp_source': 't1', 'pvp_input': 2 },
-		       { 'pvp_source': 't2', 'pvp_input': 9 } ]
 }, {
     'pv_value': 'flush',
     'pv_provenance': [ { 'pvp_source': 't2', 'pvp_input': 9 } ]
@@ -270,7 +263,7 @@ var testPipelineResults = [ {
     'pv_value': 'flush',
     'pv_provenance': [ { 'pvp_source': 't2', 'pvp_input': 9 } ]
 }, {
-    'pv_value': 'flush',
+    'pv_value': 'dropme',
     'pv_provenance': [ { 'pvp_source': 't2', 'pvp_input': 9 } ]
 } ];
 
@@ -300,12 +293,23 @@ function testPipeline(_, callback)
 		callback();
 	});
 
+	t1.on('drop', function (ctx, reason, err) {
+		console.error('drop: %s (message: "%s"; source: %s)', reason,
+		    err.message, ctx.label());
+	});
+
+	t2.on('drop', function (ctx, reason, err) {
+		console.error('drop: %s (message: "%s"; source: %s)', reason,
+		    err.message, ctx.label());
+	});
+
 	t1.pipe(t2);
 	mod_vstream.streamIter(mod_vstream.streamHead(t2),
 	    mod_vstream.streamDump.bind(null, process.stderr));
 	t1.write('two_hello');
 	mod_vstream.streamIter(mod_vstream.streamHead(t2),
 	    mod_vstream.streamDump.bind(null, process.stderr));
+	t1.write('dropme');
 	t1.end('two_worlds');
 	mod_vstream.streamIter(mod_vstream.streamHead(t2),
 	    mod_vstream.streamDump.bind(null, process.stderr));
