@@ -10,6 +10,7 @@ var mod_assert = require('assert');
 var mod_bunyan = require('bunyan');
 var mod_jsprim = require('jsprim');
 var mod_path = require('path');
+var mod_stream = require('stream');
 var mod_tab = require('tab');
 var mod_vstream = require('../lib/vstream/vstream');
 var OptionParser = require('posix-getopt').BasicParser;
@@ -231,6 +232,8 @@ function cmdIndex(cmdname, argv)
 			    indexargs['filename']);
 		}
 
+		if (showcounters)
+			mod_vstream.streamDumpPipeline(process.stderr, indexop);
 		dnPrintCounters(indexop.stats(), showcounters);
 		dnDone = true;
 	});
@@ -362,8 +365,10 @@ function cmdQuery(cmdname, argv)
 	});
 
 	stream.on('end', function () {
-		if (showcounters)
+		if (showcounters) {
+			mod_vstream.streamDumpPipeline(process.stderr, stream);
 			dnPrintCounters(results.stats(), true);
+		}
 		dnDone = true;
 	});
 }
@@ -474,6 +479,14 @@ function cmdScan(cmdname, argv)
 	scan.on('error', fatal);
 
 	if (showinvalid) {
+		mod_vstream.streamIter(mod_vstream.streamHead(scan),
+		    function (s) {
+			s.on('drop', function (context, kind, error) {
+				console.error('warn: %s: %s',
+				    context.label(), error.message);
+			});
+		    });
+
 		scan.on('find_error', function (fileinfo) {
 			console.error('warn: "%s": %s', fileinfo.path,
 			    fileinfo.error.message);
@@ -493,7 +506,10 @@ function cmdScan(cmdname, argv)
 	}
 
 	if (aspoints) {
-		tail = scan;
+		stream = new mod_stream.PassThrough();
+		stream = mod_vstream.wrapTransformTail(stream);
+		scan.pipe(stream);
+		tail = stream;
 	} else {
 		stream = new SkinnerFlattener({
 		    'skinnerOptions': mod_dragnet_impl.queryAggrStreamConfig({
@@ -513,8 +529,7 @@ function cmdScan(cmdname, argv)
 
 	tail.on('end', function () {
 		if (showcounters)
-			mod_vstream.streamIter(mod_vstream.streamHead(scan),
-			    mod_vstream.streamDump.bind(null, process.stderr));
+			mod_vstream.streamDumpPipeline(process.stderr, scan);
 		dnPrintCounters(scan.stats(), showcounters);
 		dnDone = true;
 	});
