@@ -21,7 +21,8 @@ function TestTransform()
 
 mod_util.inherits(TestTransform, mod_stream.Transform);
 
-TestTransform.prototype._transform = function (chunk, _, callback) {
+TestTransform.prototype._transform = function (chunk, _, callback)
+{
 	var self = this;
 
 	if (chunk == 'dropme') {
@@ -41,7 +42,8 @@ TestTransform.prototype._transform = function (chunk, _, callback) {
 	});
 };
 
-TestTransform.prototype._flush = function (callback) {
+TestTransform.prototype._flush = function (callback)
+{
 	var self = this;
 	this.push('flush');
 

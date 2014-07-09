@@ -11,6 +11,7 @@ var mod_bunyan = require('bunyan');
 var mod_jsprim = require('jsprim');
 var mod_path = require('path');
 var mod_tab = require('tab');
+var mod_vstream = require('../lib/vstream/vstream');
 var OptionParser = require('posix-getopt').BasicParser;
 var VError = require('verror');
 var sprintf = require('extsprintf').sprintf;
@@ -511,6 +512,9 @@ function cmdScan(cmdname, argv)
 	});
 
 	tail.on('end', function () {
+		if (showcounters)
+			mod_vstream.streamIter(mod_vstream.streamHead(scan),
+			    mod_vstream.streamDump.bind(null, process.stderr));
 		dnPrintCounters(scan.stats(), showcounters);
 		dnDone = true;
 	});
