@@ -2390,6 +2390,20 @@ wendell, putpublicobject
   2014-05-04T00:00:00.000Z |@@@@@@@@@                                500
   2014-05-05T00:00:00.000Z |@@@@                                     250
   2014-05-06T00:00:00.000Z |                                         0
+ReadStream          
+catstream           
+pipeline            
+    line reader     
+    json parser      (2252 read, 2250 written)
+        undefined:       2
+pipeline            
+    datetime parser  (2250 read, 2250 written)
+    skinner adapter  (2250 read, 2250 written)
+    aggregator       (2250 read, 5 written)
+scan op              (5 read, 5 written)
+    nscanned:        9
+pipeline            
+    flattener        (5 read, 0 written)
 query_filter_nremoved:  0
 query_filter_nerrors:   0
 ninputs:                2250
@@ -2398,6 +2412,19 @@ aggr_nerr_nonnumeric:   0
 nscanned:               9
 
 # dn scan --points --counters -b timestamp[date;field=time;aggr=lquantize;step=86400]
+ReadStream          
+catstream           
+pipeline            
+    line reader     
+    json parser      (2252 read, 2250 written)
+        undefined:       2
+pipeline            
+    datetime parser  (2250 read, 2250 written)
+    skinner adapter  (2250 read, 2250 written)
+    aggregator       (2250 read, 5 written)
+scan op              (5 read, 5 written)
+    nscanned:        9
+unmarshaler          (5 read, 0 written)
 query_filter_nremoved:  0
 query_filter_nerrors:   0
 ninputs:                2250
@@ -2413,6 +2440,21 @@ nscanned:               9
 # dn scan --counters --time-format=%Y/%m-%d --time-field=time --after 2014-05-02 --before 2014-05-03
 VALUE
   500
+ReadStream          
+catstream           
+pipeline            
+    line reader     
+    json parser      (502 read, 500 written)
+        undefined:       2
+pipeline            
+    datetime parser  (500 read, 500 written)
+    time filter      (500 read, 500 written)
+    skinner adapter  (500 read, 500 written)
+    aggregator       (500 read, 1 written)
+scan op              (1 read, 1 written)
+    nscanned:        2
+pipeline            
+    flattener        (1 read, 0 written)
 query_filter_nremoved:  0
 query_filter_nerrors:   0
 ninputs:                500
@@ -2421,6 +2463,20 @@ aggr_nerr_nonnumeric:   0
 nscanned:               2
 
 # dn scan --points --counters --time-format=%Y/%m-%d --time-field=time --after 2014-05-02 --before 2014-05-03
+ReadStream          
+catstream           
+pipeline            
+    line reader     
+    json parser      (502 read, 500 written)
+        undefined:       2
+pipeline            
+    datetime parser  (500 read, 500 written)
+    time filter      (500 read, 500 written)
+    skinner adapter  (500 read, 500 written)
+    aggregator       (500 read, 1 written)
+scan op              (1 read, 1 written)
+    nscanned:        2
+unmarshaler          (1 read, 0 written)
 query_filter_nremoved:  0
 query_filter_nerrors:   0
 ninputs:                500
@@ -2440,6 +2496,21 @@ nscanned:               2
   2014-05-02T04:12:00.000Z |                                         0
   2014-05-02T04:13:00.000Z |@@@@@@@@@@@@@@@@@@@@                     2
   2014-05-02T04:14:00.000Z |                                         0
+ReadStream          
+catstream           
+pipeline            
+    line reader     
+    json parser      (502 read, 500 written)
+        undefined:       2
+pipeline            
+    datetime parser  (500 read, 500 written)
+    time filter      (500 read, 4 written)
+    skinner adapter  (4 read, 4 written)
+    aggregator       (4 read, 2 written)
+scan op              (2 read, 2 written)
+    nscanned:        2
+pipeline            
+    flattener        (2 read, 0 written)
 query_filter_nremoved:  0
 query_filter_nerrors:   0
 ninputs:                4
@@ -2448,6 +2519,20 @@ aggr_nerr_nonnumeric:   0
 nscanned:               2
 
 # dn scan --points --counters --time-format=%Y/%m-%d -b timestamp[date;field=time;aggr=lquantize;step=60] --after 2014-05-02T04:05:06.123 --before 2014-05-02T04:15:10
+ReadStream          
+catstream           
+pipeline            
+    line reader     
+    json parser      (502 read, 500 written)
+        undefined:       2
+pipeline            
+    datetime parser  (500 read, 500 written)
+    time filter      (500 read, 4 written)
+    skinner adapter  (4 read, 4 written)
+    aggregator       (4 read, 2 written)
+scan op              (2 read, 2 written)
+    nscanned:        2
+unmarshaler          (2 read, 0 written)
 query_filter_nremoved:  0
 query_filter_nerrors:   0
 ninputs:                4

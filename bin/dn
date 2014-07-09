@@ -506,8 +506,11 @@ function cmdScan(cmdname, argv)
 	}
 
 	if (aspoints) {
-		stream = new mod_stream.PassThrough();
-		stream = mod_vstream.wrapTransformTail(stream);
+		stream = new mod_stream.PassThrough({
+		    'objectMode': true,
+		    'highWaterMark': 0
+		});
+		stream = mod_vstream.wrapTransformTail(stream, 'unmarshaler');
 		scan.pipe(stream);
 		tail = stream;
 	} else {

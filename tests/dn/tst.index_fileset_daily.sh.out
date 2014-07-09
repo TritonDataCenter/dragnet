@@ -1,4 +1,18 @@
 # dn index --counters -R ... -I ... -c timestamp[date;field=time;aggr=lquantize;step=3600],host,operation,req.caller,req.method,latency[aggr=quantize]
+ReadStream          
+catstream           
+pipeline            
+    line reader     
+    json parser      (2252 read, 2250 written)
+        undefined:       2
+pipeline            
+    datetime parser  (2250 read, 2250 written)
+    skinner adapter  (2250 read, 2250 written)
+    aggregator       (2250 read, 2224 written)
+scan op              (2224 read, 2224 written)
+    nscanned:        9
+multiplexer         
+index sink           (22 read, 0 written)
 query_filter_nremoved:  0
 query_filter_nerrors:   0
 ninputs:                2250
@@ -177,10 +191,33 @@ wendell headstorage            45
 wendell putdirectory           34
 wendell putobject              41
 wendell putpublicobject        41
+index aggregator     (18 read, 18 written)
+add dn_ts            (18 read, 18 written)
+query passthrough    (1854 read, 1854 written)
+aggregator           (1854 read, 1854 written)
+query op             (1854 read, 1854 written)
+    nscanned:        120
+query                (1854 read, 1854 written)
+pipeline            
+    flattener        (1854 read, 0 written)
 ninputs:          1854
 nerr_nonnumeric:  0
 nscanned:         120
 # dn index --counters -R ... -I ... --interval=day -c timestamp[date;field=time;aggr=lquantize;step=3600],host,operation,req.caller,req.method,latency[aggr=quantize]
+ReadStream          
+catstream           
+pipeline            
+    line reader     
+    json parser      (2252 read, 2250 written)
+        undefined:       2
+pipeline            
+    datetime parser  (2250 read, 2250 written)
+    skinner adapter  (2250 read, 2250 written)
+    aggregator       (2250 read, 2224 written)
+scan op              (2224 read, 2224 written)
+    nscanned:        9
+multiplexer         
+index sink           (489 read, 0 written)
 query_filter_nremoved:  0
 query_filter_nerrors:   0
 ninputs:                2250
@@ -364,6 +401,15 @@ wendell headstorage            45
 wendell putdirectory           34
 wendell putobject              41
 wendell putpublicobject        41
+index aggregator     (50 read, 50 written)
+add dn_ts            (50 read, 50 written)
+query passthrough    (250 read, 250 written)
+aggregator           (250 read, 250 written)
+query op             (250 read, 250 written)
+    nscanned:        5
+query                (250 read, 250 written)
+pipeline            
+    flattener        (250 read, 0 written)
 ninputs:          250
 nerr_nonnumeric:  0
 nscanned:         5
@@ -539,10 +585,27 @@ wendell headstorage            45
 wendell putdirectory           34
 wendell putobject              41
 wendell putpublicobject        41
+index aggregator     (18 read, 18 written)
+add dn_ts            (18 read, 18 written)
+query passthrough    (1854 read, 1854 written)
+aggregator           (1854 read, 1854 written)
+query op             (1854 read, 1854 written)
+    nscanned:        120
+query                (1854 read, 1854 written)
+pipeline            
+    flattener        (1854 read, 0 written)
 ninputs:          1854
 nerr_nonnumeric:  0
 nscanned:         120
 # dn index --counters -R ... -I ... --interval=day --source=hour -c timestamp[aggr=lquantize;step=3600],host,operation,req.caller,req.method,latency[aggr=quantize]
+index aggregator     (20 read, 20 written)
+add dn_ts            (20 read, 20 written)
+query passthrough    (2224 read, 2224 written)
+aggregator           (2224 read, 2224 written)
+query op             (2224 read, 2224 written)
+    nscanned:        120
+multiplexer         
+index sink           (489 read, 0 written)
 ninputs:          2224
 nerr_nonnumeric:  0
 nscanned:         120
@@ -723,12 +786,30 @@ wendell headstorage            45
 wendell putdirectory           34
 wendell putobject              41
 wendell putpublicobject        41
+index aggregator     (50 read, 50 written)
+add dn_ts            (50 read, 50 written)
+query passthrough    (250 read, 250 written)
+aggregator           (250 read, 250 written)
+query op             (250 read, 250 written)
+    nscanned:        5
+query                (250 read, 250 written)
+pipeline            
+    flattener        (250 read, 0 written)
 ninputs:          250
 nerr_nonnumeric:  0
 nscanned:         5
 # dn query --counters -I ... -f { "eq": [ "host", "ralph" ] } --time-field=timestamp --after=2014-05-03T12:00:00 --before=2014-05-03T18:00:00
 VALUE
    20
+index aggregator     (1 read, 1 written)
+add dn_ts            (1 read, 1 written)
+query passthrough    (1 read, 1 written)
+aggregator           (1 read, 1 written)
+query op             (1 read, 1 written)
+    nscanned:        1
+query                (1 read, 1 written)
+pipeline            
+    flattener        (1 read, 0 written)
 ninputs:          1
 nerr_nonnumeric:  0
 nscanned:         1

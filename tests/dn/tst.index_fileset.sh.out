@@ -1554,6 +1554,15 @@ VALUE
       1399161600 |@@@@@@@@@                                500
       1399248000 |@@@@                                     250
       1399334400 |                                         0
+index aggregator     (11 read, 1 written)
+add dn_ts            (1 read, 1 written)
+query passthrough    (120 read, 120 written)
+aggregator           (120 read, 120 written)
+query op             (120 read, 120 written)
+    nscanned:        120
+query                (120 read, 120 written)
+pipeline            
+    flattener        (120 read, 0 written)
 ninputs:          120
 nerr_nonnumeric:  0
 nscanned:         120
@@ -1561,6 +1570,15 @@ nscanned:         120
 # dn query --counters --time-field=timestamp --after 2014-05-02 --before 2014-05-03
 VALUE
   500
+index aggregator     (1 read, 1 written)
+add dn_ts            (1 read, 1 written)
+query passthrough    (24 read, 24 written)
+aggregator           (24 read, 24 written)
+query op             (24 read, 24 written)
+    nscanned:        24
+query                (24 read, 24 written)
+pipeline            
+    flattener        (24 read, 0 written)
 ninputs:          24
 nerr_nonnumeric:  0
 nscanned:         24
@@ -1576,6 +1594,15 @@ nscanned:         24
       1399003920 |                                         0
       1399003980 |@@@@@@@@@@@@@@@@@@@@                     2
       1399004040 |                                         0
+index aggregator     (2 read, 2 written)
+add dn_ts            (2 read, 2 written)
+query passthrough    (2 read, 2 written)
+aggregator           (2 read, 2 written)
+query op             (2 read, 2 written)
+    nscanned:        1
+query                (2 read, 2 written)
+pipeline            
+    flattener        (2 read, 0 written)
 ninputs:          2
 nerr_nonnumeric:  0
 nscanned:         1
