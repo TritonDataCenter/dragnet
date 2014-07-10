@@ -111,11 +111,12 @@ function cmdIndex(cmdname, argv)
 	var indexargs, timefmt;
 
 	sourceargs = { 'log': dnLog };
-	indexargs = { 'source': 'raw' };
+	indexargs = { 'source': 'raw', 'format': 'json' };
 	argv.unshift('', '');
 	optparser = new OptionParser(':c:(columns)f:(filter)' +
 	    'i:(interval)s:(source)A:(after)B:(before)C(counters)' +
-	    'I:(indexroot)R:(dataroot)S(show-invalid)T:(time-format)', argv);
+	    'D:(data-format)I:(indexroot)R:(dataroot)S(show-invalid)' +
+	    'T:(time-format)', argv);
 	while ((option = optparser.getopt()) !== undefined) {
 		switch (option.option) {
 		case 'c':
@@ -150,6 +151,10 @@ function cmdIndex(cmdname, argv)
 
 		case 'C':
 			showcounters = true;
+			break;
+
+		case 'D':
+			indexargs['format'] = option.optarg;
 			break;
 
 		case 'I':
@@ -209,7 +214,6 @@ function cmdIndex(cmdname, argv)
 		fatal(index);
 
 	indexargs['index'] = index;
-	indexargs['format'] = 'json';
 	indexargs['timeFormat'] = timefmt;
 	indexop = source.index(indexargs);
 	indexop.on('error', fatal);
@@ -373,15 +377,16 @@ function cmdScan(cmdname, argv)
 	var showinvalid = false;
 	var showcounters = false;
 	var aspoints = false;
-	var sourceclass, sourceargs;
+	var sourceclass, sourceargs, scanargs;
 	var source, query, scan, stream, tail;
 	var timefmt;
 
 	sourceargs = { 'log': dnLog };
+	scanargs = { 'format': 'json' };
 	argv.unshift('', '');
 	optparser = new OptionParser(':b:(breakdowns)f:(filter)p(points)' +
-	    'r(raw)A:(after)B:(before)C(counters)F:(time-field)R:(root)' +
-	    'S(show-invalid)T:(time-format)', argv);
+	    'r(raw)A:(after)B:(before)C(counters)D:(data-format)' +
+	    'F:(time-field)R:(root)S(show-invalid)T:(time-format)', argv);
 	while ((option = optparser.getopt()) !== undefined) {
 		switch (option.option) {
 		case 'f':
@@ -417,6 +422,10 @@ function cmdScan(cmdname, argv)
 
 		case 'C':
 			showcounters = true;
+			break;
+
+		case 'D':
+			scanargs['format'] = option.optarg;
 			break;
 
 		case 'F':
@@ -461,11 +470,9 @@ function cmdScan(cmdname, argv)
 	if (query instanceof Error)
 		fatal(query);
 
-	scan = source.scan({
-	    'query': query,
-	    'format': 'json',
-	    'timeFormat': timefmt
-	});
+	scanargs['query'] = query;
+	scanargs['timeFormat'] = timefmt;
+	scan = source.scan(scanargs);
 	scan.on('error', fatal);
 
 	if (showinvalid) {

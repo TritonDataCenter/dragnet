@@ -8,7 +8,7 @@ set -o errexit
 . $(dirname $0)/common.sh
 
 tmpfile="/var/tmp/$(basename $0).$$"
-echo "using tmpfile \"$tmpfile" >&2
+echo "using tmpfile \"$tmpfile\"" >&2
 
 function scan
 {
