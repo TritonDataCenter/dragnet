@@ -1564,10 +1564,6 @@ FindFeedback       ndirectories:       1
 FindFeedback       ninputs:          123
 FindFeedback       noutputs:         120
 FindFeedback       nregfiles:        120
-Index Aggregator   ninputs:           10
-Index Aggregator   noutputs:           1
-Add dn_ts          ninputs:            1
-Add dn_ts          noutputs:           1
 Index List         ninputs:          120
 Index List         noutputs:         120
 Index Result Aggregator ninputs:          120
@@ -1590,10 +1586,6 @@ FindTraverser      noutputs:          25
 FindFeedback       ninputs:           25
 FindFeedback       noutputs:          24
 FindFeedback       nregfiles:         24
-Index Aggregator   ninputs:            1
-Index Aggregator   noutputs:           1
-Add dn_ts          ninputs:            1
-Add dn_ts          noutputs:           1
 Index List         ninputs:           24
 Index List         noutputs:          24
 Index Result Aggregator ninputs:           24
@@ -1624,10 +1616,6 @@ FindTraverser      noutputs:           2
 FindFeedback       ninputs:            2
 FindFeedback       noutputs:           1
 FindFeedback       nregfiles:          1
-Index Aggregator   ninputs:            2
-Index Aggregator   noutputs:           2
-Add dn_ts          ninputs:            2
-Add dn_ts          noutputs:           2
 Index List         ninputs:            2
 Index List         noutputs:           2
 Index Result Aggregator ninputs:            2
