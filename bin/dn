@@ -57,6 +57,13 @@ function fatal(err)
 	process.exit(1);
 }
 
+function warn(context, kind, error)
+{
+	console.error('warn: %s', error.message);
+	if (context !== null)
+		console.error('    at ' + context.label());
+}
+
 function main()
 {
 	var optind, cmdname, cmdfunc;
@@ -208,33 +215,19 @@ function cmdIndex(cmdname, argv)
 	indexop.on('error', fatal);
 
 	if (showinvalid) {
-		indexop.on('find_error', function (fileinfo) {
-			console.error('warn: "%s": %s', fileinfo.path,
-			    fileinfo.error.message);
-		});
-
-		indexop.on('invalid_record', function (str, perr, idx) {
-			console.error('warn: bad record at line %d: %s',
-			    idx, perr.toString());
-			console.error('      input: %s', str);
-		});
-
-		indexop.on('invalid_object', function (obj, perr, idx) {
-			console.error('warn: bad object at line %d: %s',
-			    idx, perr.message);
-			console.error('      input: %s', JSON.stringify(obj));
+		indexop.vsHead().vsWalk(function (s) {
+			s.on('warn', warn);
 		});
 	}
 
-	indexop.on('finish', function () {
+	indexop.on('flushed', function () {
 		if (indexargs['filename']) {
 			console.error('index "%s" created',
 			    indexargs['filename']);
 		}
 
 		if (showcounters)
-			mod_vstream.streamDumpPipeline(process.stderr, indexop);
-		dnPrintCounters(indexop.stats(), showcounters);
+			dnPrintCounters(indexop);
 		dnDone = true;
 	});
 }
@@ -352,9 +345,8 @@ function cmdQuery(cmdname, argv)
 	results = source.query(queryargs);
 	results.pipe(stream);
 
-	results.on('find_error', function (fileinfo) {
-		console.error('warn: "%s": %s', fileinfo.path,
-		    fileinfo.error.message);
+	results.vsHead().vsWalk(function (s) {
+		s.on('warn', warn);
 	});
 
 	stream.on('data', function (rows) {
@@ -365,10 +357,8 @@ function cmdQuery(cmdname, argv)
 	});
 
 	stream.on('end', function () {
-		if (showcounters) {
-			mod_vstream.streamDumpPipeline(process.stderr, stream);
-			dnPrintCounters(results.stats(), true);
-		}
+		if (showcounters)
+			dnPrintCounters(stream);
 		dnDone = true;
 	});
 }
@@ -479,40 +469,13 @@ function cmdScan(cmdname, argv)
 	scan.on('error', fatal);
 
 	if (showinvalid) {
-		mod_vstream.streamIter(mod_vstream.streamHead(scan),
-		    function (s) {
-			s.on('drop', function (context, kind, error) {
-				console.error('warn: %s: %s',
-				    context.label(), error.message);
-			});
-		    });
-
-		scan.on('find_error', function (fileinfo) {
-			console.error('warn: "%s": %s', fileinfo.path,
-			    fileinfo.error.message);
-		});
-
-		scan.on('invalid_record', function (str, perr, idx) {
-			console.error('warn: bad record at line %d: %s',
-			    idx, perr.toString());
-			console.error('      input: %s', str);
-		});
-
-		scan.on('invalid_object', function (obj, perr, idx) {
-			console.error('warn: bad object at line %d: %s',
-			    idx, perr.message);
-			console.error('      input: %s', JSON.stringify(obj));
+		scan.vsHead().vsWalk(function (s) {
+			s.on('warn', warn);
 		});
 	}
 
 	if (aspoints) {
-		stream = new mod_stream.PassThrough({
-		    'objectMode': true,
-		    'highWaterMark': 0
-		});
-		stream = mod_vstream.wrapTransformTail(stream, 'unmarshaler');
-		scan.pipe(stream);
-		tail = stream;
+		tail = scan;
 	} else {
 		stream = new SkinnerFlattener({
 		    'skinnerOptions': mod_dragnet_impl.queryAggrStreamConfig({
@@ -532,8 +495,7 @@ function cmdScan(cmdname, argv)
 
 	tail.on('end', function () {
 		if (showcounters)
-			mod_vstream.streamDumpPipeline(process.stderr, scan);
-		dnPrintCounters(scan.stats(), showcounters);
+			dnPrintCounters(scan);
 		dnDone = true;
 	});
 }
@@ -742,25 +704,10 @@ function dnPrintDistribution(stream, distr, bucketizer, asdate)
 	}
 }
 
-function dnPrintCounters(c, showall)
+function dnPrintCounters(stream)
 {
-	if (!showall) {
-		if (c.aggr_nerr_nonnumeric !== 0) {
-			console.error('warn: ignored %d non-numeric values',
-			    c.aggr_nerr_nonnumeric);
-		}
-
-		return;
-	}
-
-	var width, fmt;
-	mod_jsprim.forEachKey(c, function (name, value) {
-		if (width === undefined || width < name.length)
-			width = name.length;
-	});
-	fmt = '%-' + (width + 1) + 's  %d';
-	mod_jsprim.forEachKey(c, function (name, value) {
-		console.error(sprintf(fmt, name + ':', value));
+	stream.vsHead().vsWalk(function (s) {
+		s.vsDumpCounters(process.stderr);
 	});
 }
 

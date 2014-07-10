@@ -27,9 +27,7 @@ function main()
 	var count = 0;
 	process.stdin.pipe(stream);
 	stream.on('err', fatal);
-	stream.on('invalid_record', function (line, lineno, err) {
-		console.error('line %d: %s', lineno, err.toString());
-	});
+	stream.on('warn', console.error);
 
 	if (process.argv[2] == '--stop') {
 		/*

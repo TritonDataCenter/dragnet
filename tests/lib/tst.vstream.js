@@ -26,7 +26,7 @@ TestTransform.prototype._transform = function (chunk, _, callback)
 	var self = this;
 
 	if (chunk == 'dropme') {
-		this.pushDrop(new Error('explicit drop'), 'explicit');
+		this.vsWarn(new Error('explicit drop'), 'explicit');
 		callback();
 		return;
 	}
@@ -76,6 +76,7 @@ function testSimple(_, callback)
 	t1 = new TestTransform();
 	mod_vstream.instrumentObject(t1, { 'name': 't1' });
 	mod_vstream.instrumentTransform(t1);
+	t1.vs_marshalmode = 'marshal';
 	t1.on('data', function (chunk) { results.push(chunk); });
 	t1.on('end', function () {
 		mod_assert.deepEqual(results, [ {
@@ -150,14 +151,13 @@ function testSimple(_, callback)
 }
 
 /*
- * Test a pipeline of two instrumented streams.  The second one must be
- * configured appropriately ("unmarshalIn": false).  For each input
- * ("two_hello", "two_worlds"), the first stream emits three outputs with the
- * corresponding lengths ("9" and "10").  Each of these is fed into the second
- * string, which emit three instances of *those* strings' lengths for each one
- * ("1" for both).  There will be three instances of "flush" from the first
- * string, each translating to three "5"s from the second, plus 3 "flush"
- * strings from the second string.
+ * Test a pipeline of two instrumented streams.  For each input ("two_hello",
+ * "two_worlds"), the first stream emits three outputs with the corresponding
+ * lengths ("9" and "10").  Each of these is fed into the second string, which
+ * emit three instances of *those* strings' lengths for each one ("1" for both).
+ * There will be three instances of "flush" from the first string, each
+ * translating to three "5"s from the second, plus 3 "flush" strings from the
+ * second string.
  *
  * Besides the streams working correctly, these should all have the right
  * provenance information.
@@ -279,18 +279,19 @@ function testPipeline(_, callback)
 	
 	t1 = new TestTransform();
 	mod_vstream.instrumentObject(t1, { 'name': 't1' });
+	mod_vstream.instrumentStream(t1);
 	mod_vstream.instrumentTransform(t1);
-	mod_vstream.instrumentPipelineOps(t1);
 
 	t2 = new TestTransform();
 	mod_vstream.instrumentObject(t2, { 'name': 't2' });
-	mod_vstream.instrumentTransform(t2, { 'unmarshalIn': false });
-	mod_vstream.instrumentPipelineOps(t2);
+	mod_vstream.instrumentStream(t2);
+	mod_vstream.instrumentTransform(t2);
+	t2.vs_marshalmode = 'marshal';
 
 	t2.on('data', function (chunk) { results.push(chunk); });
 	t2.on('end', function () {
-		mod_vstream.streamIter(t1,
-		    mod_vstream.streamDump.bind(null, process.stderr));
+		t1.vsWalk(
+		    function (s) { return (s.vsDumpDebug(process.stderr)); });
 		mod_assert.deepEqual(results, testPipelineResults);
 		callback();
 	});
@@ -306,15 +307,15 @@ function testPipeline(_, callback)
 	});
 
 	t1.pipe(t2);
-	mod_vstream.streamIter(mod_vstream.streamHead(t2),
-	    mod_vstream.streamDump.bind(null, process.stderr));
+	t2.vsHead().vsWalk(
+	    function (s) { return (s.vsDumpDebug(process.stderr)); });
 	t1.write('two_hello');
-	mod_vstream.streamIter(mod_vstream.streamHead(t2),
-	    mod_vstream.streamDump.bind(null, process.stderr));
+	t2.vsHead().vsWalk(
+	    function (s) { return (s.vsDumpDebug(process.stderr)); });
 	t1.write('dropme');
 	t1.end('two_worlds');
-	mod_vstream.streamIter(mod_vstream.streamHead(t2),
-	    mod_vstream.streamDump.bind(null, process.stderr));
+	t2.vsHead().vsWalk(
+	    function (s) { return (s.vsDumpDebug(process.stderr)); });
 }
 
 /*
@@ -336,10 +337,7 @@ function testPipelineUnmarshaled(_, callback)
 
 	t2 = new TestTransform();
 	mod_vstream.instrumentObject(t2, { 'name': 't2' });
-	mod_vstream.instrumentTransform(t2, {
-	    'unmarshalIn': false,
-	    'marshalOut': false
-	});
+	mod_vstream.instrumentTransform(t2);
 
 	t2.on('data', function (chunk) { results.push(chunk); });
 	t2.on('end', function () {

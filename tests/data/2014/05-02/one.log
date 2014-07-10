@@ -250,3 +250,5 @@ intentionally invalid line
 {"time":"2014-05-02T23:42:43.200Z","host":"sherri","req":{"method":"GET","url":"/random/url/number/218"},"operation":"getstorage","res":{"statusCode":500},"latency":2,"dataLatency":3563,"dataSize":910906157}
 {"time":"2014-05-02T23:48:28.800Z","host":"ralph","req":{"method":"HEAD","url":"/random/url/number/110","caller":"admin"},"operation":"headpublicstorage","res":{"statusCode":499},"latency":23,"dataLatency":4,"dataSize":585698546}
 {"time":"2014-05-02T23:54:14.400Z","host":"ralph","req":{"method":"DELETE","url":"/random/url/number/207"},"operation":"deletepublicstorage","res":{"statusCode":204},"latency":2,"dataLatency":2,"dataSize":524205541}
+{"time":"invalid","host":"ralph","req":{"method":"DELETE","url":"/random/url/number/207"},"operation":"deletepublicstorage","res":{"statusCode":204},"latency":2,"dataLatency":2,"dataSize":524205541}
+{"host":"ralph","req":{"method":"DELETE","url":"/random/url/number/207"},"operation":"deletepublicstorage","res":{"statusCode":204},"latency":2,"dataLatency":2,"dataSize":524205541}
