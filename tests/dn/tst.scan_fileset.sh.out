@@ -2403,12 +2403,12 @@ FindFeedback       nregfiles:          9
 JsonDecoderStream  invalid json:       2
 JsonDecoderStream  ninputs:         2254
 JsonDecoderStream  noutputs:        2252
+SkinnerAdapterStream ninputs:         2252
+SkinnerAdapterStream noutputs:        2252
 Datetime parser    baddate:            1
 Datetime parser    ninputs:         2252
 Datetime parser    noutputs:        2250
 Datetime parser    undef:              1
-Skinner adapter    ninputs:         2250
-Skinner adapter    noutputs:        2250
 Aggregator         ninputs:         2250
 Aggregator         noutputs:           5
 Flattener          ninputs:            5
@@ -2428,12 +2428,12 @@ FindFeedback       nregfiles:          9
 JsonDecoderStream  invalid json:       2
 JsonDecoderStream  ninputs:         2254
 JsonDecoderStream  noutputs:        2252
+SkinnerAdapterStream ninputs:         2252
+SkinnerAdapterStream noutputs:        2252
 Datetime parser    baddate:            1
 Datetime parser    ninputs:         2252
 Datetime parser    noutputs:        2250
 Datetime parser    undef:              1
-Skinner adapter    ninputs:         2250
-Skinner adapter    noutputs:        2250
 Aggregator         ninputs:         2250
 Aggregator         noutputs:           5
 {"fields":{"timestamp":1398902400},"value":500}
@@ -2459,14 +2459,14 @@ FindFeedback       nregfiles:          2
 JsonDecoderStream  invalid json:       2
 JsonDecoderStream  ninputs:          504
 JsonDecoderStream  noutputs:         502
+SkinnerAdapterStream ninputs:          502
+SkinnerAdapterStream noutputs:         502
 Datetime parser    baddate:            1
 Datetime parser    ninputs:          502
 Datetime parser    noutputs:         500
 Datetime parser    undef:              1
 Time filter        ninputs:          500
 Time filter        noutputs:         500
-Skinner adapter    ninputs:          500
-Skinner adapter    noutputs:         500
 Aggregator         ninputs:          500
 Aggregator         noutputs:           1
 Flattener          ninputs:            1
@@ -2487,14 +2487,14 @@ FindFeedback       nregfiles:          2
 JsonDecoderStream  invalid json:       2
 JsonDecoderStream  ninputs:          504
 JsonDecoderStream  noutputs:         502
+SkinnerAdapterStream ninputs:          502
+SkinnerAdapterStream noutputs:         502
 Datetime parser    baddate:            1
 Datetime parser    ninputs:          502
 Datetime parser    noutputs:         500
 Datetime parser    undef:              1
 Time filter        ninputs:          500
 Time filter        noutputs:         500
-Skinner adapter    ninputs:          500
-Skinner adapter    noutputs:         500
 Aggregator         ninputs:          500
 Aggregator         noutputs:           1
 {"fields":{},"value":500}
@@ -2524,14 +2524,15 @@ FindFeedback       nregfiles:          2
 JsonDecoderStream  invalid json:       2
 JsonDecoderStream  ninputs:          504
 JsonDecoderStream  noutputs:         502
+SkinnerAdapterStream ninputs:          502
+SkinnerAdapterStream noutputs:         502
 Datetime parser    baddate:            1
 Datetime parser    ninputs:          502
 Datetime parser    noutputs:         500
 Datetime parser    undef:              1
+Time filter        nfilteredout:     496
 Time filter        ninputs:          500
 Time filter        noutputs:           4
-Skinner adapter    ninputs:            4
-Skinner adapter    noutputs:           4
 Aggregator         ninputs:            4
 Aggregator         noutputs:           2
 Flattener          ninputs:            2
@@ -2552,14 +2553,15 @@ FindFeedback       nregfiles:          2
 JsonDecoderStream  invalid json:       2
 JsonDecoderStream  ninputs:          504
 JsonDecoderStream  noutputs:         502
+SkinnerAdapterStream ninputs:          502
+SkinnerAdapterStream noutputs:         502
 Datetime parser    baddate:            1
 Datetime parser    ninputs:          502
 Datetime parser    noutputs:         500
 Datetime parser    undef:              1
+Time filter        nfilteredout:     496
 Time filter        ninputs:          500
 Time filter        noutputs:           4
-Skinner adapter    ninputs:            4
-Skinner adapter    noutputs:           4
 Aggregator         ninputs:            4
 Aggregator         noutputs:           2
 {"fields":{"timestamp":1399003620},"value":2}

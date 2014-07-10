@@ -12,12 +12,12 @@ FindFeedback       nregfiles:          9
 JsonDecoderStream  invalid json:       2
 JsonDecoderStream  ninputs:         2254
 JsonDecoderStream  noutputs:        2252
+SkinnerAdapterStream ninputs:         2252
+SkinnerAdapterStream noutputs:        2252
 Datetime parser    baddate:            1
 Datetime parser    ninputs:         2252
 Datetime parser    noutputs:        2250
 Datetime parser    undef:              1
-Skinner adapter    ninputs:         2250
-Skinner adapter    noutputs:        2250
 Aggregator         ninputs:         2250
 Aggregator         noutputs:        2224
 IndexSink          ninputs:           22
@@ -225,12 +225,12 @@ FindFeedback       nregfiles:          9
 JsonDecoderStream  invalid json:       2
 JsonDecoderStream  ninputs:         2254
 JsonDecoderStream  noutputs:        2252
+SkinnerAdapterStream ninputs:         2252
+SkinnerAdapterStream noutputs:        2252
 Datetime parser    baddate:            1
 Datetime parser    ninputs:         2252
 Datetime parser    noutputs:        2250
 Datetime parser    undef:              1
-Skinner adapter    ninputs:         2250
-Skinner adapter    noutputs:        2250
 Aggregator         ninputs:         2250
 Aggregator         noutputs:        2224
 IndexSink          ninputs:          489
