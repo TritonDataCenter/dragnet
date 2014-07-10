@@ -1554,16 +1554,46 @@ VALUE
       1399161600 |@@@@@@@@@                                500
       1399248000 |@@@@                                     250
       1399334400 |                                         0
-ninputs:          120
-nerr_nonnumeric:  0
-nscanned:         120
+FindStart          ninputs:            1
+FindStart          noutputs:           1
+FindStatter        ninputs:          123
+FindStatter        noutputs:         123
+FindTraverser      ninputs:          123
+FindTraverser      noutputs:         123
+FindFeedback       ndirectories:       1
+FindFeedback       ninputs:          123
+FindFeedback       noutputs:         120
+FindFeedback       nregfiles:        120
+Index List         ninputs:          120
+Index List         noutputs:         120
+Index Result Aggregator ninputs:          120
+Index Result Aggregator noutputs:         120
+Query Passthrough  ninputs:          120
+Query Passthrough  noutputs:         120
+Flattener          ninputs:          120
+Flattener          noutputs:           1
 
 # dn query --counters --time-field=timestamp --after 2014-05-02 --before 2014-05-03
 VALUE
   500
-ninputs:          24
-nerr_nonnumeric:  0
-nscanned:         24
+PathEnumerator     noutputs:          24
+FindStart          ninputs:           24
+FindStart          noutputs:          24
+FindStatter        ninputs:           25
+FindStatter        noutputs:          25
+FindTraverser      ninputs:           25
+FindTraverser      noutputs:          25
+FindFeedback       ninputs:           25
+FindFeedback       noutputs:          24
+FindFeedback       nregfiles:         24
+Index List         ninputs:           24
+Index List         noutputs:          24
+Index Result Aggregator ninputs:           24
+Index Result Aggregator noutputs:          24
+Query Passthrough  ninputs:           24
+Query Passthrough  noutputs:          24
+Flattener          ninputs:           24
+Flattener          noutputs:           1
 
 # dn query --counters --time-field=timestamp -b timestamp[aggr=lquantize;step=60] --after 2014-05-02T04:05:06.123 --before 2014-05-02T04:15:10
 
@@ -1576,7 +1606,22 @@ nscanned:         24
       1399003920 |                                         0
       1399003980 |@@@@@@@@@@@@@@@@@@@@                     2
       1399004040 |                                         0
-ninputs:          2
-nerr_nonnumeric:  0
-nscanned:         1
+PathEnumerator     noutputs:           2
+FindStart          ninputs:            1
+FindStart          noutputs:           1
+FindStatter        ninputs:            2
+FindStatter        noutputs:           2
+FindTraverser      ninputs:            2
+FindTraverser      noutputs:           2
+FindFeedback       ninputs:            2
+FindFeedback       noutputs:           1
+FindFeedback       nregfiles:          1
+Index List         ninputs:            2
+Index List         noutputs:           2
+Index Result Aggregator ninputs:            2
+Index Result Aggregator noutputs:           2
+Query Passthrough  ninputs:            2
+Query Passthrough  noutputs:           2
+Flattener          ninputs:            2
+Flattener          noutputs:           1
 

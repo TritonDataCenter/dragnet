@@ -1,13 +1,13 @@
 # dn scan
 VALUE
- 2250
+ 2252
 
 # dn scan --points
-{"fields":{},"value":2250}
+{"fields":{},"value":2252}
 
 # dn scan -b operation
 OPERATION           VALUE
-deletepublicstorage   294
+deletepublicstorage   296
 deletestorage         286
 getjoberrors          181
 getpublicstorage      176
@@ -19,7 +19,7 @@ putobject             195
 putpublicobject       184
 
 # dn scan --points -b operation
-{"fields":{"operation":"deletepublicstorage"},"value":294}
+{"fields":{"operation":"deletepublicstorage"},"value":296}
 {"fields":{"operation":"deletestorage"},"value":286}
 {"fields":{"operation":"getjoberrors"},"value":181}
 {"fields":{"operation":"getpublicstorage"},"value":176}
@@ -34,7 +34,7 @@ putpublicobject       184
 OPERATION           REQ.METHOD HOST    VALUE
 deletepublicstorage DELETE     janey      57
 deletepublicstorage DELETE     kearney    70
-deletepublicstorage DELETE     ralph      53
+deletepublicstorage DELETE     ralph      55
 deletepublicstorage DELETE     sherri     60
 deletepublicstorage DELETE     wendell    54
 deletestorage       DELETE     janey      63
@@ -86,7 +86,7 @@ putpublicobject     PUT        wendell    41
 # dn scan --points -b operation,req.method,host
 {"fields":{"operation":"deletepublicstorage","req.method":"DELETE","host":"janey"},"value":57}
 {"fields":{"operation":"deletepublicstorage","req.method":"DELETE","host":"kearney"},"value":70}
-{"fields":{"operation":"deletepublicstorage","req.method":"DELETE","host":"ralph"},"value":53}
+{"fields":{"operation":"deletepublicstorage","req.method":"DELETE","host":"ralph"},"value":55}
 {"fields":{"operation":"deletepublicstorage","req.method":"DELETE","host":"sherri"},"value":60}
 {"fields":{"operation":"deletepublicstorage","req.method":"DELETE","host":"wendell"},"value":54}
 {"fields":{"operation":"deletestorage","req.method":"DELETE","host":"janey"},"value":63}
@@ -140,20 +140,20 @@ REQ.CALLER VALUE
 admin        570
 null         575
 poseidon     546
-undefined    559
+undefined    561
 
 # dn scan --points -b req.caller
 {"fields":{"req.caller":"admin"},"value":570}
 {"fields":{"req.caller":"null"},"value":575}
 {"fields":{"req.caller":"poseidon"},"value":546}
-{"fields":{"req.caller":"undefined"},"value":559}
+{"fields":{"req.caller":"undefined"},"value":561}
 
 # dn scan -b operation,req.caller
 OPERATION           REQ.CALLER VALUE
 deletepublicstorage admin         82
 deletepublicstorage null          70
 deletepublicstorage poseidon      67
-deletepublicstorage undefined     75
+deletepublicstorage undefined     77
 deletestorage       admin         71
 deletestorage       null          77
 deletestorage       poseidon      67
@@ -195,7 +195,7 @@ putpublicobject     undefined     40
 {"fields":{"operation":"deletepublicstorage","req.caller":"admin"},"value":82}
 {"fields":{"operation":"deletepublicstorage","req.caller":"null"},"value":70}
 {"fields":{"operation":"deletepublicstorage","req.caller":"poseidon"},"value":67}
-{"fields":{"operation":"deletepublicstorage","req.caller":"undefined"},"value":75}
+{"fields":{"operation":"deletepublicstorage","req.caller":"undefined"},"value":77}
 {"fields":{"operation":"deletestorage","req.caller":"admin"},"value":71}
 {"fields":{"operation":"deletestorage","req.caller":"null"},"value":77}
 {"fields":{"operation":"deletestorage","req.caller":"poseidon"},"value":67}
@@ -294,7 +294,7 @@ poseidon     546
            value  ------------- Distribution ------------- count
                0 |                                         0
                1 |@@                                       113
-               2 |@@@@@@@@                                 447
+               2 |@@@@@@@@                                 449
                4 |@@@@@@                                   348
                8 |                                         0
               16 |@@@@@@@@@@@@                             682
@@ -313,7 +313,7 @@ poseidon     546
 {"fields":{"latency":16},"value":682}
 {"fields":{"latency":1},"value":113}
 {"fields":{"latency":2048},"value":302}
-{"fields":{"latency":2},"value":447}
+{"fields":{"latency":2},"value":449}
 {"fields":{"latency":4},"value":348}
 {"fields":{"latency":64},"value":57}
 
@@ -367,7 +367,7 @@ LATENCY OPERATION           HOST    VALUE
       1 putpublicobject     wendell     5
       2 deletepublicstorage janey      17
       2 deletepublicstorage kearney    12
-      2 deletepublicstorage ralph      16
+      2 deletepublicstorage ralph      18
       2 deletepublicstorage sherri      5
       2 deletepublicstorage wendell    10
       2 deletestorage       janey      12
@@ -936,7 +936,7 @@ LATENCY OPERATION           HOST    VALUE
 {"fields":{"latency":2048,"operation":"putpublicobject","host":"wendell"},"value":5}
 {"fields":{"latency":2,"operation":"deletepublicstorage","host":"janey"},"value":17}
 {"fields":{"latency":2,"operation":"deletepublicstorage","host":"kearney"},"value":12}
-{"fields":{"latency":2,"operation":"deletepublicstorage","host":"ralph"},"value":16}
+{"fields":{"latency":2,"operation":"deletepublicstorage","host":"ralph"},"value":18}
 {"fields":{"latency":2,"operation":"deletepublicstorage","host":"sherri"},"value":5}
 {"fields":{"latency":2,"operation":"deletepublicstorage","host":"wendell"},"value":10}
 {"fields":{"latency":2,"operation":"deletestorage","host":"janey"},"value":12}
@@ -1417,17 +1417,17 @@ ralph, deletepublicstorage
            value  ------------- Distribution ------------- count
                0 |                                         0
                1 |                                         0
-               2 |@@@@@@@@@@@@                             16
+               2 |@@@@@@@@@@@@@                            18
                4 |@@@@@@                                   8
                8 |                                         0
-              16 |@@@@@@@@@@                               13
+              16 |@@@@@@@@@                                13
               32 |                                         0
-              64 |@@                                       2
-             128 |@@                                       2
+              64 |@                                        2
+             128 |@                                        2
              256 |                                         0
              512 |                                         0
-            1024 |@@                                       2
-            2048 |@@@@@@@@                                 10
+            1024 |@                                        2
+            2048 |@@@@@@@                                  10
             4096 |                                         0
 
 ralph, deletestorage
@@ -2080,7 +2080,7 @@ wendell, putpublicobject
 {"fields":{"host":"ralph","operation":"deletepublicstorage","latency":128},"value":2}
 {"fields":{"host":"ralph","operation":"deletepublicstorage","latency":16},"value":13}
 {"fields":{"host":"ralph","operation":"deletepublicstorage","latency":2048},"value":10}
-{"fields":{"host":"ralph","operation":"deletepublicstorage","latency":2},"value":16}
+{"fields":{"host":"ralph","operation":"deletepublicstorage","latency":2},"value":18}
 {"fields":{"host":"ralph","operation":"deletepublicstorage","latency":4},"value":8}
 {"fields":{"host":"ralph","operation":"deletepublicstorage","latency":64},"value":2}
 {"fields":{"host":"ralph","operation":"deletestorage","latency":1024},"value":5}
@@ -2303,7 +2303,7 @@ wendell, putpublicobject
 # dn scan -b latency[aggr=lquantize;step=100]
 
            value  ------------- Distribution ------------- count
-               0 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@             1590
+               0 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@             1592
              100 |@@@@                                     222
              200 |                                         0
              300 |                                         0
@@ -2347,7 +2347,7 @@ wendell, putpublicobject
             4100 |                                         0
 
 # dn scan --points -b latency[aggr=lquantize;step=100]
-{"fields":{"latency":0},"value":1590}
+{"fields":{"latency":0},"value":1592}
 {"fields":{"latency":1000},"value":10}
 {"fields":{"latency":100},"value":222}
 {"fields":{"latency":1100},"value":13}
@@ -2390,20 +2390,52 @@ wendell, putpublicobject
   2014-05-04T00:00:00.000Z |@@@@@@@@@                                500
   2014-05-05T00:00:00.000Z |@@@@                                     250
   2014-05-06T00:00:00.000Z |                                         0
-query_filter_nremoved:  0
-query_filter_nerrors:   0
-ninputs:                2250
-aggr_nprocessed:        2250
-aggr_nerr_nonnumeric:   0
-nscanned:               9
+FindStart          ninputs:            1
+FindStart          noutputs:           1
+FindStatter        ninputs:           24
+FindStatter        noutputs:          24
+FindTraverser      ninputs:           24
+FindTraverser      noutputs:          24
+FindFeedback       ndirectories:       7
+FindFeedback       ninputs:           24
+FindFeedback       noutputs:           9
+FindFeedback       nregfiles:          9
+JsonDecoderStream  invalid json:       2
+JsonDecoderStream  ninputs:         2254
+JsonDecoderStream  noutputs:        2252
+Datetime parser    baddate:            1
+Datetime parser    ninputs:         2252
+Datetime parser    noutputs:        2250
+Datetime parser    undef:              1
+Skinner adapter    ninputs:         2250
+Skinner adapter    noutputs:        2250
+Aggregator         ninputs:         2250
+Aggregator         noutputs:           5
+Flattener          ninputs:            5
+Flattener          noutputs:           1
 
 # dn scan --points --counters -b timestamp[date;field=time;aggr=lquantize;step=86400]
-query_filter_nremoved:  0
-query_filter_nerrors:   0
-ninputs:                2250
-aggr_nprocessed:        2250
-aggr_nerr_nonnumeric:   0
-nscanned:               9
+FindStart          ninputs:            1
+FindStart          noutputs:           1
+FindStatter        ninputs:           24
+FindStatter        noutputs:          24
+FindTraverser      ninputs:           24
+FindTraverser      noutputs:          24
+FindFeedback       ndirectories:       7
+FindFeedback       ninputs:           24
+FindFeedback       noutputs:           9
+FindFeedback       nregfiles:          9
+JsonDecoderStream  invalid json:       2
+JsonDecoderStream  ninputs:         2254
+JsonDecoderStream  noutputs:        2252
+Datetime parser    baddate:            1
+Datetime parser    ninputs:         2252
+Datetime parser    noutputs:        2250
+Datetime parser    undef:              1
+Skinner adapter    ninputs:         2250
+Skinner adapter    noutputs:        2250
+Aggregator         ninputs:         2250
+Aggregator         noutputs:           5
 {"fields":{"timestamp":1398902400},"value":500}
 {"fields":{"timestamp":1398988800},"value":500}
 {"fields":{"timestamp":1399075200},"value":500}
@@ -2413,20 +2445,58 @@ nscanned:               9
 # dn scan --counters --time-format=%Y/%m-%d --time-field=time --after 2014-05-02 --before 2014-05-03
 VALUE
   500
-query_filter_nremoved:  0
-query_filter_nerrors:   0
-ninputs:                500
-aggr_nprocessed:        500
-aggr_nerr_nonnumeric:   0
-nscanned:               2
+PathEnumerator     noutputs:           2
+FindStart          ninputs:            1
+FindStart          noutputs:           1
+FindStatter        ninputs:            5
+FindStatter        noutputs:           5
+FindTraverser      ninputs:            5
+FindTraverser      noutputs:           5
+FindFeedback       ndirectories:       1
+FindFeedback       ninputs:            5
+FindFeedback       noutputs:           2
+FindFeedback       nregfiles:          2
+JsonDecoderStream  invalid json:       2
+JsonDecoderStream  ninputs:          504
+JsonDecoderStream  noutputs:         502
+Datetime parser    baddate:            1
+Datetime parser    ninputs:          502
+Datetime parser    noutputs:         500
+Datetime parser    undef:              1
+Time filter        ninputs:          500
+Time filter        noutputs:         500
+Skinner adapter    ninputs:          500
+Skinner adapter    noutputs:         500
+Aggregator         ninputs:          500
+Aggregator         noutputs:           1
+Flattener          ninputs:            1
+Flattener          noutputs:           1
 
 # dn scan --points --counters --time-format=%Y/%m-%d --time-field=time --after 2014-05-02 --before 2014-05-03
-query_filter_nremoved:  0
-query_filter_nerrors:   0
-ninputs:                500
-aggr_nprocessed:        500
-aggr_nerr_nonnumeric:   0
-nscanned:               2
+PathEnumerator     noutputs:           2
+FindStart          ninputs:            1
+FindStart          noutputs:           1
+FindStatter        ninputs:            5
+FindStatter        noutputs:           5
+FindTraverser      ninputs:            5
+FindTraverser      noutputs:           5
+FindFeedback       ndirectories:       1
+FindFeedback       ninputs:            5
+FindFeedback       noutputs:           2
+FindFeedback       nregfiles:          2
+JsonDecoderStream  invalid json:       2
+JsonDecoderStream  ninputs:          504
+JsonDecoderStream  noutputs:         502
+Datetime parser    baddate:            1
+Datetime parser    ninputs:          502
+Datetime parser    noutputs:         500
+Datetime parser    undef:              1
+Time filter        ninputs:          500
+Time filter        noutputs:         500
+Skinner adapter    ninputs:          500
+Skinner adapter    noutputs:         500
+Aggregator         ninputs:          500
+Aggregator         noutputs:           1
 {"fields":{},"value":500}
 
 # dn scan --counters --time-format=%Y/%m-%d -b timestamp[date;field=time;aggr=lquantize;step=60] --after 2014-05-02T04:05:06.123 --before 2014-05-02T04:15:10
@@ -2440,20 +2510,58 @@ nscanned:               2
   2014-05-02T04:12:00.000Z |                                         0
   2014-05-02T04:13:00.000Z |@@@@@@@@@@@@@@@@@@@@                     2
   2014-05-02T04:14:00.000Z |                                         0
-query_filter_nremoved:  0
-query_filter_nerrors:   0
-ninputs:                4
-aggr_nprocessed:        4
-aggr_nerr_nonnumeric:   0
-nscanned:               2
+PathEnumerator     noutputs:           2
+FindStart          ninputs:            1
+FindStart          noutputs:           1
+FindStatter        ninputs:            5
+FindStatter        noutputs:           5
+FindTraverser      ninputs:            5
+FindTraverser      noutputs:           5
+FindFeedback       ndirectories:       1
+FindFeedback       ninputs:            5
+FindFeedback       noutputs:           2
+FindFeedback       nregfiles:          2
+JsonDecoderStream  invalid json:       2
+JsonDecoderStream  ninputs:          504
+JsonDecoderStream  noutputs:         502
+Datetime parser    baddate:            1
+Datetime parser    ninputs:          502
+Datetime parser    noutputs:         500
+Datetime parser    undef:              1
+Time filter        ninputs:          500
+Time filter        noutputs:           4
+Skinner adapter    ninputs:            4
+Skinner adapter    noutputs:           4
+Aggregator         ninputs:            4
+Aggregator         noutputs:           2
+Flattener          ninputs:            2
+Flattener          noutputs:           1
 
 # dn scan --points --counters --time-format=%Y/%m-%d -b timestamp[date;field=time;aggr=lquantize;step=60] --after 2014-05-02T04:05:06.123 --before 2014-05-02T04:15:10
-query_filter_nremoved:  0
-query_filter_nerrors:   0
-ninputs:                4
-aggr_nprocessed:        4
-aggr_nerr_nonnumeric:   0
-nscanned:               2
+PathEnumerator     noutputs:           2
+FindStart          ninputs:            1
+FindStart          noutputs:           1
+FindStatter        ninputs:            5
+FindStatter        noutputs:           5
+FindTraverser      ninputs:            5
+FindTraverser      noutputs:           5
+FindFeedback       ndirectories:       1
+FindFeedback       ninputs:            5
+FindFeedback       noutputs:           2
+FindFeedback       nregfiles:          2
+JsonDecoderStream  invalid json:       2
+JsonDecoderStream  ninputs:          504
+JsonDecoderStream  noutputs:         502
+Datetime parser    baddate:            1
+Datetime parser    ninputs:          502
+Datetime parser    noutputs:         500
+Datetime parser    undef:              1
+Time filter        ninputs:          500
+Time filter        noutputs:           4
+Skinner adapter    ninputs:            4
+Skinner adapter    noutputs:           4
+Aggregator         ninputs:            4
+Aggregator         noutputs:           2
 {"fields":{"timestamp":1399003620},"value":2}
 {"fields":{"timestamp":1399003980},"value":2}
 

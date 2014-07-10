@@ -2,6 +2,7 @@
 {"time":"2014-05-02T00:05:45.600Z","host":"janey","req":{"method":"GET","url":"/random/url/number/115"},"operation":"getjoberrors","res":{"statusCode":500},"latency":29,"dataLatency":20,"dataSize":894682019}
 {"time":"2014-05-02T00:11:31.200Z","host":"wendell","req":{"method":"DELETE","url":"/random/url/number/187"},"operation":"deletepublicstorage","res":{"statusCode":200},"latency":2312,"dataLatency":26,"dataSize":181976884}
 {"time":"2014-05-02T00:17:16.800Z","host":"wendell","req":{"method":"PUT","url":"/random/url/number/478","caller":"poseidon"},"operation":"putobject","res":{"statusCode":204},"latency":2,"dataLatency":5,"dataSize":222438936}
+
 {"time":"2014-05-02T00:23:02.400Z","host":"sherri","req":{"method":"GET","url":"/random/url/number/138","caller":"admin"},"operation":"getstorage","res":{"statusCode":400},"latency":2482,"dataLatency":28,"dataSize":662533939}
 {"time":"2014-05-02T00:28:48.000Z","host":"sherri","req":{"method":"PUT","url":"/random/url/number/167","caller":null},"operation":"putobject","res":{"statusCode":400},"latency":2,"dataLatency":1969,"dataSize":870110004}
 {"time":"2014-05-02T00:34:33.600Z","host":"kearney","req":{"method":"DELETE","url":"/random/url/number/487","caller":"admin"},"operation":"deletepublicstorage","res":{"statusCode":400},"latency":116,"dataLatency":23,"dataSize":368690054}
@@ -10,6 +11,7 @@
 {"time":"2014-05-02T00:51:50.400Z","host":"kearney","req":{"method":"PUT","url":"/random/url/number/20"},"operation":"putobject","res":{"statusCode":200},"latency":5,"dataLatency":4,"dataSize":827643036}
 {"time":"2014-05-02T00:57:36.000Z","host":"ralph","req":{"method":"PUT","url":"/random/url/number/481","caller":"admin"},"operation":"putpublicobject","res":{"statusCode":200},"latency":111,"dataLatency":5,"dataSize":494649796}
 {"time":"2014-05-02T01:03:21.600Z","host":"wendell","req":{"method":"PUT","url":"/random/url/number/96"},"operation":"putobject","res":{"statusCode":404},"latency":2,"dataLatency":1,"dataSize":23542215}
+intentionally invalid line
 {"time":"2014-05-02T01:09:07.200Z","host":"sherri","req":{"method":"HEAD","url":"/random/url/number/461","caller":"admin"},"operation":"headstorage","res":{"statusCode":204},"latency":4,"dataLatency":4,"dataSize":1049386306}
 {"time":"2014-05-02T01:14:52.800Z","host":"wendell","req":{"method":"PUT","url":"/random/url/number/355","caller":null},"operation":"putpublicobject","res":{"statusCode":404},"latency":3,"dataLatency":2,"dataSize":115627155}
 {"time":"2014-05-02T01:20:38.400Z","host":"janey","req":{"method":"DELETE","url":"/random/url/number/114"},"operation":"deletepublicstorage","res":{"statusCode":200},"latency":152,"dataLatency":25,"dataSize":652832682}
@@ -248,3 +250,5 @@
 {"time":"2014-05-02T23:42:43.200Z","host":"sherri","req":{"method":"GET","url":"/random/url/number/218"},"operation":"getstorage","res":{"statusCode":500},"latency":2,"dataLatency":3563,"dataSize":910906157}
 {"time":"2014-05-02T23:48:28.800Z","host":"ralph","req":{"method":"HEAD","url":"/random/url/number/110","caller":"admin"},"operation":"headpublicstorage","res":{"statusCode":499},"latency":23,"dataLatency":4,"dataSize":585698546}
 {"time":"2014-05-02T23:54:14.400Z","host":"ralph","req":{"method":"DELETE","url":"/random/url/number/207"},"operation":"deletepublicstorage","res":{"statusCode":204},"latency":2,"dataLatency":2,"dataSize":524205541}
+{"time":"invalid","host":"ralph","req":{"method":"DELETE","url":"/random/url/number/207"},"operation":"deletepublicstorage","res":{"statusCode":204},"latency":2,"dataLatency":2,"dataSize":524205541}
+{"host":"ralph","req":{"method":"DELETE","url":"/random/url/number/207"},"operation":"deletepublicstorage","res":{"statusCode":204},"latency":2,"dataLatency":2,"dataSize":524205541}

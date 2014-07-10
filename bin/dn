@@ -10,7 +10,9 @@ var mod_assert = require('assert');
 var mod_bunyan = require('bunyan');
 var mod_jsprim = require('jsprim');
 var mod_path = require('path');
+var mod_stream = require('stream');
 var mod_tab = require('tab');
+var mod_vstream = require('../lib/vstream/vstream');
 var OptionParser = require('posix-getopt').BasicParser;
 var VError = require('verror');
 var sprintf = require('extsprintf').sprintf;
@@ -53,6 +55,13 @@ function fatal(err)
 	dnDone = true;
 	console.error('%s: %s', dnArg0, err.message);
 	process.exit(1);
+}
+
+function warn(context, kind, error)
+{
+	console.error('warn: %s', error.message);
+	if (context !== null)
+		console.error('    at ' + context.label());
 }
 
 function main()
@@ -206,31 +215,19 @@ function cmdIndex(cmdname, argv)
 	indexop.on('error', fatal);
 
 	if (showinvalid) {
-		indexop.on('find_error', function (fileinfo) {
-			console.error('warn: "%s": %s', fileinfo.path,
-			    fileinfo.error.message);
-		});
-
-		indexop.on('invalid_record', function (str, perr, idx) {
-			console.error('warn: bad record at line %d: %s',
-			    idx, perr.toString());
-			console.error('      input: %s', str);
-		});
-
-		indexop.on('invalid_object', function (obj, perr, idx) {
-			console.error('warn: bad object at line %d: %s',
-			    idx, perr.message);
-			console.error('      input: %s', JSON.stringify(obj));
+		indexop.vsHead().vsWalk(function (s) {
+			s.on('warn', warn);
 		});
 	}
 
-	indexop.on('finish', function () {
+	indexop.on('flushed', function () {
 		if (indexargs['filename']) {
 			console.error('index "%s" created',
 			    indexargs['filename']);
 		}
 
-		dnPrintCounters(indexop.stats(), showcounters);
+		if (showcounters)
+			dnPrintCounters(indexop);
 		dnDone = true;
 	});
 }
@@ -348,9 +345,8 @@ function cmdQuery(cmdname, argv)
 	results = source.query(queryargs);
 	results.pipe(stream);
 
-	results.on('find_error', function (fileinfo) {
-		console.error('warn: "%s": %s', fileinfo.path,
-		    fileinfo.error.message);
+	results.vsHead().vsWalk(function (s) {
+		s.on('warn', warn);
 	});
 
 	stream.on('data', function (rows) {
@@ -362,7 +358,7 @@ function cmdQuery(cmdname, argv)
 
 	stream.on('end', function () {
 		if (showcounters)
-			dnPrintCounters(results.stats(), true);
+			dnPrintCounters(stream);
 		dnDone = true;
 	});
 }
@@ -473,21 +469,8 @@ function cmdScan(cmdname, argv)
 	scan.on('error', fatal);
 
 	if (showinvalid) {
-		scan.on('find_error', function (fileinfo) {
-			console.error('warn: "%s": %s', fileinfo.path,
-			    fileinfo.error.message);
-		});
-
-		scan.on('invalid_record', function (str, perr, idx) {
-			console.error('warn: bad record at line %d: %s',
-			    idx, perr.toString());
-			console.error('      input: %s', str);
-		});
-
-		scan.on('invalid_object', function (obj, perr, idx) {
-			console.error('warn: bad object at line %d: %s',
-			    idx, perr.message);
-			console.error('      input: %s', JSON.stringify(obj));
+		scan.vsHead().vsWalk(function (s) {
+			s.on('warn', warn);
 		});
 	}
 
@@ -511,7 +494,8 @@ function cmdScan(cmdname, argv)
 	});
 
 	tail.on('end', function () {
-		dnPrintCounters(scan.stats(), showcounters);
+		if (showcounters)
+			dnPrintCounters(scan);
 		dnDone = true;
 	});
 }
@@ -720,25 +704,10 @@ function dnPrintDistribution(stream, distr, bucketizer, asdate)
 	}
 }
 
-function dnPrintCounters(c, showall)
+function dnPrintCounters(stream)
 {
-	if (!showall) {
-		if (c.aggr_nerr_nonnumeric !== 0) {
-			console.error('warn: ignored %d non-numeric values',
-			    c.aggr_nerr_nonnumeric);
-		}
-
-		return;
-	}
-
-	var width, fmt;
-	mod_jsprim.forEachKey(c, function (name, value) {
-		if (width === undefined || width < name.length)
-			width = name.length;
-	});
-	fmt = '%-' + (width + 1) + 's  %d';
-	mod_jsprim.forEachKey(c, function (name, value) {
-		console.error(sprintf(fmt, name + ':', value));
+	stream.vsHead().vsWalk(function (s) {
+		s.vsDumpCounters(process.stderr);
 	});
 }
 

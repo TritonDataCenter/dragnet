@@ -1,10 +1,26 @@
 # dn index --counters -R ... -I ... -c timestamp[date;field=time;aggr=lquantize;step=3600],host,operation,req.caller,req.method,latency[aggr=quantize]
-query_filter_nremoved:  0
-query_filter_nerrors:   0
-ninputs:                2250
-aggr_nprocessed:        2250
-aggr_nerr_nonnumeric:   0
-nscanned:               9
+FindStart          ninputs:            1
+FindStart          noutputs:           1
+FindStatter        ninputs:           24
+FindStatter        noutputs:          24
+FindTraverser      ninputs:           24
+FindTraverser      noutputs:          24
+FindFeedback       ndirectories:       7
+FindFeedback       ninputs:           24
+FindFeedback       noutputs:           9
+FindFeedback       nregfiles:          9
+JsonDecoderStream  invalid json:       2
+JsonDecoderStream  ninputs:         2254
+JsonDecoderStream  noutputs:        2252
+Datetime parser    baddate:            1
+Datetime parser    ninputs:         2252
+Datetime parser    noutputs:        2250
+Datetime parser    undef:              1
+Skinner adapter    ninputs:         2250
+Skinner adapter    noutputs:        2250
+Aggregator         ninputs:         2250
+Aggregator         noutputs:        2224
+IndexSink          ninputs:           22
 ./by_hour/2014-05-01-00.sqlite
 ./by_hour/2014-05-01-01.sqlite
 ./by_hour/2014-05-01-02.sqlite
@@ -177,16 +193,47 @@ wendell headstorage            45
 wendell putdirectory           34
 wendell putobject              41
 wendell putpublicobject        41
-ninputs:          1854
-nerr_nonnumeric:  0
-nscanned:         120
+FindStart          ninputs:            1
+FindStart          noutputs:           1
+FindStatter        ninputs:          123
+FindStatter        noutputs:         123
+FindTraverser      ninputs:          123
+FindTraverser      noutputs:         123
+FindFeedback       ndirectories:       1
+FindFeedback       ninputs:          123
+FindFeedback       noutputs:         120
+FindFeedback       nregfiles:        120
+Index List         ninputs:         1854
+Index List         noutputs:        1854
+Index Result Aggregator ninputs:         1854
+Index Result Aggregator noutputs:        1854
+Query Passthrough  ninputs:         1854
+Query Passthrough  noutputs:        1854
+Flattener          ninputs:         1854
+Flattener          noutputs:           1
 # dn index --counters -R ... -I ... --interval=day -c timestamp[date;field=time;aggr=lquantize;step=3600],host,operation,req.caller,req.method,latency[aggr=quantize]
-query_filter_nremoved:  0
-query_filter_nerrors:   0
-ninputs:                2250
-aggr_nprocessed:        2250
-aggr_nerr_nonnumeric:   0
-nscanned:               9
+FindStart          ninputs:            1
+FindStart          noutputs:           1
+FindStatter        ninputs:           24
+FindStatter        noutputs:          24
+FindTraverser      ninputs:           24
+FindTraverser      noutputs:          24
+FindFeedback       ndirectories:       7
+FindFeedback       ninputs:           24
+FindFeedback       noutputs:           9
+FindFeedback       nregfiles:          9
+JsonDecoderStream  invalid json:       2
+JsonDecoderStream  ninputs:         2254
+JsonDecoderStream  noutputs:        2252
+Datetime parser    baddate:            1
+Datetime parser    ninputs:         2252
+Datetime parser    noutputs:        2250
+Datetime parser    undef:              1
+Skinner adapter    ninputs:         2250
+Skinner adapter    noutputs:        2250
+Aggregator         ninputs:         2250
+Aggregator         noutputs:        2224
+IndexSink          ninputs:          489
 ./by_day/2014-05-01.sqlite
 ./by_day/2014-05-02.sqlite
 ./by_day/2014-05-03.sqlite
@@ -364,9 +411,24 @@ wendell headstorage            45
 wendell putdirectory           34
 wendell putobject              41
 wendell putpublicobject        41
-ninputs:          250
-nerr_nonnumeric:  0
-nscanned:         5
+FindStart          ninputs:            1
+FindStart          noutputs:           1
+FindStatter        ninputs:            8
+FindStatter        noutputs:           8
+FindTraverser      ninputs:            8
+FindTraverser      noutputs:           8
+FindFeedback       ndirectories:       1
+FindFeedback       ninputs:            8
+FindFeedback       noutputs:           5
+FindFeedback       nregfiles:          5
+Index List         ninputs:          250
+Index List         noutputs:         250
+Index Result Aggregator ninputs:          250
+Index Result Aggregator noutputs:         250
+Query Passthrough  ninputs:          250
+Query Passthrough  noutputs:         250
+Flattener          ninputs:          250
+Flattener          noutputs:           1
 ./by_hour/2014-05-01-00.sqlite
 ./by_hour/2014-05-01-01.sqlite
 ./by_hour/2014-05-01-02.sqlite
@@ -539,13 +601,40 @@ wendell headstorage            45
 wendell putdirectory           34
 wendell putobject              41
 wendell putpublicobject        41
-ninputs:          1854
-nerr_nonnumeric:  0
-nscanned:         120
+FindStart          ninputs:            1
+FindStart          noutputs:           1
+FindStatter        ninputs:          123
+FindStatter        noutputs:         123
+FindTraverser      ninputs:          123
+FindTraverser      noutputs:         123
+FindFeedback       ndirectories:       1
+FindFeedback       ninputs:          123
+FindFeedback       noutputs:         120
+FindFeedback       nregfiles:        120
+Index List         ninputs:         1854
+Index List         noutputs:        1854
+Index Result Aggregator ninputs:         1854
+Index Result Aggregator noutputs:        1854
+Query Passthrough  ninputs:         1854
+Query Passthrough  noutputs:        1854
+Flattener          ninputs:         1854
+Flattener          noutputs:           1
 # dn index --counters -R ... -I ... --interval=day --source=hour -c timestamp[aggr=lquantize;step=3600],host,operation,req.caller,req.method,latency[aggr=quantize]
-ninputs:          2224
-nerr_nonnumeric:  0
-nscanned:         120
+FindStart          ninputs:            1
+FindStart          noutputs:           1
+FindStatter        ninputs:          123
+FindStatter        noutputs:         123
+FindTraverser      ninputs:          123
+FindTraverser      noutputs:         123
+FindFeedback       ndirectories:       1
+FindFeedback       ninputs:          123
+FindFeedback       noutputs:         120
+FindFeedback       nregfiles:        120
+Index List         ninputs:         2224
+Index List         noutputs:        2224
+Index Result Aggregator ninputs:         2224
+Index Result Aggregator noutputs:        2224
+IndexSink          ninputs:          489
 ./by_day/2014-05-01.sqlite
 ./by_day/2014-05-02.sqlite
 ./by_day/2014-05-03.sqlite
@@ -723,12 +812,42 @@ wendell headstorage            45
 wendell putdirectory           34
 wendell putobject              41
 wendell putpublicobject        41
-ninputs:          250
-nerr_nonnumeric:  0
-nscanned:         5
+FindStart          ninputs:            1
+FindStart          noutputs:           1
+FindStatter        ninputs:            8
+FindStatter        noutputs:           8
+FindTraverser      ninputs:            8
+FindTraverser      noutputs:           8
+FindFeedback       ndirectories:       1
+FindFeedback       ninputs:            8
+FindFeedback       noutputs:           5
+FindFeedback       nregfiles:          5
+Index List         ninputs:          250
+Index List         noutputs:         250
+Index Result Aggregator ninputs:          250
+Index Result Aggregator noutputs:         250
+Query Passthrough  ninputs:          250
+Query Passthrough  noutputs:         250
+Flattener          ninputs:          250
+Flattener          noutputs:           1
 # dn query --counters -I ... -f { "eq": [ "host", "ralph" ] } --time-field=timestamp --after=2014-05-03T12:00:00 --before=2014-05-03T18:00:00
 VALUE
    20
-ninputs:          1
-nerr_nonnumeric:  0
-nscanned:         1
+PathEnumerator     noutputs:           2
+FindStart          ninputs:            1
+FindStart          noutputs:           1
+FindStatter        ninputs:            2
+FindStatter        noutputs:           2
+FindTraverser      ninputs:            2
+FindTraverser      noutputs:           2
+FindFeedback       ninputs:            2
+FindFeedback       noutputs:           1
+FindFeedback       nregfiles:          1
+Index List         ninputs:            1
+Index List         noutputs:           1
+Index Result Aggregator ninputs:            1
+Index Result Aggregator noutputs:           1
+Query Passthrough  ninputs:            1
+Query Passthrough  noutputs:           1
+Flattener          ninputs:            1
+Flattener          noutputs:           1
