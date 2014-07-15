@@ -10,16 +10,22 @@ function list_indexes
 	(cd $tmpdir && find . -type f | sort)
 }
 
-function index
+function index-tree
 {
-	echo "# dn index --counters -R ... -I ... $@"
-	dn index --counters -R "$DN_DATADIR" -I "$tmpdir" "$@"
+	echo "# dn index-tree --counters $@ ..." 
+	dn index-tree --counters "$@" "$DN_DATADIR" "$tmpdir"
+}
+
+function rollup-tree
+{
+	echo "# dn rollup-tree --counters $@ ..." 
+	dn rollup-tree --counters "$@" "$tmpdir"
 }
 
 function query
 {
-	echo "# dn query --counters -I ... $@"
-	dn query --counters -I "$tmpdir" "$@"
+	echo "# dn query-tree --counters $@"
+	dn query-tree --counters "$@" "$tmpdir"
 }
 
 set -o errexit
@@ -31,7 +37,7 @@ dayfields='timestamp[aggr=lquantize;step=3600],host,operation,req.caller,req.met
 echo "using tmpdir \"$tmpdir" >&2
 
 echo "creating hourly index" >&2
-index -c "$fields" 2>&1
+index-tree -c "$fields" 2>&1
 list_indexes
 
 # simple query
@@ -39,7 +45,7 @@ query -b host,operation 2>&1
 
 # generate daily indexes from raw files
 echo "creating daily indexes from raw files" >&2
-index --interval=day -c "$fields" 2>&1
+index-tree --interval=day -c "$fields" 2>&1
 list_indexes
 
 # repeat simple query
@@ -52,7 +58,7 @@ query -b host,operation 2>&1
 
 # generate daily indexes again, this time using the hourly indexes
 echo "creating daily indexes from hourly indexes" >&2
-index --interval=day --source=hour -c "$dayfields" 2>&1
+rollup-tree --interval=day --source=hour -c "$dayfields" 2>&1
 list_indexes
 query -b host,operation 2>&1
 

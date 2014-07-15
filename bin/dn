@@ -8,12 +8,9 @@
 var timeStarted = process.hrtime();
 var mod_assert = require('assert');
 var mod_bunyan = require('bunyan');
-var mod_jsprim = require('jsprim');
+var mod_dashdash = require('dashdash');
 var mod_path = require('path');
-var mod_stream = require('stream');
 var mod_tab = require('tab');
-var mod_vstream = require('../lib/vstream/vstream');
-var OptionParser = require('posix-getopt').BasicParser;
 var VError = require('verror');
 var sprintf = require('extsprintf').sprintf;
 
@@ -25,67 +22,146 @@ var SkinnerFlattener = require('../lib/skinner-flattener');
 
 var timeRequireDone = process.hrtime(timeStarted);
 
+/*
+ * Program name and usage
+ */
 var dnArg0 = mod_path.basename(process.argv[1]);
-var dnCmds = {
-    'index': cmdIndex,
-    'query': cmdQuery,
-    'scan': cmdScan
-};
 var dnUsage = [
-    'usage: dn index  [-c|--columns COLUMN[,COLUMN...]]',
-    '                 [-f|--filter FILTER]',
-    '                 [--before END_TIMESTAMP] [--after START_TIMESTAMP]',
-    '                 [--time-format=TIME_FORMAT]',
-    '                 [--data-format json|json-skinner]',
-    '                 [-i|--interval hour|day]',
-    '                 [-s|--source hour]',
-    '                 [--counters] [--show-warnings]',
-    '                 DATA_FILE INDEX_FILE | -R dataroot [-I dataroot]',
+    'usage: dn scan-file   [-b|--breakdowns COLUMN[,COLUMN...]]',
+    '                      [-f|--filter FILTER]',
+    '                      [--before END_TIMESTAMP] [--after START_TIMESTAMP]',
+    '                      [--time-field=FIELDNAME]',
+    '                      [--data-format json|json-skinner]',
+    '                      [--counters] [--points] [--warnings]',
+    '                      DATA_FILE',
     '',
-    '       dn query  [-b|--breakdowns COLUMN[,COLUMN...]]',
-    '                 [-f|--filter FILTER]',
-    '                 [--before END_TIMESTAMP] [--after START_TIMESTAMP]',
-    '                 [--time-field TIME_FIELD]',
-    '                 [--counters]',
-    '                 INDEX_FILE | -I indexroot',
+    '       dn scan-tree   [-b|--breakdowns COLUMN[,COLUMN...]]',
+    '                      [-f|--filter FILTER]',
+    '                      [--before END_TIMESTAMP] [--after START_TIMESTAMP]',
+    '                      [--time-field=FIELDNAME]',
+    '                      [--data-format json|json-skinner]',
+    '                      [--time-format=TIME_FORMAT] ',
+    '                      [--counters] [--points] [--warnings]',
+    '                      DATA_DIRECTORY',
     '',
-    '       dn scan   [-b|--breakdowns COLUMN[,COLUMN...]]',
-    '                 [-f|--filter FILTER]',
-    '                 [--before END_TIMESTAMP] [--after START_TIMESTAMP]',
-    '                 [--time-format=TIME_FORMAT] [--time-field=FIELDNAME]',
-    '                 [--data-format json|json-skinner]',
-    '                 [--counters] [--points] [--show-warnings]',
-    '                 DATA_FILE | -R dataroot'
+    '       dn index-file  [-c|--columns COLUMN[,COLUMN...]]',
+    '                      [-f|--filter FILTER]',
+    '                      [--before END_TIMESTAMP] [--after START_TIMESTAMP]',
+    '                      [--data-format json|json-skinner]',
+    '                      [-i|--interval hour|day]',
+    '                      [--counters] [--warnings]',
+    '                      DATA_FILE INDEX_FILE',
+    '',
+    '       dn index-tree  [-c|--columns COLUMN[,COLUMN...]]',
+    '                      [-f|--filter FILTER]',
+    '                      [--before END_TIMESTAMP] [--after START_TIMESTAMP]',
+    '                      [--time-format=TIME_FORMAT]',
+    '                      [--data-format json|json-skinner]',
+    '                      [-i|--interval hour|day]',
+    '                      [--counters] [--warnings]',
+    '                      DATA_DIRECTORY INDEX_DIRECTORY',
+    '',
+    '       dn rollup-tree [-c|--columns COLUMN[,COLUMN...]]',
+    '                      [-f|--filter FILTER]',
+    '                      [--before END_TIMESTAMP] [--after START_TIMESTAMP]',
+    '                      [-i|--interval hour|day]',
+    '                      [-s|--source hour]',
+    '                      [--counters] [--warnings]',
+    '                      INDEX_DIRECTORY',
+    '',
+    '       dn query-file [-b|--breakdowns COLUMN[,COLUMN...]]',
+    '                     [-f|--filter FILTER]',
+    '                     [--before END_TIMESTAMP] [--after START_TIMESTAMP]',
+    '                     [--time-field TIME_FIELD]',
+    '                     [--points] [--counters]',
+    '                     INDEX_FILE',
+    '',
+    '       dn query-tree [-b|--breakdowns COLUMN[,COLUMN...]]',
+    '                     [-f|--filter FILTER]',
+    '                     [--before END_TIMESTAMP] [--after START_TIMESTAMP]',
+    '                     [--time-field TIME_FIELD]',
+    '                     [--points] [--counters]',
+    '                     INDEX_DIRECTORY'
 ].join('\n');
-var dnDone = false;
-var dnTrackTime = false;
-var dnLog;
-var dnStream;
 
-function usage(err)
-{
-	if (err)
-		console.error('%s: %s', dnArg0, err.message);
+/*
+ * Subcommands
+ */
+var dnCmds = {
+    'index-file': cmdIndexFile,
+    'index-tree': cmdIndexTree,
+    'query-file': cmdQueryFile,
+    'query-tree': cmdQueryTree,
+    'rollup-tree': cmdRollupTree,
+    'scan-file': cmdScanFile,
+    'scan-tree': cmdScanTree
+};
 
-	dnDone = true;
-	console.error(dnUsage);
-	process.exit(2);
-}
+/*
+ * dashdash command-line option configuration (common to all subcommands)
+ */
+var dnOptions = [ {
+    'names': [ 'after', 'A' ],
+    'type': 'date'
+}, {
+    'names': [ 'before', 'B' ],
+    'type': 'date'
+}, {
+    'names': [ 'filter', 'f' ],
+    'type': 'string'
+}, {
+    'names': [ 'time-field' ],
+    'type': 'string'
+}, {
+    'names': [ 'breakdowns', 'b' ],
+    'type': 'arrayOfString',
+    'default': []
+}, {
+    'names': [ 'columns', 'c' ],
+    'type': 'arrayOfString',
+    'default': []
+}, {
+    'names': [ 'interval', 'i' ],
+    'type': 'string',
+    'default': 'hour'
+}, {
+    'names': [ 'indexroot', 'I' ],
+    'type': 'string'
+}, {
+    'names': [ 'source', 's' ],
+    'type': 'string'
+}, {
+    'names': [ 'data-format' ],
+    'type': 'string',
+    'default': 'json'
+}, {
+    'names': [ 'time-format' ],
+    'type': 'string'
+}, {
+    'names': [ 'warnings' ],
+    'type': 'bool'
+}, {
+    'names': [ 'counters' ],
+    'type': 'bool'
+}, {
+    'names': [ 'points' ],
+    'type': 'bool'
+}, {
+    'names': [ 'raw' ],
+    'type': 'bool'
+} ];
 
-function fatal(err)
-{
-	dnDone = true;
-	console.error('%s: %s', dnArg0, err.message);
-	process.exit(1);
-}
+/*
+ * Internal state
+ */
+var dnDone = false;		/* went through normal exit path */
+var dnTrackTime = false;	/* option to print program execution time */
+var dnLog;			/* bunyan logger */
+var dnStream;			/* output stream (for debugging) */
 
-function warn(context, kind, error)
-{
-	console.error('warn: %s', error.message);
-	if (context !== null)
-		console.error('    at ' + context.label());
-}
-
+/*
+ * Main program entry point.
+ */
 function main()
 {
 	var optind, cmdname, cmdfunc;
@@ -119,451 +195,489 @@ function main()
 	cmdfunc(cmdname, process.argv.slice(optind + 1));
 }
 
-function cmdIndex(cmdname, argv)
+/*
+ * usage([error]): pretty-print an error message, then print usage information,
+ * then exit.
+ */
+function usage(err)
 {
-	var optparser, option, optind;
-	var indexConf = {
-	    'columns': [],
-	    'interval': 'hour'
-	};
-	var showinvalid = false;
-	var showcounters = false;
-	var sourceclass, sourceargs;
-	var source, index, indexop;
-	var indexargs, timefmt;
+	if (err)
+		console.error('%s: %s', dnArg0, err.message);
 
-	sourceargs = { 'log': dnLog };
-	indexargs = { 'source': 'raw', 'format': 'json' };
-	argv.unshift('', '');
-	optparser = new OptionParser(':c:(columns)f:(filter)' +
-	    'i:(interval)s:(source)A:(after)B:(before)C(counters)' +
-	    'D:(data-format)I:(indexroot)R:(dataroot)S(show-warnings)' +
-	    'T:(time-format)', argv);
-	while ((option = optparser.getopt()) !== undefined) {
-		switch (option.option) {
-		case 'c':
-			var fields = option.optarg.split(',');
-			indexConf.columns =
-			    indexConf.columns.concat(fields);
-			break;
+	dnDone = true;
+	console.error(dnUsage);
+	process.exit(2);
+}
 
-		case 'f':
-			try {
-				indexConf.filter = JSON.parse(option.optarg);
-			} catch (ex) {
-				usage(new VError(ex, 'invalid filter'));
-			}
-			break;
+/*
+ * fatal(error): pretty-print an error message and exit.
+ */
+function fatal(err)
+{
+	dnDone = true;
+	console.error('%s: %s', dnArg0, err.message);
+	process.exit(1);
+}
 
-		case 'i':
-			indexConf['interval'] = option.optarg;
-			break;
+/*
+ * warn(context, kind, error): emit a warning.  This isn't just for arbitrary
+ * warnings, but specifically "vstream"-style warnings, which may have a
+ * "context" and always have a "kind" and an "error".
+ */
+function warn(context, kind, error)
+{
+	console.error('warn: %s', error.message);
+	if (context !== null)
+		console.error('    at ' + context.label());
+}
 
-		case 's':
-			indexargs['source'] = option.optarg;
-			break;
+/*
+ * Given a list of option names, return the corresponding dashdash
+ * configuration.
+ */
+function dnOptionConfig(useroptions)
+{
+	var rv, i, j;
+	var options;
 
-		case 'A':
-			indexConf['timeAfter'] = option.optarg;
-			break;
-
-		case 'B':
-			indexConf['timeBefore'] = option.optarg;
-			break;
-
-		case 'C':
-			showcounters = true;
-			break;
-
-		case 'D':
-			indexargs['format'] = option.optarg;
-			break;
-
-		case 'I':
-			indexargs['indexroot'] = option.optarg;
-			break;
-
-		case 'R':
-			sourceclass = FileSetDataSource;
-			sourceargs['dataroot'] = option.optarg;
-			break;
-
-		case 'S':
-			showinvalid = true;
-			break;
-
-		case 'T':
-			timefmt = option.optarg;
-			break;
-
-		case '?':
-			usage(new VError('unknown option: -%s', option.optopt));
-			break;
-
-		default:
-			mod_assert.equal(':', option.option);
-			usage(new VError('missing argument for option: -%s',
-			    option.optopt));
-			break;
-		}
-	}
-
-	if (timefmt === undefined &&
-	    (indexConf['timeAfter'] !== undefined ||
-	    indexConf['timeBefore'] !== undefined)) {
-		usage(new VError('must specify --time-format ' +
-		    'with --before or --after'));
-	}
-
-	optind = optparser.optind();
-	if (sourceclass === undefined) {
-		if (optparser.optind() > argv.length - 2)
-			usage(new VError('either a source filename and ' +
-			    'index filename or -R must be specified'));
-		if (optparser.optind() < argv.length - 2)
-			usage(new VError('extra arguments'));
-		sourceclass = FileDataSource;
-		sourceargs['filename'] = argv[optind++];
-		indexargs['filename'] = argv[optind++];
-
-		if (indexargs.hasOwnProperty('indexroot')) {
-			console.error('warn: -I/--indexroot is ignored for ' +
-			    'file-based indexes');
-		}
-	} else {
-		if (optparser.optind() != argv.length)
-			usage(new VError('extra arguments'));
-
-		if (!indexargs.hasOwnProperty('indexroot'))
-			indexargs['indexroot'] = inferIndexRoot(
-			    sourceargs['dataroot']);
-	}
-
-	source = new sourceclass(sourceargs);
-	index = mod_dragnet.indexLoad({ 'index': indexConf });
-	if (index instanceof Error)
-		fatal(index);
-
-	indexargs['index'] = index;
-	indexargs['timeFormat'] = timefmt;
-	indexop = source.index(indexargs);
-	indexop.on('error', fatal);
-	dnStream = indexop;
-
-	if (showinvalid) {
-		indexop.vsHead().vsWalk(function (s) {
-			s.on('warn', warn);
-		});
-	}
-
-	indexop.on('flushed', function () {
-		if (indexargs['filename']) {
-			console.error('index "%s" created',
-			    indexargs['filename']);
+	rv = [];
+	options = useroptions.concat([ 'warnings', 'counters' ]);
+	for (i = 0; i < options.length; i++) {
+		for (j = 0; j < dnOptions.length; j++) {
+			if (dnOptions[j].names.indexOf(options[i]) != -1)
+				break;
 		}
 
-		if (showcounters)
-			dnPrintCounters(indexop);
+		if (j == dnOptions.length)
+			throw (new VError('unknown option: "%s"', options[i]));
+
+		rv.push(dnOptions[j]);
+	}
+
+	return (rv);
+}
+
+/*
+ * Given "options" as returned by dashdash's parser and a "field" whose value
+ * should be an array of strings, split up each entry of the field's value on
+ * commas.  This is because we want all of these to be equivalent:
+ *
+ *    -b one,two,three
+ *    -b one,two -b three
+ *    -b one -b two -b three
+ */
+function dnExpandArray(options, field)
+{
+	if (!Array.isArray(options[field]))
+		return;
+
+	var tmp = options[field];
+	options[field] = [];
+	tmp.forEach(function (v) {
+		v.split(',').forEach(function (s) { options[field].push(s); });
+	});
+}
+
+/*
+ * Given "argv" (as trimmed by main()) and a list of user options, parse the
+ * arguments and return the dashdash "options" object.
+ */
+function dnParseArgs(argv, useroptions)
+{
+	var parser, rv;
+
+	parser = mod_dashdash.createParser({
+	    'options': dnOptionConfig(useroptions),
+	    'interspersed': false,
+	    'allowUnknown': false
+	});
+
+	try {
+		rv = parser.parse({ 'argv': argv, 'slice': 0 });
+	} catch (ex) {
+		usage(ex);
+	}
+
+	dnExpandArray(rv, 'columns');
+	dnExpandArray(rv, 'breakdowns');
+	return (rv);
+}
+
+/*
+ * Check for missing or extra NON-option arguments.
+ */
+function dnCheckArgCount(options, expected)
+{
+	if (options._args.length < expected)
+		usage(new Error('missing arguments'));
+
+	if (options._args.length > expected)
+		usage(new Error('extra arguments'));
+}
+
+/*
+ * "dn index-file" implementation
+ */
+function cmdIndexFile(cmdname, argv)
+{
+	var options, filename, indexfilename, source;
+
+	options = dnParseArgs(argv, [
+	    'before', 'after', 'filter', 'time-field',
+	    'columns', 'data-format'
+	]);
+
+	dnCheckArgCount(options, 2);
+	filename = options._args[0];
+	indexfilename = options._args[1];
+	source = new FileDataSource({
+	    'log': dnLog,
+	    'filename': filename
+	});
+
+	dnIndex(source, options, {
+	    'source': 'raw',
+	    'format': options.data_format,
+	    'filename': indexfilename
+	}, function () {
+		console.error('index "%s" created', indexfilename);
+	});
+}
+
+/*
+ * "dn index-tree" implementation
+ */
+function cmdIndexTree(cmdname, argv)
+{
+	var options, dataroot, indexroot, source;
+
+	options = dnParseArgs(argv, [
+	    'before', 'after', 'filter', 'time-field', 'time-format',
+	    'columns', 'data-format', 'interval'
+	]);
+
+	dnCheckArgCount(options, 2);
+	dataroot = options._args[0];
+	indexroot = options._args[1];
+
+	if (options.time_format === undefined &&
+	    (options.before !== undefined || options.after !== undefined)) {
+		usage(new VError('must specify --time-format with ' +
+		    '--before or --after'));
+	}
+
+	source = new FileSetDataSource({
+	    'log': dnLog,
+	    'dataroot': dataroot,
+	    'indexroot': indexroot
+	});
+
+	dnIndex(source, options, {
+	    'source': 'raw',
+	    'format': options.data_format,
+	    'timeFormat': options.time_format || undefined,
+	    'indexroot': indexroot
+	}, function () {
+		console.error('indexes created');
+	});
+}
+
+/*
+ * "dn rollup-tree" implementation
+ */
+function cmdRollupTree(cmdname, argv)
+{
+	var options, dataroot, indexroot, source;
+
+	options = dnParseArgs(argv, [
+	    'before', 'after', 'filter', 'time-field',
+	    'columns', 'interval', 'source'
+	]);
+
+	dnCheckArgCount(options, 1);
+	indexroot = options._args[0];
+
+	source = new FileSetDataSource({
+	    'log': dnLog,
+	    'dataroot': dataroot,
+	    'indexroot': indexroot
+	});
+
+	dnIndex(source, options, {
+	    'source': options.source,
+	    'format': options.data_format,
+	    'timeFormat': options.time_format || undefined,
+	    'indexroot': indexroot
+	}, function () {
+		console.error('indexes created');
+	});
+}
+
+/*
+ * Common function used by "dn index-file", "dn index-tree", and "dn
+ * rollup-tree".
+ */
+function dnIndex(source, options, indexargs, callback)
+{
+	var indexconfig, ic, op;
+
+	indexconfig = {};
+	indexconfig.columns = options.columns;
+	indexconfig.interval = options.interval || 'hour';
+	if (options.after)
+		indexconfig.timeAfter = options.after;
+	if (options.before)
+		indexconfig.timeBefore = options.before;
+	if (options.filter) {
+		try {
+			indexconfig.filter = JSON.parse(options.filter);
+		} catch (ex) {
+			usage(new VError(ex, 'invalid filter'));
+		}
+	}
+	ic = mod_dragnet.indexLoad({ 'index': indexconfig });
+	if (ic instanceof Error)
+		fatal(ic);
+
+	mod_assert.ok(indexargs.hasOwnProperty('source'));
+	mod_assert.ok(indexargs.hasOwnProperty('format'));
+	mod_assert.ok(indexargs.hasOwnProperty('filename') ||
+	     indexargs.hasOwnProperty('indexroot'));
+	indexargs.index = ic;
+	op = source.index(indexargs);
+	op.on('error', fatal);
+	dnStream = op;
+
+	if (options.warnings)
+		dnShowWarnings(op);
+
+	op.on('flushed', function () {
+		callback();
+		if (options.counters)
+			dnPrintCounters(op);
 		dnDone = true;
 	});
 }
 
-function cmdQuery(cmdname, argv)
+/*
+ * "dn query-file" implementation
+ */
+function cmdQueryFile(cmdname, argv)
 {
-	var optparser, option;
-	var queryConf = {
-	    'breakdowns': []
-	};
-	var output = dnOutputPretty;
-	var query, queryargs, results, stream;
-	var source, sourceclass, sourceargs;
-	var showcounters = false;
+	var options, indexfilename, source;
 
-	sourceargs = { 'log': dnLog };
-	queryargs = {};
-	argv.unshift('', '');
-	optparser = new OptionParser(':b:(breakdowns)f:(filter)r(raw)' +
-	    'A:(after)B:(before)C(counters)F:(time-field)I:(indexroot)R:(root)',
-	    argv);
-	while ((option = optparser.getopt()) !== undefined) {
-		switch (option.option) {
-		case 'f':
-			try {
-				queryConf.filter = JSON.parse(option.optarg);
-			} catch (ex) {
-				usage(new VError(ex, 'invalid filter'));
-			}
-			break;
+	options = dnParseArgs(argv, [
+	    'before', 'after', 'filter', 'time-field', 'breakdowns', 'raw',
+	    'points'
+	]);
 
-		case 'b':
-			var fields = option.optarg.split(',');
-			queryConf.breakdowns =
-			    queryConf.breakdowns.concat(fields);
-			break;
+	dnCheckArgCount(options, 1);
+	indexfilename = options._args[0];
+	source = new FileDataSource({ 'log': dnLog });
+	dnQuery(source, options, { 'filename': indexfilename });
+}
 
-		case 'r':
-			output = dnOutputRaw;
-			break;
+/*
+ * "dn query-tree" implementation
+ */
+function cmdQueryTree(cmdname, argv)
+{
+	var options, indexroot, source;
 
-		case 'A':
-			queryConf['timeAfter'] = option.optarg;
-			break;
+	options = dnParseArgs(argv, [
+	    'before', 'after', 'filter', 'time-field', 'breakdowns', 'raw',
+	    'points'
+	]);
 
-		case 'B':
-			queryConf['timeBefore'] = option.optarg;
-			break;
+	dnCheckArgCount(options, 1);
+	indexroot = options._args[0];
+	source = new FileSetDataSource({
+	    'log': dnLog,
+	    'indexroot': indexroot
+	});
+	dnQuery(source, options, { 'indexroot': indexroot });
+}
 
-		case 'C':
-			showcounters = true;
-			break;
+/*
+ * Common function used by "dn query-file" and "dn query-tree".
+ */
+function dnQuery(source, options, queryargs)
+{
+	var queryconfig, qc, op;
 
-		case 'F':
-			/*
-			 * XXX This shouldn't be necessary.  We should record
-			 * the time field into an index configuration file and
-			 * then read that here.
-			 */
-			queryConf['timeField'] = option.optarg;
-			break;
-
-		case 'I':
-			sourceclass = FileSetDataSource;
-			if (!sourceargs['dataroot']) {
-				/*
-				 * XXX should dataroot/filename arguments just
-				 * be passed into scan() rather than the
-				 * constructor so that they're only used when
-				 * needed?
-				 */
-				sourceargs['dataroot'] = 'unused';
-			}
-			queryargs['indexroot'] = option.optarg;
-			break;
-
-		case 'R':
-			sourceclass = FileSetDataSource;
-			sourceargs['dataroot'] = option.optarg;
-			break;
-
-		case '?':
-			usage(new VError('unknown option: -%s', option.optopt));
-			break;
-
-		default:
-			mod_assert.equal(':', option.option);
-			usage(new VError('missing argument for option: -%s',
-			    option.optopt));
-			break;
+	queryconfig = {};
+	queryconfig.breakdowns = options.breakdowns;
+	if (options.after)
+		queryconfig.timeAfter = options.after;
+	if (options.before)
+		queryconfig.timeBefore = options.before;
+	if (options.time_field) {
+		/*
+		 * XXX This shouldn't be necessary.  We should record
+		 * the time field into an index configuration file and
+		 * then read that here.
+		 */
+		queryconfig.timeField = options.time_field;
+	}
+	if (options.filter) {
+		try {
+			queryconfig.filter = JSON.parse(options.filter);
+		} catch (ex) {
+			fatal(new VError(ex, 'invalid filter'));
 		}
 	}
+	qc = mod_dragnet.queryLoad({ 'query': queryconfig });
+	if (qc instanceof Error)
+		fatal(qc);
 
-	if (sourceclass === undefined) {
-		if (optparser.optind() > argv.length - 1)
-			usage(new VError('either a filename or -R ' +
-			    'must be specified'));
-		if (optparser.optind() < argv.length - 1)
-			usage(new VError('extra arguments'));
+	mod_assert.ok(queryargs.hasOwnProperty('filename') ||
+	    queryargs.hasOwnProperty('indexroot'));
+	queryargs.query = qc;
 
-		sourceclass = FileDataSource;
-		sourceargs['filename'] = 'unused'; /* XXX see above */
-		queryargs['filename'] = argv[optparser.optind()];
+	op = source.query(queryargs);
+	dnShowWarnings(op);
+	dnOutput(qc, options, op);
+}
+
+/*
+ * "dn scan-file" implementation.
+ */
+function cmdScanFile(cmdname, argv)
+{
+	var options, filename, source;
+
+	options = dnParseArgs(argv, [
+	    'before', 'after', 'filter', 'time-field', 'breakdowns', 'raw',
+	    'points', 'data-format'
+	]);
+
+	dnCheckArgCount(options, 1);
+	filename = options._args[0];
+	source = new FileDataSource({ 'log': dnLog, 'filename': filename });
+	dnScan(source, options, {});
+}
+
+/*
+ * "dn scan-tree" implementation.
+ */
+function cmdScanTree(cmdname, argv)
+{
+	var options, dataroot, source;
+
+	options = dnParseArgs(argv, [
+	    'before', 'after', 'filter', 'time-field', 'breakdowns', 'raw',
+	    'points', 'data-format', 'time-format'
+	]);
+
+	dnCheckArgCount(options, 1);
+	dataroot = options._args[0];
+	source = new FileSetDataSource({
+	    'log': dnLog,
+	    'dataroot': dataroot
+	});
+	dnScan(source, options, { 'timeFormat': options.time_format });
+}
+
+/*
+ * Common function used by "dn scan-file" and "dn scan-tree".
+ */
+function dnScan(source, options, scanargs)
+{
+	var queryconfig, qc, op;
+
+	queryconfig = {};
+	queryconfig.breakdowns = options.breakdowns;
+	if (options.after)
+		queryconfig.timeAfter = options.after;
+	if (options.before)
+		queryconfig.timeBefore = options.before;
+	if (options.time_field)
+		queryconfig.timeField = options.time_field;
+	if (options.filter) {
+		try {
+			queryconfig.filter = JSON.parse(options.filter);
+		} catch (ex) {
+			fatal(new VError(ex, 'invalid filter'));
+		}
+	}
+	qc = mod_dragnet.queryLoad({ 'query': queryconfig });
+	if (qc instanceof Error)
+		fatal(qc);
+
+	scanargs.query = qc;
+	scanargs.format = options.data_format;
+	op = source.scan(scanargs);
+	if (options.warnings)
+		dnShowWarnings(op);
+	dnOutput(qc, options, op);
+}
+
+/*
+ * Given a stream in a "vstream" pipeline, walk the whole pipeline and attach a
+ * "warn" listener for each one that will print warnings to the console.
+ */
+function dnShowWarnings(op)
+{
+	op.vsHead().vsWalk(function (s) { s.on('warn', warn); });
+}
+
+/*
+ * Given a stream in a "vstream" pipeline, walk the whole pipeline and emit all
+ * non-zero counters for each stream.
+ */
+function dnPrintCounters(stream)
+{
+	stream.vsHead().vsWalk(function (s) {
+		s.vsDumpCounters(process.stderr);
+	});
+}
+
+/*
+ * Given a query configuration, command-line options, and a stream that will
+ * emit results, print out the results.  This takes care of looking at the "raw"
+ * and "points" options and flattening data points as needed.  This is used for
+ * both "query" and "scan" (which output the same thing).
+ */
+function dnOutput(query, options, op)
+{
+	var output, stream;
+
+	op.on('error', fatal);
+
+	if (options.points) {
+		stream = op;
 	} else {
-		if (optparser.optind() != argv.length)
-			usage(new VError('extra arguments'));
-
-		if (!queryargs.hasOwnProperty('indexroot'))
-			queryargs['indexroot'] = inferIndexRoot(
-			    sourceargs['dataroot']);
+		stream = new SkinnerFlattener({
+		    'skinnerOptions': mod_dragnet_impl.queryAggrStreamConfig(
+		        { 'query': query })
+		});
+		op.pipe(stream);
 	}
 
-	query = mod_dragnet.queryLoad({ 'query': queryConf });
-	if (query instanceof Error)
-		fatal(query);
-
-	queryargs['query'] = query;
-	source = new sourceclass(sourceargs);
-	stream = new SkinnerFlattener({
-	    'skinnerOptions': mod_dragnet_impl.queryAggrStreamConfig({
-	        'query': query
-	    })
-	});
-	results = source.query(queryargs);
-	results.pipe(stream);
 	dnStream = stream;
-
-	results.vsHead().vsWalk(function (s) {
-		s.on('warn', warn);
-	});
-
+	output = options.raw || options.points ? dnOutputRaw : dnOutputPretty;
 	stream.on('data', function (rows) {
-		output({
-		    'query': query,
-		    'rows': rows
-		});
+		output({ 'query': query, 'rows': rows });
 	});
 
 	stream.on('end', function () {
-		if (showcounters)
+		if (options.counters)
 			dnPrintCounters(stream);
 		dnDone = true;
 	});
 }
 
-function cmdScan(cmdname, argv)
-{
-	var optparser, option;
-	var queryConf = {
-	    'breakdowns': []
-	};
-	var output = dnOutputPretty;
-	var showinvalid = false;
-	var showcounters = false;
-	var aspoints = false;
-	var sourceclass, sourceargs, scanargs;
-	var source, query, scan, stream, tail;
-	var timefmt;
-
-	sourceargs = { 'log': dnLog };
-	scanargs = { 'format': 'json' };
-	argv.unshift('', '');
-	optparser = new OptionParser(':b:(breakdowns)f:(filter)p(points)' +
-	    'r(raw)A:(after)B:(before)C(counters)D:(data-format)' +
-	    'F:(time-field)R:(root)S(show-warnings)T:(time-format)', argv);
-	while ((option = optparser.getopt()) !== undefined) {
-		switch (option.option) {
-		case 'f':
-			try {
-				queryConf.filter = JSON.parse(option.optarg);
-			} catch (ex) {
-				usage(new VError(ex, 'invalid filter'));
-			}
-			break;
-
-		case 'b':
-			var fields = option.optarg.split(',');
-			queryConf.breakdowns =
-			    queryConf.breakdowns.concat(fields);
-			break;
-
-		case 'p':
-			output = dnOutputRaw;
-			aspoints = true;
-			break;
-
-		case 'r':
-			output = dnOutputRaw;
-			break;
-
-		case 'A':
-			queryConf['timeAfter'] = option.optarg;
-			break;
-
-		case 'B':
-			queryConf['timeBefore'] = option.optarg;
-			break;
-
-		case 'C':
-			showcounters = true;
-			break;
-
-		case 'D':
-			scanargs['format'] = option.optarg;
-			break;
-
-		case 'F':
-			queryConf.timeField = option.optarg;
-			break;
-
-		case 'R':
-			sourceclass = FileSetDataSource;
-			sourceargs['dataroot'] = option.optarg;
-			break;
-
-		case 'S':
-			showinvalid = true;
-			break;
-
-		case 'T':
-			timefmt = option.optarg;
-			break;
-
-		case '?':
-			usage(new VError('unknown option: -%s', option.optopt));
-			break;
-
-		default:
-			mod_assert.equal(':', option.option);
-			usage(new VError('missing argument for option: -%s',
-			    option.optopt));
-			break;
-		}
-	}
-
-	if (timefmt === undefined &&
-	    (queryConf['timeAfter'] !== undefined ||
-	    queryConf['timeBefore'] !== undefined)) {
-		usage(new VError('must specify --time-format ' +
-		    'with --before or --after'));
-	}
-
-	if (sourceclass === undefined) {
-		if (optparser.optind() > argv.length - 1)
-			usage(new VError('either a filename or -R ' +
-			    'must be specified'));
-		if (optparser.optind() < argv.length - 1)
-			usage(new VError('extra arguments'));
-		sourceclass = FileDataSource;
-		sourceargs['filename'] = argv[optparser.optind()];
-	}
-
-	source = new sourceclass(sourceargs);
-	query = mod_dragnet.queryLoad({ 'query': queryConf });
-	if (query instanceof Error)
-		fatal(query);
-
-	scanargs['query'] = query;
-	scanargs['timeFormat'] = timefmt;
-	scan = source.scan(scanargs);
-	scan.on('error', fatal);
-	dnStream = scan;
-
-	if (showinvalid) {
-		scan.vsHead().vsWalk(function (s) {
-			s.on('warn', warn);
-		});
-	}
-
-	if (aspoints) {
-		tail = scan;
-	} else {
-		stream = new SkinnerFlattener({
-		    'skinnerOptions': mod_dragnet_impl.queryAggrStreamConfig({
-		        'query': query
-		    })
-		});
-		scan.pipe(stream);
-		tail = stream;
-	}
-
-	tail.on('data', function (rows) {
-		output({
-		    'query': query,
-		    'rows': rows
-		});
-	});
-
-	tail.on('end', function () {
-		if (showcounters)
-			dnPrintCounters(scan);
-		dnDone = true;
-	});
-}
-
+/*
+ * Outputter that emits data as plain JSON.
+ */
 function dnOutputRaw(results)
 {
 	console.log(JSON.stringify(results.rows));
 }
 
+/*
+ * Outputter that pretty-prints data.
+ */
 function dnOutputPretty(results)
 {
 	var coldefs, tablefields;
@@ -763,24 +877,20 @@ function dnPrintDistribution(stream, distr, bucketizer, asdate)
 	}
 }
 
-function dnPrintCounters(stream)
-{
-	stream.vsHead().vsWalk(function (s) {
-		s.vsDumpCounters(process.stderr);
-	});
-}
-
-function inferIndexRoot(dataroot)
-{
-	var resolved, basename, indexroot;
-
-	resolved = mod_path.resolve(dataroot);
-	basename = mod_path.basename(resolved);
-	indexroot = mod_path.join(dataroot, '..', basename + '_index');
-	console.error('inferring index root: %s', indexroot);
-	return (indexroot);
-}
-
+/*
+ * Add an "exit" listener to check whether we exited prematurely.  Node exits
+ * with success when there's no more work to do, but there are many kinds of
+ * bugs that result in accidentally leaving no work to do (as when failing to
+ * invoke a pipeline callback without scheduling additional work).  To make sure
+ * we don't accidentally do this, we explicitly set dnDone when we're ready to
+ * exit and we consider it a serious error if we're about to exit 0 with dnDone
+ * false.
+ *
+ * This implementation does not affect --abort-on-uncaught-exception since that
+ * will trigger an abort before we get here.  Nor does this paper over uncaught
+ * exceptions, since we'll come through here with a non-zero code, won't do
+ * anything, and Node will dump the exception like it normally does.
+ */
 process.on('exit', function (code) {
 	if (dnTrackTime) {
 		var timeDone = process.hrtime(timeStarted);

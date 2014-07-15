@@ -1,42 +1,42 @@
-# dn scan --counters
+# dn scan-file --counters
 VALUE
     0
 Aggregator         noutputs:           1
 Flattener          ninputs:            1
 Flattener          noutputs:           1
 
-# dn scan --points --counters
+# dn scan-file --points --counters
 Aggregator         noutputs:           1
 {"fields":{},"value":0}
 
-# dn scan -b timestamp
+# dn scan-file -b timestamp
 
-# dn scan --points -b timestamp
+# dn scan-file --points -b timestamp
 
-# dn scan -b timestamp[aggr=quantize]
+# dn scan-file -b timestamp[aggr=quantize]
 
-# dn scan --points -b timestamp[aggr=quantize]
+# dn scan-file --points -b timestamp[aggr=quantize]
 
-# dn scan -b timestamp[aggr=quantize],req.method
+# dn scan-file -b timestamp[aggr=quantize],req.method
 
-# dn scan --points -b timestamp[aggr=quantize],req.method
+# dn scan-file --points -b timestamp[aggr=quantize],req.method
 
-# dn scan -f { "eq": [ "audit", true ] } -b timestamp[aggr=quantize],req.method
+# dn scan-file -f { "eq": [ "audit", true ] } -b timestamp[aggr=quantize],req.method
 
-# dn scan --points -f { "eq": [ "audit", true ] } -b timestamp[aggr=quantize],req.method
+# dn scan-file --points -f { "eq": [ "audit", true ] } -b timestamp[aggr=quantize],req.method
 
-# dn scan --counters -f { "eq": [ "audit", true ] }
+# dn scan-file --counters -f { "eq": [ "audit", true ] }
 VALUE
     0
 Aggregator         noutputs:           1
 Flattener          ninputs:            1
 Flattener          noutputs:           1
 
-# dn scan --points --counters -f { "eq": [ "audit", true ] }
+# dn scan-file --points --counters -f { "eq": [ "audit", true ] }
 Aggregator         noutputs:           1
 {"fields":{},"value":0}
 
-# dn query --counters
+# dn query-file --counters
 VALUE
     0
 Index Aggregator   ninputs:            1
@@ -45,7 +45,7 @@ Query Passthrough  ninputs:            1
 Query Passthrough  noutputs:           1
 Flattener          ninputs:            1
 Flattener          noutputs:           1
-# dn query --counters
+# dn query-file --counters
 VALUE
     0
 Index Aggregator   ninputs:            1
@@ -54,10 +54,10 @@ Query Passthrough  ninputs:            1
 Query Passthrough  noutputs:           1
 Flattener          ninputs:            1
 Flattener          noutputs:           1
-# dn query -f { "eq": [ "req.method", "GET" ] }
+# dn query-file -f { "eq": [ "req.method", "GET" ] }
 VALUE
     0
-# dn query -b req.method
-# dn query -b latency
-# dn query --counters -b latency
+# dn query-file -b req.method
+# dn query-file -b latency
+# dn query-file --counters -b latency
 Flattener          noutputs:           1

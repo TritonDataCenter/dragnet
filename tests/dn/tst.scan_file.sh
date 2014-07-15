@@ -9,12 +9,12 @@ set -o errexit
 
 function scan
 {
-	echo "# dn scan" "$@"
-	dn scan "$@" $DN_DATADIR/2014/05-01/one.log
+	echo "# dn scan-file" "$@"
+	dn scan-file "$@" $DN_DATADIR/2014/05-01/one.log
 	echo
 
-	echo "# dn scan --points" "$@"
-	dn scan --points "$@" $DN_DATADIR/2014/05-01/one.log | sort -d
+	echo "# dn scan-file --points" "$@"
+	dn scan-file --points "$@" $DN_DATADIR/2014/05-01/one.log | sort -d
 	echo
 }
 

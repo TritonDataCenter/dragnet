@@ -1,4 +1,5 @@
-# dn index --counters -R ... -I ... -c timestamp[date;field=time;aggr=lquantize;step=3600],host,operation,req.caller,req.method,latency[aggr=quantize]
+# dn index-tree --counters -c timestamp[date;field=time;aggr=lquantize;step=3600],host,operation,req.caller,req.method,latency[aggr=quantize] ...
+indexes created
 FindStart          ninputs:            1
 FindStart          noutputs:           1
 FindStatter        ninputs:           24
@@ -141,7 +142,7 @@ IndexSink          ninputs:           22
 ./by_hour/2014-05-05-21.sqlite
 ./by_hour/2014-05-05-22.sqlite
 ./by_hour/2014-05-05-23.sqlite
-# dn query --counters -I ... -b host,operation
+# dn query-tree --counters -b host,operation
 HOST    OPERATION           VALUE
 janey   deletepublicstorage    57
 janey   deletestorage          63
@@ -211,7 +212,8 @@ Query Passthrough  ninputs:         1854
 Query Passthrough  noutputs:        1854
 Flattener          ninputs:         1854
 Flattener          noutputs:           1
-# dn index --counters -R ... -I ... --interval=day -c timestamp[date;field=time;aggr=lquantize;step=3600],host,operation,req.caller,req.method,latency[aggr=quantize]
+# dn index-tree --counters --interval=day -c timestamp[date;field=time;aggr=lquantize;step=3600],host,operation,req.caller,req.method,latency[aggr=quantize] ...
+indexes created
 FindStart          ninputs:            1
 FindStart          noutputs:           1
 FindStatter        ninputs:           24
@@ -359,7 +361,7 @@ IndexSink          ninputs:          489
 ./by_hour/2014-05-05-21.sqlite
 ./by_hour/2014-05-05-22.sqlite
 ./by_hour/2014-05-05-23.sqlite
-# dn query --counters -I ... -b host,operation
+# dn query-tree --counters -b host,operation
 HOST    OPERATION           VALUE
 janey   deletepublicstorage    57
 janey   deletestorage          63
@@ -549,7 +551,7 @@ Flattener          noutputs:           1
 ./by_hour/2014-05-05-21.sqlite
 ./by_hour/2014-05-05-22.sqlite
 ./by_hour/2014-05-05-23.sqlite
-# dn query --counters -I ... -b host,operation
+# dn query-tree --counters -b host,operation
 HOST    OPERATION           VALUE
 janey   deletepublicstorage    57
 janey   deletestorage          63
@@ -619,7 +621,8 @@ Query Passthrough  ninputs:         1854
 Query Passthrough  noutputs:        1854
 Flattener          ninputs:         1854
 Flattener          noutputs:           1
-# dn index --counters -R ... -I ... --interval=day --source=hour -c timestamp[aggr=lquantize;step=3600],host,operation,req.caller,req.method,latency[aggr=quantize]
+# dn rollup-tree --counters --interval=day --source=hour -c timestamp[aggr=lquantize;step=3600],host,operation,req.caller,req.method,latency[aggr=quantize] ...
+indexes created
 FindStart          ninputs:            1
 FindStart          noutputs:           1
 FindStatter        ninputs:          123
@@ -760,7 +763,7 @@ IndexSink          ninputs:          489
 ./by_hour/2014-05-05-21.sqlite
 ./by_hour/2014-05-05-22.sqlite
 ./by_hour/2014-05-05-23.sqlite
-# dn query --counters -I ... -b host,operation
+# dn query-tree --counters -b host,operation
 HOST    OPERATION           VALUE
 janey   deletepublicstorage    57
 janey   deletestorage          63
@@ -830,7 +833,7 @@ Query Passthrough  ninputs:          250
 Query Passthrough  noutputs:         250
 Flattener          ninputs:          250
 Flattener          noutputs:           1
-# dn query --counters -I ... -f { "eq": [ "host", "ralph" ] } --time-field=timestamp --after=2014-05-03T12:00:00 --before=2014-05-03T18:00:00
+# dn query-tree --counters -f { "eq": [ "host", "ralph" ] } --time-field=timestamp --after=2014-05-03T12:00:00 --before=2014-05-03T18:00:00
 VALUE
    20
 PathEnumerator     noutputs:           2

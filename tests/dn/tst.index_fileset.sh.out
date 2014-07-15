@@ -118,11 +118,11 @@
 ./by_hour/2014-05-05-21.sqlite
 ./by_hour/2014-05-05-22.sqlite
 ./by_hour/2014-05-05-23.sqlite
-# dn query
+# dn query-tree
 VALUE
  2250
 
-# dn query -b operation
+# dn query-tree -b operation
 OPERATION           VALUE
 deletepublicstorage   294
 deletestorage         286
@@ -135,7 +135,7 @@ putdirectory          184
 putobject             195
 putpublicobject       184
 
-# dn query -b operation,req.method,host
+# dn query-tree -b operation,req.method,host
 OPERATION           REQ.METHOD HOST    VALUE
 deletepublicstorage DELETE     janey      57
 deletepublicstorage DELETE     kearney    70
@@ -188,14 +188,14 @@ putpublicobject     PUT        ralph      34
 putpublicobject     PUT        sherri     43
 putpublicobject     PUT        wendell    41
 
-# dn query -b req.caller
+# dn query-tree -b req.caller
 REQ.CALLER VALUE
 admin        570
 null         575
 poseidon     546
 undefined    559
 
-# dn query -b operation,req.caller
+# dn query-tree -b operation,req.caller
 OPERATION           REQ.CALLER VALUE
 deletepublicstorage admin         82
 deletepublicstorage null          70
@@ -238,11 +238,11 @@ putpublicobject     null          46
 putpublicobject     poseidon      48
 putpublicobject     undefined     40
 
-# dn query -f { "eq": [ "req.method", "GET" ] }
+# dn query-tree -f { "eq": [ "req.method", "GET" ] }
 VALUE
   556
 
-# dn query -f { "eq": [ "req.method", "GET" ] } -b operation,req.method,host
+# dn query-tree -f { "eq": [ "req.method", "GET" ] } -b operation,req.method,host
 OPERATION        REQ.METHOD HOST    VALUE
 getjoberrors     GET        janey      38
 getjoberrors     GET        kearney    33
@@ -260,15 +260,15 @@ getstorage       GET        ralph      39
 getstorage       GET        sherri     39
 getstorage       GET        wendell    43
 
-# dn query -f { "eq": [ "req.caller", "poseidon" ] }
+# dn query-tree -f { "eq": [ "req.caller", "poseidon" ] }
 VALUE
   546
 
-# dn query -f { "eq": [ "req.caller", "poseidon" ] } -b req.caller
+# dn query-tree -f { "eq": [ "req.caller", "poseidon" ] } -b req.caller
 REQ.CALLER VALUE
 poseidon     546
 
-# dn query -b latency[aggr=quantize]
+# dn query-tree -b latency[aggr=quantize]
 
            value  ------------- Distribution ------------- count
                0 |                                         0
@@ -286,7 +286,7 @@ poseidon     546
             2048 |@@@@@                                    302
             4096 |                                         0
 
-# dn query -b latency[aggr=quantize],operation,host
+# dn query-tree -b latency[aggr=quantize],operation,host
 LATENCY OPERATION           HOST    VALUE
       1 deletepublicstorage janey       2
       1 deletepublicstorage kearney     4
@@ -664,7 +664,7 @@ LATENCY OPERATION           HOST    VALUE
    2048 putpublicobject     sherri      7
    2048 putpublicobject     wendell     5
 
-# dn query -b host,operation,latency[aggr=quantize]
+# dn query-tree -b host,operation,latency[aggr=quantize]
 janey, deletepublicstorage
            value  ------------- Distribution ------------- count
                0 |                                         0
@@ -1515,7 +1515,7 @@ wendell, putpublicobject
             2048 |@@@@@                                    5
             4096 |                                         0
 
-# dn query -b latency[aggr=lquantize;step=100]
+# dn query-tree -b latency[aggr=lquantize;step=100]
 
            value  ------------- Distribution ------------- count
                0 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@            1647
@@ -1541,11 +1541,11 @@ wendell, putpublicobject
             2000 |@@@@@                                    302
             2100 |                                         0
 
-# dn query
+# dn query-tree
 VALUE
   556
 
-# dn query --counters -b timestamp[aggr=lquantize;step=86400]
+# dn query-tree --counters -b timestamp[aggr=lquantize;step=86400]
 
            value  ------------- Distribution ------------- count
       1398902400 |@@@@@@@@@                                500
@@ -1573,7 +1573,7 @@ Query Passthrough  noutputs:         120
 Flattener          ninputs:          120
 Flattener          noutputs:           1
 
-# dn query --counters --time-field=timestamp --after 2014-05-02 --before 2014-05-03
+# dn query-tree --counters --time-field=timestamp --after 2014-05-02 --before 2014-05-03
 VALUE
   500
 PathEnumerator     noutputs:          24
@@ -1595,7 +1595,7 @@ Query Passthrough  noutputs:          24
 Flattener          ninputs:           24
 Flattener          noutputs:           1
 
-# dn query --counters --time-field=timestamp -b timestamp[aggr=lquantize;step=60] --after 2014-05-02T04:05:06.123 --before 2014-05-02T04:15:10
+# dn query-tree --counters --time-field=timestamp -b timestamp[aggr=lquantize;step=60] --after 2014-05-02T04:05:06.123 --before 2014-05-02T04:15:10
 
            value  ------------- Distribution ------------- count
       1399003620 |@@@@@@@@@@@@@@@@@@@@                     2

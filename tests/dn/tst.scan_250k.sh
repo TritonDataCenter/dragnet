@@ -18,7 +18,7 @@ tst_maxvsz=160000
 # pid of process executed
 tst_pid=
 
-$tst_toolsdir/mktestdata $tst_nrecords | dn scan /dev/stdin &
+$tst_toolsdir/mktestdata $tst_nrecords | dn scan-file /dev/stdin &
 tst_pid=$!
 set -- $($tst_toolsdir/memwatch $tst_pid)
 echo "rss=$1 vsz=$2" >&2

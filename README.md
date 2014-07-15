@@ -1,13 +1,13 @@
 # Dragnet
 
 "dn" is a tool for analyzing event stream data stored in files.  There are three
-commands:
+main kinds of commands:
 
-* "scan": scan over raw data to execute a query
-* "index": scan over raw data to produce an index
-* "query": search indexes to execute a query
+* scan: scan over raw data to execute a query
+* index: scan over raw data to produce an index
+* query: search indexes to execute a query
 
-The point is to "index" data and then "query" it.  "scan" is available to check
+The point is to index data and then query it.  Scan is available to check
 results and to run ad-hoc queries that it may not make sense to index.
 
 ## Reference
@@ -17,29 +17,39 @@ If you don't already know what "dn" does, you're better off starting with the
 
 ### Scanning raw data
 
-General form:
+General forms:
 
-    dn scan   [-b|--breakdowns COLUMN[,COLUMN...]]
-              [-f|--filter FILTER]
-              [--before END_TIMESTAMP] [--after START_TIMESTAMP]
-              [--time-format=TIME_FORMAT] [--time-field=FIELDNAME]
-              [--data-format json|json-skinner]
-              [--counters] [--points] [--show-warnings]
-              DATA_FILE | -R dataroot'
+    dn scan-file [-b|--breakdowns COLUMN[,COLUMN...]]
+                 [-f|--filter FILTER]
+                 [--before END_TIMESTAMP] [--after START_TIMESTAMP]
+                 [--time-field=FIELDNAME]
+                 [--data-format json|json-skinner]
+                 [--counters] [--points] [--warnings]
+                 DATA_FILE
+
+    dn scan-tree [-b|--breakdowns COLUMN[,COLUMN...]]
+                 [-f|--filter FILTER]
+                 [--before END_TIMESTAMP] [--after START_TIMESTAMP]
+                 [--time-field=FIELDNAME]
+                 [--data-format json|json-skinner]
+                 [--time-format=TIME_FORMAT] 
+                 [--counters] [--points] [--warnings]
+                 DATA_DIRECTORY
 
 Scan the records in a single newline-separated-JSON data file:
 
-    dn scan SCAN_OPTIONS data_file
+    dn scan-file SCAN_OPTIONS data_file
 
 Scan the records in all files in "data\_directory":
 
-    dn scan SCAN_OPTIONS -R data_directory
+    dn scan-tree SCAN_OPTIONS data_directory
 
 Scan only data from the first few days of July, assuming data is laid out under
 "data\_directory/YYYY/MM/DD":
 
-    dn scan SCAN_OPTIONS -R data_directory --time-format=%Y/%m/%d
+    dn scan-tree SCAN_OPTIONS --time-format=%Y/%m/%d
         --after 2014-07-01 --before 2014-07-04
+        data_directory
 
 SCAN\_OPTIONS include:
 
@@ -87,7 +97,7 @@ There are a few debugging options:
   include a "value" field for representing N instances of the same record
   without replicating the record N times.  These points can be used as input to
   subsequent scans or indexes using --data-format=json-skinner.
-* `--show-warnings`: as data is scanned, show warnings about records that are
+* `--warnings`: as data is scanned, show warnings about records that are
   dropped.  Common reasons include: filtered out by a --filter filter, filtered
   out by --before or --after, failed to evaluate the --filter (e.g., because a
   field specified in the filter isn't present), failed to parse a numeric field
@@ -97,36 +107,56 @@ There are a few debugging options:
 
 ### Indexing
 
-General form:
+General forms:
 
-    dn index  [-c|--columns COLUMN[,COLUMN...]]
-              [-f|--filter FILTER]
-              [--before END_TIMESTAMP] [--after START_TIMESTAMP]
-              [--time-format=TIME_FORMAT]
-              [--data-format json|json-skinner]
-              [-i|--interval hour|day]
-              [-s|--source hour]
-              [--counters] [--show-warnings]
-              DATA_FILE INDEX_FILE | -R dataroot [-I dataroot]
+    dn index-file  [-c|--columns COLUMN[,COLUMN...]]
+                   [-f|--filter FILTER]
+                   [--before END_TIMESTAMP] [--after START_TIMESTAMP]
+                   [--data-format json|json-skinner]
+                   [-i|--interval hour|day]
+                   [--counters] [--warnings]
+                   DATA_FILE INDEX_FILE
+
+    dn index-tree  [-c|--columns COLUMN[,COLUMN...]]
+                   [-f|--filter FILTER]
+                   [--before END_TIMESTAMP] [--after START_TIMESTAMP]
+                   [--time-format=TIME_FORMAT]
+                   [--data-format json|json-skinner]
+                   [-i|--interval hour|day]
+                   [--counters] [--warnings]
+                   DATA_DIRECTORY INDEX_DIRECTORY
+
+    dn rollup-tree [-c|--columns COLUMN[,COLUMN...]]
+                   [-f|--filter FILTER]
+                   [--before END_TIMESTAMP] [--after START_TIMESTAMP]
+                   [-i|--interval hour|day]
+                   [-s|--source hour]
+                   [--counters] [--warnings]
+                   INDEX_DIRECTORY
 
 Generate a single index file from a single newline-separated-JSON data file:
 
-    dn index INDEX_OPTIONS data_file index_file
+    dn index-file INDEX_OPTIONS data_file index_file
 
 Generate hourly index files into "index\_directory" from data stored in
 "data\_directory":
 
-    dn index INDEX_OPTIONS -R data_directory [-I index_directory]
+    dn index-tree INDEX_OPTIONS data_directory index_directory
 
 Generate daily index files instead:
 
-    dn index INDEX_OPTIONS --interval=day -R data_directory [-I index_directory]
+    dn index-tree INDEX_OPTIONS --interval=day data_directory index_directory
 
 Generate hourly indexes, but only for the first few days of July, assuming data
 is laid out under "data\_directory/YYYY/MM/DD"
 
-    dn index INDEX_OPTIONS -R data_directory [-I index_directory] \
+    dn index-tree INDEX_OPTIONS 
         --time-format=%Y/%m/%d --after 2014-07-01 --before 2014-07-04
+        data_directory index_directory
+
+Generate daily indexes from hourly indexes:
+
+    dn rollup-tree INDEX_OPTIONS --source=hour index_directory
 
 INDEX\_OPTIONS include:
 
@@ -134,14 +164,16 @@ INDEX\_OPTIONS include:
 * `-f | --filter FILTER`: Same as "dn scan --filter".
 * `--after START_TIMESTAMP`: Same as "dn scan --after".
 * `--before END_TIMESTAMP`: Same as "dn scan --before".
-* `--time-format TIME_FORMAT`: Same as "dn scan --time-format".
-* `--data-format json | json-skinner`: Same as "dn scan --data-format".
+* `--time-format TIME_FORMAT`: Same as "dn scan --time-format".  This only
+  applies to --index-tree.
+* `--data-format json | json-skinner`: Same as "dn scan --data-format".  This
+  only applies to --index-file and --index-tree.
 * `-i | --interval INTERVAL`: Specifies that indexes should be chunked into
   files by INTERVAL, which is either "hour" or "day".  This is only supported
-  when -R is used.  The default is "hour".
+  for "index-tree" and "rollup-tree".  The default is "hour".
 * `-s | --source hour`: Specifies that the underlying data for the index
   should come from hourly indexes instead of the raw data files, which is useful
-  to build daily indexes more efficiently.
+  to build daily indexes more efficiently.  This only applies to rollup-tree.
 
 To specify the time resolution of each index file, you specify your own
 "timestamp" column.  For example, specifying column
@@ -154,57 +186,63 @@ you want the resolution to be 10 seconds instead, use `step=10`.
 There are a few debugging options:
 
 * `--counters`: See "dn scan --counters".
-* `--show-warnings`: See "dn scan --show-warnings".
+* `--warnings`: See "dn scan --warnings".
 
-When using forms of "dn index" that generate multiple index files (e.g., hourly
-or daily) and the source is raw data (rather than another index), you must
-include at least one column that's a "date" field.  That field will be used to
-figure out which hourly or daily index file a given data point should wind up
-in.
+When using forms "dn index-tree", you must include at least one column that's a
+"date" field.  That field will be used to figure out which hourly or daily index
+file a given data point should wind up in.
 
 
 ### Querying
 
-"dn query" supports arguments like "dn scan":
+"dn query-file" and "dn query-tree" support arguments like "dn scan-file" and
+"dn scan-tree":
 
-    dn query  [-b|--breakdowns COLUMN[,COLUMN...]]
-              [-f|--filter FILTER]
-              [--before END_TIMESTAMP] [--after START_TIMESTAMP]
-              [--time-field TIME_FIELD]
-              [--counters]
-              INDEX_FILE | -I indexroot
+    dn query-file [-b|--breakdowns COLUMN[,COLUMN...]]
+                  [-f|--filter FILTER]
+                  [--before END_TIMESTAMP] [--after START_TIMESTAMP]
+                  [--time-field TIME_FIELD]
+                  [--points] [--counters]
+                  INDEX_FILE
 
-All of these options function as documented for "dn scan".  If you specify
-"INDEX\_FILE", that file should be a single index file to be queried.  If you
-specify -I instead, "indexroot" refers to a directory of indexes created with
-"dn index".  "dn" will automatically select the daily indexes if available and
-fall back to hourly indexes if not.
+    dn query-tree [-b|--breakdowns COLUMN[,COLUMN...]]
+                  [-f|--filter FILTER]
+                  [--before END_TIMESTAMP] [--after START_TIMESTAMP]
+                  [--time-field TIME_FIELD]
+                  [--points] [--counters]
+                  INDEX_DIRECTORY
 
-Several "dn scan" arguments are not supported by "dn query" because they don't
-apply:
+All of these options work just as documented for "dn scan-file" and "dn
+scan-tree".  "INDEX\_FILE" should be a single index file to be queried.
+INDEX\_DIRECTORY refers to a directory of indexes created with "dn index-tree".
+"dn" will automatically select the daily indexes if available and fall back to
+hourly indexes if not.
+
+Several scan-related arguments are not supported by when querying because they
+don't apply:
 
 * `--data-format` doesn't apply because the format of indexes is fixed.
 * `--time-format` doesn't apply because the structure of the index directory
   tree is fixed.
-* `--show-warnings` doesn't apply because any problems parsing indexes is
+* `--warnings` doesn't apply because any problems parsing indexes is
   considered a fatal error.
 
-The fact that --time-field is ever necessary for "dn query" is a bug.
+The fact that --time-field is ever necessary for queries is a bug.
 
 
 ## Getting started
 
 dragnet only supports newline-separated JSON.  Try it on the sample data in
 tests/data.  In the simplest mode, dragnet operates on raw files.  With no
-arguments, "scan" just counts records:
+arguments, "scan-file" just counts records:
 
-    $ dn scan 08-02d02889.log 
+    $ dn scan-file 08-02d02889.log 
     VALUE
      1000
 
 You can also break out results, e.g., by request method:
 
-    $ dn scan -b req.method 08-02d02889.log 
+    $ dn scan-file -b req.method 08-02d02889.log 
     REQ.METHOD VALUE
     DELETE         1
     GET          300
@@ -219,7 +257,7 @@ kinds of events in it.
 
 You can break out results by more than one field:
 
-    $ dn scan -b req.method,res.statusCode 08-02d02889.log 
+    $ dn scan-file -b req.method,res.statusCode 08-02d02889.log 
     REQ.METHOD RES.STATUSCODE VALUE
     DELETE     204                1
     GET        200              286
@@ -237,7 +275,7 @@ You can break out results by more than one field:
 
 and the order matters.  If we reverse these:
 
-    $ dn scan -b res.statusCode,req.method 08-02d02889.log
+    $ dn scan-file -b res.statusCode,req.method 08-02d02889.log
     RES.STATUSCODE REQ.METHOD VALUE
     200            GET          286
     200            HEAD         313
@@ -256,13 +294,14 @@ and the order matters.  If we reverse these:
 You can also filter records out using
 [node-krill](https://github.com/joyent/node-krill) filter syntax:
 
-    $ dn scan -f '{ "eq": [ "req.method", "GET" ] }' 08-02d02889.log 
+    $ dn scan-file -f '{ "eq": [ "req.method", "GET" ] }' 08-02d02889.log 
     VALUE
       300
 
 You can combine this with breakdowns, of course:
 
-    $ dn scan -f '{ "eq": [ "req.method", "GET" ] }' -b operation 08-02d02889.log 
+    $ dn scan-file -f '{ "eq": [ "req.method", "GET" ] }' \
+          -b operation 08-02d02889.log 
     OPERATION        VALUE
     get100               1
     getjobstatus        30
@@ -272,7 +311,7 @@ You can combine this with breakdowns, of course:
 To break down by numeric quantities, it's usually best to aggregate nearby
 values into buckets.  Here's a histogram of the "latency" field from this log:
 
-    $ dn scan -b latency[aggr=quantize] 08-02d02889.log 
+    $ dn scan-file -b latency[aggr=quantize] 08-02d02889.log 
 
                value  ------------- Distribution ------------- count
                    0 |                                         0
@@ -291,7 +330,7 @@ values into buckets.  Here's a histogram of the "latency" field from this log:
 "aggr=quantize" denotes a power-of-two bucketization.  You can also do a linear
 quantization with steps of size 50 (notice the escaped semicolon):
 
-    $ dn scan -b latency[aggr=lquantize\;step=50] 08-02d02889.log 
+    $ dn scan-file -b latency[aggr=lquantize\;step=50] 08-02d02889.log 
 
                value  ------------- Distribution ------------- count
                    0 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@      865
@@ -315,7 +354,7 @@ quantization with steps of size 50 (notice the escaped semicolon):
 These are modeled after DTrace's aggregating actions.  You can combine these
 with other breakdowns:
 
-    $ dn scan -f '{ "eq": [ "req.method", "GET" ] }' \
+    $ dn scan-file -f '{ "eq": [ "req.method", "GET" ] }' \
           -b req.method,operation,latency[aggr=quantize] 08-02d02889.log 
 
     GET, getpublicstorage
@@ -363,7 +402,7 @@ If the last field isn't an aggregation, "dn" won't print a histogram, but it
 will still group nearby values.  For example, if we reverse the order of that
 last one:
 
-    $ dn scan -f '{ "eq": [ "req.method", "GET" ] }' \
+    $ dn scan-file -f '{ "eq": [ "req.method", "GET" ] }' \
           -b latency[aggr=quantize],req.method,operation 08-02d02889.log 
     LATENCY REQ.METHOD OPERATION        VALUE
           1 GET        get100               1
@@ -387,7 +426,7 @@ parsed from some other field and then aggregating on it.  The value of such a
 field is a Unix timestamp.  For an example, here's how you can get per-hour data
 from a 3-hour log file, where the timestamp is stored in a field called "time":
 
-    $ dn scan -b 'timestamp[date;field=time;aggr=lquantize;step=3600],req.method' mydata.log
+    $ dn scan-file -b 'timestamp[date;field=time;aggr=lquantize;step=3600],req.method' mydata.log
      TIMESTAMP REQ.METHOD VALUE
     1401570000 DELETE        82
     1401570000 GET           84
@@ -411,7 +450,8 @@ queries much faster.  You can index a file much the way you write a query.
 Here's an example that creates indexes on the request method, operation, and
 latency:
 
-    $ dn index -c req.method,operation,latency[aggr=quantize] 08-02d02889.log myindex
+    $ dn index-file -c req.method,operation,latency[aggr=quantize] \
+          08-02d02889.log myindex
     index "myindex" created
 
 My sample data is fairly small, but the index is much smaller:
@@ -442,10 +482,10 @@ similar query would have:
     GET|getstorage|16|71
     ...
 
-You can query an index with the same syntax you'd use for "scan", but with the
-"query" command:
+You can query an index with the same syntax you'd use for scanning, but with the
+"query-file" command:
 
-    $ dn query -f '{ "eq": [ "req.method", "GET" ] }' \
+    $ dn query-file -f '{ "eq": [ "req.method", "GET" ] }' \
           -b latency[aggr=quantize],req.method,operation myindex 
     LATENCY REQ.METHOD OPERATION        VALUE
           1 GET        get100               1
@@ -464,8 +504,8 @@ You can query an index with the same syntax you'd use for "scan", but with the
          64 GET        getstorage           3
         128 GET        getstorage           1
 
-"query" and "scan" should return the same results -- the point is that "query"
-should be much faster.
+Query and scan should return the same results -- the point is that query should
+be much faster.
 
 
 ## Beyond files
@@ -483,14 +523,14 @@ data:
     data/one.log
     data/two.log
 
-You can scan the entire directory tree by specifying it with -R (instead of
-specifying a file name):
+You can scan the entire directory tree by using "scan-tree" instead of
+"scan-file":
 
-    $ dn scan -R data
+    $ dn scan-tree data
     VALUE
      2000
 
-    $ dn scan -b req.method -R data
+    $ dn scan-tree -b req.method data
     REQ.METHOD VALUE
     DELETE       478
     GET          503
@@ -499,10 +539,8 @@ specifying a file name):
 
 You can index it the same way:
 
-    $ dn index -c req.method,res.statusCode,latency[aggr=quantize] -R data
-    inferring index root: data_index
-
-By default, "dn" puts the indexes in a parallel tree with a "\_index" suffix:
+    $ dn index-tree -c req.method,res.statusCode,latency[aggr=quantize] \
+          data data_index
 
     $ find data_index/ -type f
     data_index/2014-05-31-22.sqlite
@@ -514,9 +552,9 @@ data set.  The number of indexes doesn't depend on the size or number of input
 files.  You never need to worry about the number of index files, though.  "dn"
 takes care of searching all of them (or whichever ones need to be searched).
 
-You can query these indexes by specifying the index directory with "-I":
+You can query these indexes by specifying the index directory:
 
-    $ dn query -b req.method -I data_index
+    $ dn query-tree -b req.method data_index
     REQ.METHOD VALUE
     DELETE       478
     GET          503

@@ -9,12 +9,12 @@ set -o errexit
 
 function scan
 {
-	echo "# dn scan" "$@"
-	dn scan -R $DN_DATADIR "$@"
+	echo "# dn scan-tree" "$@"
+	dn scan-tree "$@" $DN_DATADIR
 	echo
 
-	echo "# dn scan --points" "$@"
-	dn scan -R $DN_DATADIR --points "$@" | sort -d
+	echo "# dn scan-tree --points" "$@"
+	dn scan-tree --points "$@" $DN_DATADIR | sort -d
 	echo
 }
 
