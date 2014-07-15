@@ -10,10 +10,14 @@
 
 #
 # Tools must be installed on the path
+# JSL is JavaScriptLint, from https://github.com/davepacheco/javascriptlint
+# JSSTYLE is jsstyle, from https://github.com/davepacheco/jsstyle
+# MD2MAN is md2man-roff, from https://github.com/sunaku/md2man
 #
 CATEST		 = ./tools/catest
 JSL		 = jsl
 JSSTYLE		 = jsstyle
+MD2MAN		 = md2man-roff
 
 #
 # Files
@@ -35,3 +39,4 @@ test:
 	$(CATEST) -a
 
 include ./Makefile.targ
+include ./Makefile.man.targ

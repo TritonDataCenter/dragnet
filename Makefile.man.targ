@@ -1,0 +1,40 @@
+#
+# Copyright (c) 2014, Joyent, Inc. All rights reserved.
+#
+# Makefile.man.targ: targets for building man pages
+#
+# NOTE: This makefile comes from the "eng" repo. It's designed to be dropped
+# into other repos as-is without requiring any modifications. If you find
+# yourself changing this file, you should instead update the original copy in
+# eng.git and then update your repo to use the new version.
+#
+# Targets defined in this Makefile:
+#
+#     manpages		generates man pages from Markdown files
+#     			(only section 1 supported)
+#
+# You must st:
+#
+#     MD2MAN		tool for converting Markdown-format files into man pages
+#     			See https://github.com/sunaku/md2man
+#
+# You may also set:
+#
+#     MAN_BUILD_DIR	directory in which to put built man pages
+#     			default: build/man
+#
+#     MAN_SOURCE_DIR	directory where man page sources live
+#     			default: docs/man
+#
+
+MD2MAN	      ?= $(error MD2MAN is not set)
+MAN_BUILD_DIR  = build/man
+MAN_SOURCE_DIR = docs/man
+
+MAN_SOURCES = $(wildcard $(MAN_SOURCE_DIR)/*.md)
+MAN_OUTPUTS = $(MAN_SOURCES:$(MAN_SOURCE_DIR)/%.md=$(MAN_BUILD_DIR)/man1/%.1)
+
+$(MAN_OUTPUTS): $(MAN_BUILD_DIR)/man1/%.1: $(MAN_SOURCE_DIR)/%.md
+	$(MD2MAN) $^ > $@
+
+manpages: $(MAN_OUTPUTS)
