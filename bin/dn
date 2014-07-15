@@ -39,6 +39,7 @@ var dnUsage = [
 var dnDone = false;
 var dnTrackTime = false;
 var dnLog;
+var dnStream;
 
 function usage(err)
 {
@@ -75,7 +76,7 @@ function main()
 	}
 
 	if (process.argv.length < optind + 1)
-		usage();
+		usage(new VError('no command specified'));
 
 	cmdname = process.argv[optind];
 	if (!dnCmds.hasOwnProperty(cmdname))
@@ -174,8 +175,14 @@ function cmdIndex(cmdname, argv)
 			timefmt = option.optarg;
 			break;
 
+		case '?':
+			usage(new VError('unknown option: -%s', option.optopt));
+			break;
+
 		default:
-			usage();
+			mod_assert.equal(':', option.option);
+			usage(new VError('missing argument for option: -%s',
+			    option.optopt));
 			break;
 		}
 	}
@@ -189,8 +196,11 @@ function cmdIndex(cmdname, argv)
 
 	optind = optparser.optind();
 	if (sourceclass === undefined) {
-		if (optparser.optind() != argv.length - 2)
-			usage();
+		if (optparser.optind() > argv.length - 2)
+			usage(new VError('either a source filename and ' +
+			    'index filename or -R must be specified'));
+		if (optparser.optind() < argv.length - 2)
+			usage(new VError('extra arguments'));
 		sourceclass = FileDataSource;
 		sourceargs['filename'] = argv[optind++];
 		indexargs['filename'] = argv[optind++];
@@ -201,7 +211,7 @@ function cmdIndex(cmdname, argv)
 		}
 	} else {
 		if (optparser.optind() != argv.length)
-			usage();
+			usage(new VError('extra arguments'));
 
 		if (!indexargs.hasOwnProperty('indexroot'))
 			indexargs['indexroot'] = inferIndexRoot(
@@ -217,6 +227,7 @@ function cmdIndex(cmdname, argv)
 	indexargs['timeFormat'] = timefmt;
 	indexop = source.index(indexargs);
 	indexop.on('error', fatal);
+	dnStream = indexop;
 
 	if (showinvalid) {
 		indexop.vsHead().vsWalk(function (s) {
@@ -313,22 +324,31 @@ function cmdQuery(cmdname, argv)
 			sourceargs['dataroot'] = option.optarg;
 			break;
 
+		case '?':
+			usage(new VError('unknown option: -%s', option.optopt));
+			break;
+
 		default:
-			usage();
+			mod_assert.equal(':', option.option);
+			usage(new VError('missing argument for option: -%s',
+			    option.optopt));
 			break;
 		}
 	}
 
 	if (sourceclass === undefined) {
-		if (optparser.optind() != argv.length - 1)
-			usage();
+		if (optparser.optind() > argv.length - 1)
+			usage(new VError('either a filename or -R ' +
+			    'must be specified'));
+		if (optparser.optind() < argv.length - 1)
+			usage(new VError('extra arguments'));
 
 		sourceclass = FileDataSource;
 		sourceargs['filename'] = 'unused'; /* XXX see above */
 		queryargs['filename'] = argv[optparser.optind()];
 	} else {
 		if (optparser.optind() != argv.length)
-			usage();
+			usage(new VError('extra arguments'));
 
 		if (!queryargs.hasOwnProperty('indexroot'))
 			queryargs['indexroot'] = inferIndexRoot(
@@ -348,6 +368,7 @@ function cmdQuery(cmdname, argv)
 	});
 	results = source.query(queryargs);
 	results.pipe(stream);
+	dnStream = stream;
 
 	results.vsHead().vsWalk(function (s) {
 		s.on('warn', warn);
@@ -445,8 +466,14 @@ function cmdScan(cmdname, argv)
 			timefmt = option.optarg;
 			break;
 
+		case '?':
+			usage(new VError('unknown option: -%s', option.optopt));
+			break;
+
 		default:
-			usage();
+			mod_assert.equal(':', option.option);
+			usage(new VError('missing argument for option: -%s',
+			    option.optopt));
 			break;
 		}
 	}
@@ -459,8 +486,11 @@ function cmdScan(cmdname, argv)
 	}
 
 	if (sourceclass === undefined) {
-		if (optparser.optind() != argv.length - 1)
-			usage();
+		if (optparser.optind() > argv.length - 1)
+			usage(new VError('either a filename or -R ' +
+			    'must be specified'));
+		if (optparser.optind() < argv.length - 1)
+			usage(new VError('extra arguments'));
 		sourceclass = FileDataSource;
 		sourceargs['filename'] = argv[optparser.optind()];
 	}
@@ -474,6 +504,7 @@ function cmdScan(cmdname, argv)
 	scanargs['timeFormat'] = timefmt;
 	scan = source.scan(scanargs);
 	scan.on('error', fatal);
+	dnStream = scan;
 
 	if (showinvalid) {
 		scan.vsHead().vsWalk(function (s) {
@@ -729,7 +760,7 @@ function inferIndexRoot(dataroot)
 	return (indexroot);
 }
 
-process.on('exit', function () {
+process.on('exit', function (code) {
 	if (dnTrackTime) {
 		var timeDone = process.hrtime(timeStarted);
 		console.error('timing stats:');
@@ -737,7 +768,19 @@ process.on('exit', function () {
 		console.error('    total:   ', timeDone);
 	}
 
-	mod_assert.ok(dnDone, 'premature exit');
+	if (code === 0 && !dnDone) {
+		console.error('ERROR: internal error: premature exit');
+		if (dnStream !== undefined) {
+			dnStream.vsHead().vsWalk(function (s) {
+				s.vsDumpCounters(process.stderr);
+			});
+			console.error('----');
+			dnStream.vsHead().vsWalk(function (s) {
+				s.vsDumpDebug(process.stderr);
+			});
+		}
+		process.exit(1);
+	}
 });
 
 main();
