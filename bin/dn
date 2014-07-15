@@ -32,10 +32,31 @@ var dnCmds = {
     'scan': cmdScan
 };
 var dnUsage = [
-    'usage: dn index INDEX_OPTIONS FILENAME INDEX_FILENAME\n',
-    '       dn scan  QUERY_OPTIONS FILENAME\n',
-    '       dn query QUERY_OPTIONS INDEX_FILENAME'
-].join('');
+    'usage: dn index  [-c|--columns COLUMN[,COLUMN...]]',
+    '                 [-f|--filter FILTER]',
+    '                 [--before END_TIMESTAMP] [--after START_TIMESTAMP]',
+    '                 [--time-format=TIME_FORMAT]',
+    '                 [--data-format json|json-skinner]',
+    '                 [-i|--interval hour|day]',
+    '                 [-s|--source hour]',
+    '                 [--counters] [--show-warnings]',
+    '                 DATA_FILE INDEX_FILE | -R dataroot [-I dataroot]',
+    '',
+    '       dn query  [-b|--breakdowns COLUMN[,COLUMN...]]',
+    '                 [-f|--filter FILTER]',
+    '                 [--before END_TIMESTAMP] [--after START_TIMESTAMP]',
+    '                 [--time-field TIME_FIELD]',
+    '                 [--counters]',
+    '                 INDEX_FILE | -I indexroot',
+    '',
+    '       dn scan   [-b|--breakdowns COLUMN[,COLUMN...]]',
+    '                 [-f|--filter FILTER]',
+    '                 [--before END_TIMESTAMP] [--after START_TIMESTAMP]',
+    '                 [--time-format=TIME_FORMAT] [--time-field=FIELDNAME]',
+    '                 [--data-format json|json-skinner]',
+    '                 [--counters] [--points] [--show-warnings]',
+    '                 DATA_FILE | -R dataroot'
+].join('\n');
 var dnDone = false;
 var dnTrackTime = false;
 var dnLog;
@@ -116,7 +137,7 @@ function cmdIndex(cmdname, argv)
 	argv.unshift('', '');
 	optparser = new OptionParser(':c:(columns)f:(filter)' +
 	    'i:(interval)s:(source)A:(after)B:(before)C(counters)' +
-	    'D:(data-format)I:(indexroot)R:(dataroot)S(show-invalid)' +
+	    'D:(data-format)I:(indexroot)R:(dataroot)S(show-warnings)' +
 	    'T:(time-format)', argv);
 	while ((option = optparser.getopt()) !== undefined) {
 		switch (option.option) {
@@ -407,7 +428,7 @@ function cmdScan(cmdname, argv)
 	argv.unshift('', '');
 	optparser = new OptionParser(':b:(breakdowns)f:(filter)p(points)' +
 	    'r(raw)A:(after)B:(before)C(counters)D:(data-format)' +
-	    'F:(time-field)R:(root)S(show-invalid)T:(time-format)', argv);
+	    'F:(time-field)R:(root)S(show-warnings)T:(time-format)', argv);
 	while ((option = optparser.getopt()) !== undefined) {
 		switch (option.option) {
 		case 'f':

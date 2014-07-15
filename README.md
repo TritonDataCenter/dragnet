@@ -10,11 +10,193 @@ commands:
 The point is to "index" data and then "query" it.  "scan" is available to check
 results and to run ad-hoc queries that it may not make sense to index.
 
-## Synopsis
+## Reference
 
-dragnet only supports newline-separated JSON.  Try it on muskie log data.  In
-the simplest mode, dragnet operates on raw files.  With no arguments, "scan"
-just counts records:
+If you don't already know what "dn" does, you're better off starting with the
+"Getting Started" section below.
+
+### Scanning raw data
+
+General form:
+
+    dn scan   [-b|--breakdowns COLUMN[,COLUMN...]]
+              [-f|--filter FILTER]
+              [--before END_TIMESTAMP] [--after START_TIMESTAMP]
+              [--time-format=TIME_FORMAT] [--time-field=FIELDNAME]
+              [--data-format json|json-skinner]
+              [--counters] [--points] [--show-warnings]
+              DATA_FILE | -R dataroot'
+
+Scan the records in a single newline-separated-JSON data file:
+
+    dn scan SCAN_OPTIONS data_file
+
+Scan the records in all files in "data\_directory":
+
+    dn scan SCAN_OPTIONS -R data_directory
+
+Scan only data from the first few days of July, assuming data is laid out under
+"data\_directory/YYYY/MM/DD":
+
+    dn scan SCAN_OPTIONS -R data_directory --time-format=%Y/%m/%d
+        --after 2014-07-01 --before 2014-07-04
+
+SCAN\_OPTIONS include:
+
+* `-b | --breakdowns COLUMN[,COLUMN...]`: A list of column definitions by which
+  to break out the results.  With no breakdowns specified, the result of a scan
+  is a count of all records scanned (excluding those dropped by the filter).
+  With a breakdown on a column like "req.method" (request method, which is
+  usually a string like "GET" or "PUT"), the result is a count for each value of
+  "req.method" that was found.  With a breakdown on two columns, the result is a
+  count for each unique combination of values for those columns (e.g., 15
+  records with "req.method" equal to "GET" and "res.statusCode" equal to "200").
+  To avoid exploding the number of results, you can group nearby values of
+  numeric quantities using an aggregation.  See "Getting started" below for
+  details.
+* `-f | --filter FILTER`: A node-krill (JSON format) predicate to evaluate on
+  each record.  Records not matching the filter, as well as records missing
+  fields that are used by the filter, are dropped.
+* `--before END_TIMESTAMP`: Only scan data files containing data before
+  END\_TIMESTAMP, and filter out data points after END\_TIMESTAMP (exclusive).
+  Requires you to specify `--time-format`.
+* `--after START_TIMESTAMP`: Only scan data files containing data after
+  START\_TIMESTAMP, and filter out data points before START\_TIMESTAMP
+  (inclusive).  Requires you to specify `--time-format`.
+* `--time-format TIME_FORMAT`: Specifies how the names of directories and files
+  under "data\_directory" correspond with the timestamps of the data points
+  contained in each file.  This is a format string like what strftime(3C)
+  supports, except that only "%Y", "%m", "%d", and "%H" are currently
+  implemented.  This is used to prune data that has to be scanned when using
+  --before and --after.
+* `--time-field TIME_FIELD`: Specifies which field contains the timestamp.  This
+  is used for --before and --after.
+* `--data-format json | json-skinner`: Specifies the incoming data format.
+  Currently, only newline-separated JSON data ("json") and an internal
+  node-skinner format ("json-skinner") are supported.
+
+There are a few debugging options:
+
+* `--counters`: upon completion, show non-zero values of miscellaneous internal
+  counters, which include things like inputs processed at each state of the
+  pipeline, records filtered out, records with invalid fields, and so on.  The
+  names of internal streams, their counters, and the output format are not
+  stable and are subject to change at any time.
+* `--points`: emit data as node-skinner data points rather than human-readable
+  results.  node-skinner points are similar to the input data except that they
+  include a "value" field for representing N instances of the same record
+  without replicating the record N times.  These points can be used as input to
+  subsequent scans or indexes using --data-format=json-skinner.
+* `--show-warnings`: as data is scanned, show warnings about records that are
+  dropped.  Common reasons include: filtered out by a --filter filter, filtered
+  out by --before or --after, failed to evaluate the --filter (e.g., because a
+  field specified in the filter isn't present), failed to parse a numeric field
+  (e.g., a field with "aggr"), or failed to parse a timestamp field.  As with
+  --counters, everything about this option's output is unstable and subject to
+  change at any time.
+
+### Indexing
+
+General form:
+
+    dn index  [-c|--columns COLUMN[,COLUMN...]]
+              [-f|--filter FILTER]
+              [--before END_TIMESTAMP] [--after START_TIMESTAMP]
+              [--time-format=TIME_FORMAT]
+              [--data-format json|json-skinner]
+              [-i|--interval hour|day]
+              [-s|--source hour]
+              [--counters] [--show-warnings]
+              DATA_FILE INDEX_FILE | -R dataroot [-I dataroot]
+
+Generate a single index file from a single newline-separated-JSON data file:
+
+    dn index INDEX_OPTIONS data_file index_file
+
+Generate hourly index files into "index\_directory" from data stored in
+"data\_directory":
+
+    dn index INDEX_OPTIONS -R data_directory [-I index_directory]
+
+Generate daily index files instead:
+
+    dn index INDEX_OPTIONS --interval=day -R data_directory [-I index_directory]
+
+Generate hourly indexes, but only for the first few days of July, assuming data
+is laid out under "data\_directory/YYYY/MM/DD"
+
+    dn index INDEX_OPTIONS -R data_directory [-I index_directory] \
+        --time-format=%Y/%m/%d --after 2014-07-01 --before 2014-07-04
+
+INDEX\_OPTIONS include:
+
+* `-c | --columns COLUMN[,COLUMN]`: Same as columns for "dn scan --breakdowns".
+* `-f | --filter FILTER`: Same as "dn scan --filter".
+* `--after START_TIMESTAMP`: Same as "dn scan --after".
+* `--before END_TIMESTAMP`: Same as "dn scan --before".
+* `--time-format TIME_FORMAT`: Same as "dn scan --time-format".
+* `--data-format json | json-skinner`: Same as "dn scan --data-format".
+* `-i | --interval INTERVAL`: Specifies that indexes should be chunked into
+  files by INTERVAL, which is either "hour" or "day".  This is only supported
+  when -R is used.  The default is "hour".
+* `-s | --source hour`: Specifies that the underlying data for the index
+  should come from hourly indexes instead of the raw data files, which is useful
+  to build daily indexes more efficiently.
+
+To specify the time resolution of each index file, you specify your own
+"timestamp" column.  For example, specifying column
+`timestamp[date;field=time;aggr=lquantize;step=60]` adds a field called
+"timestamp" to the index which is the result of parsing the "time" field in the
+raw data as an ISO 8601 timestamp and converting that to a Unix timestamp
+(seconds since the epoch).  The result is bucketed by minute (`step=60`).  If
+you want the resolution to be 10 seconds instead, use `step=10`.
+
+There are a few debugging options:
+
+* `--counters`: See "dn scan --counters".
+* `--show-warnings`: See "dn scan --show-warnings".
+
+When using forms of "dn index" that generate multiple index files (e.g., hourly
+or daily) and the source is raw data (rather than another index), you must
+include at least one column that's a "date" field.  That field will be used to
+figure out which hourly or daily index file a given data point should wind up
+in.
+
+
+### Querying
+
+"dn query" supports arguments like "dn scan":
+
+    dn query  [-b|--breakdowns COLUMN[,COLUMN...]]
+              [-f|--filter FILTER]
+              [--before END_TIMESTAMP] [--after START_TIMESTAMP]
+              [--time-field TIME_FIELD]
+              [--counters]
+              INDEX_FILE | -I indexroot
+
+All of these options function as documented for "dn scan".  If you specify
+"INDEX\_FILE", that file should be a single index file to be queried.  If you
+specify -I instead, "indexroot" refers to a directory of indexes created with
+"dn index".  "dn" will automatically select the daily indexes if available and
+fall back to hourly indexes if not.
+
+Several "dn scan" arguments are not supported by "dn query" because they don't
+apply:
+
+* `--data-format` doesn't apply because the format of indexes is fixed.
+* `--time-format` doesn't apply because the structure of the index directory
+  tree is fixed.
+* `--show-warnings` doesn't apply because any problems parsing indexes is
+  considered a fatal error.
+
+The fact that --time-field is ever necessary for "dn query" is a bug.
+
+
+## Getting started
+
+dragnet only supports newline-separated JSON.  Try it on the sample data in
+tests/data.  In the simplest mode, dragnet operates on raw files.  With no
+arguments, "scan" just counts records:
 
     $ dn scan 08-02d02889.log 
     VALUE
@@ -291,7 +473,8 @@ should be much faster.
 All of the examples used a single data file and a single index file to
 demonstrate the main ideas, but Dragnet is designed for larger corpuses with
 many files.  Your data set can have as many files as you want, and Dragnet
-always creates per-hour index files using the "time" field in each JSON object.
+creates per-hour index files by default using the "time" field in each JSON
+object.
 
 Here's a directory with two files, each containing three hours' worth of random
 data:
@@ -351,344 +534,7 @@ cost.
 
 The main next steps are:
 
-- Add first-class support for pruning based on timestamps for "scan", "index",
-  and "query".  This requires specifying how files are named, but would allow
-  you to scan or index only a subset of data.  Once that's built into queries,
-  we can use that to query only the indexes we need.
-- Add support for rolled-up indexes: at least daily, weekly, and monthly.  This
-  is important, since it reduces by an order of magnitude (or more) the number
-  of indexes needed to query for execute queries over even modest intervals
-  (e.g., a day).
 - Add support for scanning, indexing, and querying data stored in Manta.
 - Verify that performance for indexed scans is good.
 
 In the long run, we'll want to add support for other data formats as well.
-
-
-# Background
-
-**This prototype (along with the rest of this doc) is still in early research
-and prototype stages!**
-
-### The goal
-
-Muskie audit log entries contain several fields, including:
-
-* timestamp (string representing a number with a large set of values)
-* hostname servicing the request (string)
-* request method (string)
-* response code (number with a small set of values)
-* latency to first byte (number with a large set of values)
-* total latency (number with a large set of values)
-
-There are a couple of reports we'd like to be able to generate quickly, for an
-arbitrary time period (covering several seconds to several months)
-
-| **Graph**                           | **Kind**         | **Notes** |
-|:----------------------------------- |:---------------- |:- |
-| total requests                      | line graph       | |
-| total requests by status code       | multi line graph | |
-| error rate                          | line graph       | need to divide request counts |
-| error rate by instance              | multi line graph | need to divide request counts and break down by another field |
-| 99th percentile of request latency  | line graph       | estimate based on quantized latency data |
-| requests by latency                 | heat map         | |
-| requests by latency and status code | multi heat map   | |
-| requests by latency and hostname    | multi heat map   | |
-
-### Indexing
-
-To accomplish this, we'll build a single index that basically looks like a
-traditional RDBMS table with columns "timestamp" (truncated according to a
-prespecified resolution), "hostname", "request method", "request URL", "response
-code" (all simple strings), "latency to first byte" (as a quantized bucket), and
-"total latency" (as a quantized bucket).  In addition, the index implicitly
-stores "count" -- the count of records matching each unique combination of the
-other columns.
-
-So this request from the raw data (with unrelated parts elided):
-
-```json
-{
-  "time": "2014-04-12T02:00:01.397Z",
-  "hostname": "c84b3cab-1c20-4566-a880-0e202b6b63dd",
-  "req": { "method": "GET" },
-  "res": { "statusCode": 200 },
-  "latency": 10,
-  "latencyToFirstByte": 9
-}
-```
-
-might be represented in this row:
-
-```json
-{
-    "timestamp": "2014-04-12T02:00:00.000Z" /* 10-second window */
-    "hostname": "c84b3cab-1c20-4566-a880-0e202b6b63dd",
-    "req.method": "GET",
-    "res.statusCode" 200,
-    "latency": 3,               /* third power-of-two latency bucket */
-    "latencyToFirstByte": 3,    /* ditto */
-    "count": 57
-}
-```
-
-along with 56 other "GET" requests serviced by the same hostname with a "200"
-response in roughly the same latency during the same 10-second window.  (The
-index isn't actually stored in JSON, but it's shown that way above for
-clarity.)
-
-### Building the index
-
-You build the index using this configuration:
-
-```json
-{
-    "name": "muskie.requests",
-    "mantaroot": "/poseidon/stor/logs/muskie",
-    "format": "json",
-    "filter": { "eq": [ "audit", true ] },
-    "primaryKey": "time",
-    "columns" [
-        "hostname",
-        "req.method",
-        "req.statusCode",
-        {
-            "field": "latency",
-            "aggr": "quantize"
-        },
-        {
-            "field": "latencyToFirstByte",
-            "aggr": "quantize"
-        }
-    ]
-}
-```
-
-### Querying the index
-
-To count total requests in May, you'd submit a query that looks like this:
-
-```json
-{
-    "index": "muskie.requests",
-    "timeStart": "2014-05-01",
-    "timeEnd": "2014-06-01"
-}
-```
-
-To break out the results by status code (which would allow you to compute the
-error rate):
-
-```json
-{
-    "index": "muskie.requests",
-    "timeStart": "2014-05-01",
-    "timeEnd": "2014-06-01",
-    "breakdowns": [ "req.statusCode" ]
-}
-```
-
-and to break *those* down by instance, too:
-
-```json
-{
-    "index": "muskie.requests",
-    "timeStart": "2014-05-01",
-    "timeEnd": "2014-06-01",
-    "breakdowns": [ "hostname", "req.statusCode" ]
-}
-```
-
-To count total requests for a specific hour in May, broken out into per-minute
-data points, you'd submit:
-
-```json
-{
-    "index": "muskie.requests",
-    "timeStart": "2014-05-07T03:00:00Z",
-    "timeEnd": "2014-05-07T04:00:00Z",
-    "timeResolution": 60,
-}
-```
-
-To count errors during that same interval:
-
-```json
-{
-    "index": "muskie.request",
-    "timeStart": "2014-05-07T03:00:00Z",
-    "timeEnd": "2014-05-07T04:00:00Z",
-    "timeResolution": 60,
-    "filter": { "ge": [ "res.statusCode", 500 ] },
-}
-```
-
-You can get the latency results (which would be used to produce heat maps) by
-adding that to "breakdowns".
-
-
-## Index definitions
-
-To create an index on data already stored in Manta, you need to specify:
-
-### name (string)
-e.g., `"muskie.requests"`
-
-Unique identifier for this index.  This cannot be changed later.
-
-
-### mantaroot (string)
-e.g., `"/poseidon/stor/logs/muskie"`
-
-Path in Manta where the data is stored
-
-### directoryStructure (string, optional)
-e.g., `"$year/$month/$day/$hour/$instance.log"`
-
-Specifies how the Manta objects are organized so that you can specify which
-files to index.  You're expected to use some combination of variables $year,
-$month, $day, $hour, and $instance.  The string will be pattern-matched
-against directories and objects that are found under "mantaroot".  This is
-only used to let you specify which data to index.  For example, if you
-specify $year, $month, and $day in this string, then you'll be able to index
-only a given date range's worth of data (without having to scan everything).
-If you specify nothing here, then you can only build an index on all data
-under "mantaroot".
-
-### format (string)
-e.g., `"json"`
-
-Specifies the format of data stored under "mantaroot".  The first supported
-format is "json".  The format defines how the data is divided into records
-as well as how records are modeled for use in the "filter" and "columns"
-fields below.  For example, the "json" format assumes records are separated
-by newlines and that all records are non-null objects (i.e., not primitive
-types).  Properties in the JSON object are available as fields to "filter"
-and "columns".
-
-### filter (object)
-e.g., `{ "eq": [ "audit", "true" ] }`
-
-Specifies which records to include in this index.  All other records will be
-dropped.  The format is a [node-krill](https://github.com/joyent/node-krill)
-object.
-
-### primaryKey (string)
-e.g., `"time"`
-
-Defines the name and field denoting the primary key that organizes the data.
-This is almost always a time-based field, and for bunyan-style records it's
-just called "time".
-
-### primaryKeyType (string, optional)
-e.g, `"timestamp"`
-
-Defines the format of the primary key, which is usually a timestamp.
-"timestamp" refers to an ISO 8601-format timestamp.  This is used to
-bucketize data appropriately.
-
-### columns (array)
-e.g.: `[ "hostname", "req.method", "res.statusCode" ]`
-
-Specifies the columns in the index, which defines the kinds of queries
-serviced by the index.  Once the index is built, you'll be able to quickly
-run SQL-like queries based on these columns.
-
-Each entry in the array defines the name of the column and how to get its
-value from the raw data.  The simplest case is a plain string like
-"hostname", which means that each record provides a "hostname" field which
-should be taken as the value for this column.  This is equivalent to this
-object:
-
-```json
-{
-    "name": "hostname",
-    "field": "hostname"
-}
-```
-
-Basic columns have a "name" and either a "field" property, in which case the
-value is obtained directly from the raw data point.  Indexes store a row for
-every unique combination of these basic fields, which becomes very
-impractical for fields which can have very large numbers of values (e.g., a
-URL in a large namespace or a numeric quantity like latency in
-microseconds).  For URLs, the index should likely store only the top values,
-in which case you can define this by specifying:
-
-```json
-{
-    "name": "req.url",
-    "field": "req.url",
-    "top": 100
-}
-```
-
-For numeric quantities, you can instead specify that the numbers should be
-bucketized, as with a power-of-two distribution:
-
-```json
-{
-    "name": "latency",
-    "aggr": "quantize",
-    "field": "latency"
-}
-```
-
-or a linear distribution:
-
-```json
-{
-    "name": "latency",
-    "aggr": "lquantize",
-    "field": "latency",
-    "min": 0,
-    "max": 1000,
-    "bucketsize": 10
-}
-```
-
-The index implicitly also stores the primary key, which is currently assumed
-to be a timestamp, in a reasonable resolution.  These semantics are
-currently hardcoded but should not be depended upon: hourly indexes will
-store per-second data; daily indexes will store per-10-minute data; and
-weekly indexes will store per-hour data.
-
-The index also implicitly stores the count of records for each unique
-combination of the other fields.
-
-## Queries
-
-Queries can specify:
-
-### index (string)
-e.g., `"muskie.requests"`
-
-Specifies which index to query.
-
-### timeStart (ISO date string, possibly partial)
-e.g., `"2014-05-01"`
-
-Describes the start range of data to query (inclusive)
-
-### timeEnd (ISO date string, possibly partial)
-e.g., `"2014-06-01"`
-
-Describes the end range of data to query (exclusive)
-
-### timeResolution (number \[of seconds\], optional)
-e.g., `300`
-
-Describes how to group results.  `300` would denote 5-minute intervals.  If
-unspecified, the results are grouped into one bucket.
-
-### filter (object, optional)
-e.g., `{ "ge": [ "req.statusCode", "500" ] }`
-
-Additional filter to apply over rows in the index, in the same format as the
-index filter itself.
-
-### breakdowns (array)
-e.g., `[ "hostname", "req.statusCode" ]`
-
-Specifies how to break out the results, in addition to by time (see
-timeResolution).
