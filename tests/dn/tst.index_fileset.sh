@@ -48,3 +48,9 @@ scan --counters --time-field=timestamp \
     -b 'timestamp[aggr=lquantize;step=60]' \
     --after "2014-05-02T04:05:06.123" --before "2014-05-02T04:15:10" 2>&1
 rm -rf "$tmpdir"
+
+dn index-tree -c 'timestamp[date;field=time]' /dev/null "$tmpdir"
+if [[ -d "$tmpdir" ]]; then
+	echo "FAIL: unexpectedly created $tmpdir" >&2
+	exit 1
+fi
