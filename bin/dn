@@ -72,6 +72,15 @@ var dnUsage = [
     '                      [--counters] [--warnings]',
     '                      DATA_DIRECTORY INDEX_DIRECTORY',
     '',
+    '       dn index-manta [-c|--columns COLUMN[,COLUMN...]]',
+    '                      [-f|--filter FILTER]',
+    '                      [--before END_TIMESTAMP] [--after START_TIMESTAMP]',
+    '                      [--time-format=TIME_FORMAT]',
+    '                      [--data-format json|json-skinner]',
+    '                      [-i|--interval hour|day]',
+    '                      [--dry-run] [--counters] [--warnings]',
+    '                      DATA_DIRECTORY INDEX_DIRECTORY',
+    '',
     '       dn rollup-tree [-c|--columns COLUMN[,COLUMN...]]',
     '                      [-f|--filter FILTER]',
     '                      [--before END_TIMESTAMP] [--after START_TIMESTAMP]',
@@ -92,6 +101,13 @@ var dnUsage = [
     '                     [--before END_TIMESTAMP] [--after START_TIMESTAMP]',
     '                     [--time-field TIME_FIELD]',
     '                     [--points] [--counters]',
+    '                     INDEX_DIRECTORY',
+    '',
+    '       dn query-mjob [-b|--breakdowns COLUMN[,COLUMN...]]',
+    '                     [-f|--filter FILTER]',
+    '                     [--before END_TIMESTAMP] [--after START_TIMESTAMP]',
+    '                     [--time-field TIME_FIELD]',
+    '                     [--points] [--counters]',
     '                     INDEX_DIRECTORY'
 ].join('\n');
 
@@ -101,8 +117,10 @@ var dnUsage = [
 var dnCmds = {
     'index-file': cmdIndexFile,
     'index-tree': cmdIndexTree,
+    'index-manta': cmdIndexManta,
     'query-file': cmdQueryFile,
     'query-tree': cmdQueryTree,
+    'query-mjob': cmdQueryMjob,
     'rollup-tree': cmdRollupTree,
     'scan-file': cmdScanFile,
     'scan-tree': cmdScanTree,
@@ -398,6 +416,48 @@ function cmdIndexTree(cmdname, argv)
 }
 
 /*
+ * "dn index-manta" implementation
+ */
+function cmdIndexManta(cmdname, argv)
+{
+	var options, dataroot, indexroot, client, source;
+
+	options = dnParseArgs(argv, [
+	    'before', 'after', 'filter', 'time-field', 'time-format',
+	    'columns', 'data-format', 'interval', 'dry-run'
+	]);
+
+	dnCheckArgCount(options, 2);
+	dataroot = options._args[0];
+	indexroot = options._args[1];
+
+	if (options.time_format === undefined &&
+	    (options.before !== undefined || options.after !== undefined)) {
+		usage(new VError('must specify --time-format with ' +
+		    '--before or --after'));
+	}
+
+	client = dnMantaClient(dnLog);
+	source = new MantaDataSource({
+	    'log': dnLog,
+	    'manta': client,
+	    'dataroot': dataroot
+	});
+
+	dnIndex(source, options, {
+	    'source': 'raw',
+	    'dryRun': options.dry_run,
+	    'format': options.data_format,
+	    'timeFormat': options.time_format || undefined,
+	    'indexroot': indexroot
+	}, function () {
+		if (!options.dry_run)
+			console.error('indexes created');
+		client.close();
+	});
+}
+
+/*
  * "dn rollup-tree" implementation
  */
 function cmdRollupTree(cmdname, argv)
@@ -434,15 +494,16 @@ function cmdRollupTree(cmdname, argv)
  */
 function dnIndex(source, options, indexargs, callback)
 {
-	var indexconfig, ic, op;
+	var indexconfig, indexoptions, ic, op;
 
 	indexconfig = {};
+	indexoptions = { 'index': indexconfig };
 	indexconfig.columns = options.columns;
 	indexconfig.interval = options.interval || 'hour';
 	if (options.after)
-		indexconfig.timeAfter = options.after;
+		indexoptions.timeAfter = options.after;
 	if (options.before)
-		indexconfig.timeBefore = options.before;
+		indexoptions.timeBefore = options.before;
 	if (options.filter) {
 		try {
 			indexconfig.filter = JSON.parse(options.filter);
@@ -450,7 +511,7 @@ function dnIndex(source, options, indexargs, callback)
 			usage(new VError(ex, 'invalid filter'));
 		}
 	}
-	ic = mod_dragnet.indexLoad({ 'index': indexconfig });
+	ic = mod_dragnet.indexLoad(indexoptions);
 	if (ic instanceof Error)
 		fatal(ic);
 
@@ -514,9 +575,36 @@ function cmdQueryTree(cmdname, argv)
 }
 
 /*
+ * "dn query-mjob" implementation
+ */
+function cmdQueryMjob(cmdname, argv)
+{
+	var options, indexroot, client, source;
+
+	options = dnParseArgs(argv, [
+	    'before', 'after', 'filter', 'time-field', 'breakdowns', 'raw',
+	    'points', 'dry-run'
+	]);
+
+	dnCheckArgCount(options, 1);
+	indexroot = options._args[0];
+	client = dnMantaClient(dnLog);
+	source = new MantaDataSource({
+	    'log': dnLog,
+	    'manta': client
+	});
+	dnQuery(source, options, {
+	    'dryRun': options.dry_run,
+	    'indexroot': indexroot
+	}, function () {
+		client.close();
+	});
+}
+
+/*
  * Common function used by "dn query-file" and "dn query-tree".
  */
-function dnQuery(source, options, queryargs)
+function dnQuery(source, options, queryargs, callback)
 {
 	var queryconfig, qc, op;
 
@@ -551,7 +639,7 @@ function dnQuery(source, options, queryargs)
 
 	op = source.query(queryargs);
 	dnShowWarnings(op);
-	dnOutput(qc, options, op);
+	dnOutput(qc, options, op, callback);
 }
 
 /*
@@ -593,6 +681,20 @@ function cmdScanTree(cmdname, argv)
 	dnScan(source, options, { 'timeFormat': options.time_format });
 }
 
+function dnMantaClient(log)
+{
+	var client;
+
+	client = mod_manta.createBinClient({
+	    'log': log.child({ 'component': 'manta' })
+	});
+
+	/* Bad, manta client! */
+	process.removeAllListeners('uncaughtException');
+
+	return (client);
+}
+
 /*
  * "dn scan-manta" implementation.
  */
@@ -608,12 +710,7 @@ function cmdScanManta(cmdname, argv)
 	dnCheckArgCount(options, 1);
 	dataroot = options._args[0];
 
-	client = mod_manta.createBinClient({
-	    'log': dnLog.child({ 'component': 'manta' })
-	});
-	/* Bad, manta client! */
-	process.removeAllListeners('uncaughtException');
-
+	client = dnMantaClient(dnLog);
 	source = new MantaDataSource({
 	    'log': dnLog,
 	    'manta': client,
@@ -659,10 +756,7 @@ function dnScan(source, options, scanargs, callback)
 	op = source.scan(scanargs);
 	if (options.warnings)
 		dnShowWarnings(op);
-	dnOutput(qc, options, op);
-
-	if (callback)
-		op.on('end', callback);
+	dnOutput(qc, options, op, callback);
 }
 
 /*
@@ -691,7 +785,7 @@ function dnPrintCounters(stream)
  * and "points" options and flattening data points as needed.  This is used for
  * both "query" and "scan" (which output the same thing).
  */
-function dnOutput(query, options, op)
+function dnOutput(query, options, op, callback)
 {
 	var output, stream;
 
@@ -717,6 +811,8 @@ function dnOutput(query, options, op)
 		if (options.counters)
 			dnPrintCounters(stream);
 		dnDone = true;
+		if (callback)
+			callback();
 	});
 }
 
