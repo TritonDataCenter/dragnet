@@ -52,6 +52,8 @@ var dnUsage = [
     '                      [--time-field=FIELDNAME]',
     '                      [--data-format json|json-skinner]',
     '                      [--time-format=TIME_FORMAT] ',
+    '                      [--extra-reduce-phases N] ',
+    '                      [--extra-reduce-count C]',
     '                      [--dry-run] [--counters] [--points] [--warnings]',
     '                      DATA_DIRECTORY',
     '',
@@ -78,6 +80,8 @@ var dnUsage = [
     '                      [--time-format=TIME_FORMAT]',
     '                      [--data-format json|json-skinner]',
     '                      [-i|--interval hour|day]',
+    '                      [--extra-reduce-phases N] ',
+    '                      [--extra-reduce-count C]',
     '                      [--dry-run] [--counters] [--warnings]',
     '                      DATA_DIRECTORY INDEX_DIRECTORY',
     '',
@@ -182,6 +186,14 @@ var dnOptions = [ {
 }, {
     'names': [ 'raw' ],
     'type': 'bool'
+}, {
+    'names': [ 'extra-reduce-phases' ],
+    'type': 'number',
+    'default': 0
+}, {
+    'names': [ 'extra-reduce-count' ],
+    'type': 'number',
+    'default': 2
 } ];
 
 /*
@@ -424,7 +436,8 @@ function cmdIndexManta(cmdname, argv)
 
 	options = dnParseArgs(argv, [
 	    'before', 'after', 'filter', 'time-field', 'time-format',
-	    'columns', 'data-format', 'interval', 'dry-run'
+	    'columns', 'data-format', 'interval', 'dry-run',
+	    'extra-reduce-phases', 'extra-reduce-count'
 	]);
 
 	dnCheckArgCount(options, 2);
@@ -449,7 +462,9 @@ function cmdIndexManta(cmdname, argv)
 	    'dryRun': options.dry_run,
 	    'format': options.data_format,
 	    'timeFormat': options.time_format || undefined,
-	    'indexroot': indexroot
+	    'indexroot': indexroot,
+	    'extraReduceCount': options.extra_reduce_count,
+	    'extraReducePhases': options.extra_reduce_phases
 	}, function () {
 		if (!options.dry_run)
 			console.error('indexes created');
@@ -704,7 +719,8 @@ function cmdScanManta(cmdname, argv)
 
 	options = dnParseArgs(argv, [
 	    'before', 'after', 'filter', 'time-field', 'breakdowns', 'raw',
-	    'points', 'data-format', 'time-format', 'dry-run'
+	    'points', 'data-format', 'time-format', 'dry-run',
+	    'extra-reduce-phases', 'extra-reduce-count'
 	]);
 
 	dnCheckArgCount(options, 1);
@@ -719,7 +735,9 @@ function cmdScanManta(cmdname, argv)
 
 	dnScan(source, options, {
 	    'dryRun': options.dry_run,
-	    'timeFormat': options.time_format
+	    'timeFormat': options.time_format,
+	    'extraReduceCount': options.extra_reduce_count,
+	    'extraReducePhases': options.extra_reduce_phases
 	}, function () {
 		client.close();
 	});
