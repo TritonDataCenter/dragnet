@@ -502,20 +502,8 @@ just like "scan-tree" except that the argument is a path in Manta rather than a
 path to a local directory:
 
     $ dn scan-manta /dap/public/dragnet/testdata
-    uploading tarball of "/home/dap/dragnet/dragnet" to "/dap/stor/dragnet-0.0.0.tgz"
+    using existing asset: "/dap/public/dragnet/assets/dragnet-0.0.0.tgz"
     submitted job 9ed83408-0a41-c6b7-ebde-8c2d3d8f1a3c
-    submitted 9 inputs
-    VALUE
-     2252
-
-**Notice that the first time you run this, it uploads a tarball of the Dragnet
-directory into Manta so that it can run the Dragnet code in Manta.  You must do
-this from a SmartOS system.**  After that, it will use the existing asset, and
-you can run it from a Mac:
-
-    $ dn scan-manta /dap/public/dragnet/testdata
-    using existing asset: "/dap/stor/dragnet-0.0.0.tgz"
-    submitted job 10a4bf3d-f936-41a3-a9f5-fd565218a77c
     submitted 9 inputs
     VALUE
      2252
@@ -527,7 +515,7 @@ than local filesystem paths:
     $ dn index-manta -c 'timestamp[date;field=time;aggr=lquantize;step=86400]' \
         -c req.method,res.statusCode --interval=day \
 	/dap/public/dragnet/testdata /dap/stor/dragnet_test_index
-    using existing asset: "/dap/stor/dragnet-0.0.0.tgz"
+    using existing asset: "/dap/public/dragnet/assets/dragnet-0.0.0.tgz"
     submitted job 8cd54704-5501-cae6-9dbd-e9a84c0a9146
     submitted 9 inputs
     indexes created
@@ -542,14 +530,14 @@ than local filesystem paths:
 And you can query it with "query-mjob":
 
     $ dn query-mjob /dap/stor/dragnet_test_index
-    using existing asset: "/dap/stor/dragnet-0.0.0.tgz"
+    using existing asset: "/dap/public/dragnet/assets/dragnet-0.0.0.tgz"
     submitted job ddf8b4cc-f804-4899-e857-876a293f37b0
     submitted 5 inputs
     VALUE
      2250
 
     $ dn query-mjob -b req.method /dap/stor/dragnet_test_index
-    using existing asset: "/dap/stor/dragnet-0.0.0.tgz"
+    using existing asset: "/dap/public/dragnet/assets/dragnet-0.0.0.tgz"
     submitted job 4483dbf4-341e-4984-bf10-a6bae004001d
     submitted 5 inputs
     REQ.METHOD VALUE
