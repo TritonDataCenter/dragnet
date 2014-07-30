@@ -85,6 +85,7 @@ var config = [ {
 }, {
     /* a few reasonable latency-like fields */
     'name': 'latency',
+    'type': 'string',
     'probdist': dist
 }, {
     'name': 'dataLatency',
@@ -176,6 +177,8 @@ function doProp(obj, propconf)
 		pconf = propconf.probdist[j];
 		value = Math.round(
 		    Math.random() * (pconf[2] - pconf[1]) + pconf[1]);
+		if (propconf.type == 'string')
+			value = '' + value;
 	}
 
 	o[propconf.name] = value;

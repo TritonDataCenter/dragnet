@@ -1,4 +1,4 @@
-{"time":"2014-05-05T00:00:00.000Z","host":"kearney","req":{"method":"HEAD","url":"/random/url/number/104","caller":"poseidon"},"operation":"headstorage","res":{"statusCode":400},"latency":26,"dataLatency":4,"dataSize":281638490}
+{"time":"2014-05-05T00:00:00.000Z","host":"kearney","req":{"method":"HEAD","url":"/random/url/number/104","caller":"poseidon"},"operation":"headstorage","res":{"statusCode":400},"latency":"26","dataLatency":4,"dataSize":281638490}
 {"time":"2014-05-05T00:05:45.600Z","host":"janey","req":{"method":"GET","url":"/random/url/number/388","caller":null},"operation":"getjoberrors","res":{"statusCode":404},"latency":25,"dataLatency":22,"dataSize":105202022}
 {"time":"2014-05-05T00:11:31.200Z","host":"ralph","req":{"method":"HEAD","url":"/random/url/number/215","caller":"admin"},"operation":"headpublicstorage","res":{"statusCode":204},"latency":2,"dataLatency":114,"dataSize":713790725}
 {"time":"2014-05-05T00:17:16.800Z","host":"wendell","req":{"method":"HEAD","url":"/random/url/number/186","caller":"admin"},"operation":"headstorage","res":{"statusCode":204},"latency":28,"dataLatency":1909,"dataSize":588171279}
