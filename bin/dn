@@ -52,6 +52,7 @@ var dnUsage = [
     '                      [--time-field=FIELDNAME]',
     '                      [--data-format json|json-skinner]',
     '                      [--time-format=TIME_FORMAT] ',
+    '                      [--assetroot=ASSETROOT]',
     '                      [--extra-reduce-phases N] ',
     '                      [--extra-reduce-count C]',
     '                      [--dry-run] [--counters] [--points] [--warnings]',
@@ -80,6 +81,7 @@ var dnUsage = [
     '                      [--time-format=TIME_FORMAT]',
     '                      [--data-format json|json-skinner]',
     '                      [-i|--interval hour|day]',
+    '                      [--assetroot=ASSETROOT]',
     '                      [--extra-reduce-phases N] ',
     '                      [--extra-reduce-count C]',
     '                      [--dry-run] [--counters] [--warnings]',
@@ -111,6 +113,7 @@ var dnUsage = [
     '                     [-f|--filter FILTER]',
     '                     [--before END_TIMESTAMP] [--after START_TIMESTAMP]',
     '                     [--time-field TIME_FIELD]',
+    '                     [--assetroot=ASSETROOT]',
     '                     [--points] [--counters]',
     '                     INDEX_DIRECTORY'
 ].join('\n');
@@ -186,6 +189,10 @@ var dnOptions = [ {
 }, {
     'names': [ 'raw' ],
     'type': 'bool'
+}, {
+    'names': [ 'assetroot' ],
+    'type': 'string',
+    'default': '/dap/public/dragnet/assets'
 }, {
     'names': [ 'extra-reduce-phases' ],
     'type': 'number',
@@ -437,7 +444,7 @@ function cmdIndexManta(cmdname, argv)
 	options = dnParseArgs(argv, [
 	    'before', 'after', 'filter', 'time-field', 'time-format',
 	    'columns', 'data-format', 'interval', 'dry-run',
-	    'extra-reduce-phases', 'extra-reduce-count'
+	    'extra-reduce-phases', 'extra-reduce-count', 'assetroot'
 	]);
 
 	dnCheckArgCount(options, 2);
@@ -454,7 +461,8 @@ function cmdIndexManta(cmdname, argv)
 	source = new MantaDataSource({
 	    'log': dnLog,
 	    'manta': client,
-	    'dataroot': dataroot
+	    'dataroot': dataroot,
+	    'assetroot': options.assetroot
 	});
 
 	dnIndex(source, options, {
@@ -598,7 +606,7 @@ function cmdQueryMjob(cmdname, argv)
 
 	options = dnParseArgs(argv, [
 	    'before', 'after', 'filter', 'time-field', 'breakdowns', 'raw',
-	    'points', 'dry-run'
+	    'points', 'dry-run', 'assetroot'
 	]);
 
 	dnCheckArgCount(options, 1);
@@ -606,7 +614,8 @@ function cmdQueryMjob(cmdname, argv)
 	client = dnMantaClient(dnLog);
 	source = new MantaDataSource({
 	    'log': dnLog,
-	    'manta': client
+	    'manta': client,
+	    'assetroot': options.assetroot
 	});
 	dnQuery(source, options, {
 	    'dryRun': options.dry_run,
@@ -720,7 +729,7 @@ function cmdScanManta(cmdname, argv)
 	options = dnParseArgs(argv, [
 	    'before', 'after', 'filter', 'time-field', 'breakdowns', 'raw',
 	    'points', 'data-format', 'time-format', 'dry-run',
-	    'extra-reduce-phases', 'extra-reduce-count'
+	    'extra-reduce-phases', 'extra-reduce-count', 'assetroot'
 	]);
 
 	dnCheckArgCount(options, 1);
@@ -730,7 +739,8 @@ function cmdScanManta(cmdname, argv)
 	source = new MantaDataSource({
 	    'log': dnLog,
 	    'manta': client,
-	    'dataroot': dataroot
+	    'dataroot': dataroot,
+	    'assetroot': options.assetroot
 	});
 
 	dnScan(source, options, {
