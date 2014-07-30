@@ -811,24 +811,23 @@ don't apply:
 The fact that --time-field is ever necessary for queries is a bug.
 
 
-## Common issues
+## Memory usage
 
-You should at least read the note about memory usage.
-
-#### Excessive memory usage
-
-Dragnet is currently limited by the maximum size of the Node heap, and the Manta
-version uses a 32-bit Node binary.  The limit is not affected by the number of
+Dragnet is currently limited by the maximum size of the V8 heap, and the Manta
+version uses a 32-bit binary.  The limit is not affected by the number of
 *input* data points, but the number of unique tuples.  If you're just counting
 records, you can process an arbitrary number of data points.  If you're indexing
 10 fields, each of which can have 10 different values (all independently),
 that's 10 billion output tuples, which is more than Dragnet can currently
 handle.
 
-When you exceed this limit, the failure mode is not good.  The program will
-usually start running extremely slowly for a while as V8 tries to collect lots
-of garbage, and eventually the program will crash (hopefully dumping core) with
-a message about a memory allocation failure.
+There's no built-in limit on the number of unique tuples, or the number of
+allowed values for each field, so it's easy to accidentally exceed this limit by
+selecting a field that has a lot of different values.  When you exceed this
+limit, the failure mode is not good.  The program will usually start running
+extremely slowly for a while as V8 tries to collect lots of garbage, and
+eventually the program will crash (hopefully dumping core) with a message about
+a memory allocation failure.
 
 To deal with this, you have to reduce the number of unique tuples that Dragnet
 has to keep track of.  You can do this in a few ways:
@@ -851,9 +850,11 @@ has to keep track of.  You can do this in a few ways:
   a day's worth of input data, and run separate operations for each day.
 
 
+## Common issues
+
 #### "dn" dumps core with a message about memory allocation failed
 
-See "Excessive memory usage" above.
+See "Memory usage" above.
 
 
 #### Some data is missing
