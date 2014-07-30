@@ -115,7 +115,15 @@ var dnUsage = [
     '                     [--time-field TIME_FIELD]',
     '                     [--assetroot=ASSETROOT]',
     '                     [--points] [--counters]',
-    '                     INDEX_DIRECTORY'
+    '                     INDEX_DIRECTORY',
+    '',
+    '       dn query-mget [-b|--breakdowns COLUMN[,COLUMN...]]',
+    '                     [-f|--filter FILTER]',
+    '                     [--before END_TIMESTAMP] [--after START_TIMESTAMP]',
+    '                     [--time-field TIME_FIELD]',
+    '                     [--assetroot=ASSETROOT]',
+    '                     [--points] [--counters]',
+    '                     INDEX_DIRECTORY CACHE_DIRECTORY'
 ].join('\n');
 
 /*
@@ -128,6 +136,7 @@ var dnCmds = {
     'query-file': cmdQueryFile,
     'query-tree': cmdQueryTree,
     'query-mjob': cmdQueryMjob,
+    'query-mget': cmdQueryMget,
     'rollup-tree': cmdRollupTree,
     'scan-file': cmdScanFile,
     'scan-tree': cmdScanTree,
@@ -626,11 +635,49 @@ function cmdQueryMjob(cmdname, argv)
 }
 
 /*
- * Common function used by "dn query-file" and "dn query-tree".
+ * "dn query-mget" implementation
  */
-function dnQuery(source, options, queryargs, callback)
+function cmdQueryMget(cmdname, argv)
 {
-	var queryconfig, qc, op;
+	var options, indexroot, cacheroot, client, mantasource, treesource, qc;
+
+	options = dnParseArgs(argv, [
+	    'before', 'after', 'filter', 'time-field', 'breakdowns', 'raw',
+	    'points'
+	]);
+
+	dnCheckArgCount(options, 2);
+	indexroot = options._args[0];
+	cacheroot = options._args[1];
+
+	client = dnMantaClient(dnLog);
+	mantasource = new MantaDataSource({
+	    'log': dnLog,
+	    'manta': client
+	});
+	treesource = new FileSetDataSource({
+	    'log': dnLog,
+	    'indexroot': cacheroot
+	});
+
+	qc = dnQueryConstructQuery(options);
+	mantasource.queryFetchOnly({
+	    'indexroot': indexroot,
+	    'cacheroot': cacheroot,
+	    'query': qc
+	}, function (err) {
+		if (err)
+			fatal(err);
+
+		dnLog.info('fetched all indexes');
+		client.close();
+		dnQuery(treesource, options, { 'indexroot': cacheroot });
+	});
+}
+
+function dnQueryConstructQuery(options)
+{
+	var queryconfig;
 
 	queryconfig = {};
 	queryconfig.breakdowns = options.breakdowns;
@@ -650,10 +697,21 @@ function dnQuery(source, options, queryargs, callback)
 		try {
 			queryconfig.filter = JSON.parse(options.filter);
 		} catch (ex) {
-			fatal(new VError(ex, 'invalid filter'));
+			return (new VError(ex, 'invalid filter'));
 		}
 	}
-	qc = mod_dragnet.queryLoad({ 'query': queryconfig });
+
+	return (mod_dragnet.queryLoad({ 'query': queryconfig }));
+}
+
+/*
+ * Common function used by "dn query-file" and "dn query-tree".
+ */
+function dnQuery(source, options, queryargs, callback)
+{
+	var qc, op;
+
+	qc = dnQueryConstructQuery(options);
 	if (qc instanceof Error)
 		fatal(qc);
 
