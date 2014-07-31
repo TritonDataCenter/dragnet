@@ -28,6 +28,7 @@ JSL_FILES_NODE   = $(JS_FILES)
 JSSTYLE_FILES	 = $(JS_FILES)
 JSL_CONF_NODE	 = tools/jsl.node.conf
 
+CLEAN_FILES	+= node_modules
 all:
 	npm install
 
