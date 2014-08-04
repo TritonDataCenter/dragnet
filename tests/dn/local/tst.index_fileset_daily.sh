@@ -29,7 +29,7 @@ function query
 }
 
 set -o errexit
-. $(dirname $0)/common.sh
+. $(dirname $0)/../common.sh
 
 tmpdir="/var/tmp/$(basename $0).$$"
 fields='timestamp[date,field=time,aggr=lquantize,step=3600],host,operation,req.caller,req.method,latency[aggr=quantize]'

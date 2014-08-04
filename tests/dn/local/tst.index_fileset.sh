@@ -5,7 +5,7 @@
 #
 
 set -o errexit
-. $(dirname $0)/common.sh
+. $(dirname $0)/../common.sh
 
 tmpdir="/var/tmp/$(basename $0).$$"
 echo "using tmpdir \"$tmpdir" >&2
@@ -22,7 +22,7 @@ echo "creating indexes" >&2
 dn index-tree -c 'timestamp[date,field=time,aggr=lquantize,step=86400],host,operation,req.caller,req.method,latency[aggr=quantize]' \
     $DN_DATADIR "$tmpdir"
 (cd "$tmpdir" && find . -type f | sort -n)
-. $(dirname $0)/scan_testcases.sh
+. $(dirname $0)/../scan_testcases.sh
 rm -rf "$tmpdir"
 
 # That should have been pretty exhaustive, but try an index with a filter on it.

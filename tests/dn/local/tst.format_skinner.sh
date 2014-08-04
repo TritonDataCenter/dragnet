@@ -6,7 +6,7 @@
 #
 
 set -o errexit
-. $(dirname $0)/common.sh
+. $(dirname $0)/../common.sh
 
 function trace
 {

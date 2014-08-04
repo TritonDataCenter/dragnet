@@ -5,7 +5,7 @@
 #
 
 set -o errexit
-. $(dirname $0)/common.sh
+. $(dirname $0)/../common.sh
 
 DN_MANTADIR=/dap/public/dragnet/testdata
 localtmpdir="/var/tmp/$(basename $0).$$"
@@ -33,7 +33,7 @@ dn index-manta -c 'timestamp[date,field=time,aggr=lquantize,step=86400]' \
     --interval=day \
     $DN_MANTADIR "$tmpdir"
 mfind -t o "$tmpdir" | cut -d/ -f5-
-. $(dirname $0)/scan_testcases.sh
+. $(dirname $0)/../scan_testcases.sh
 
 # Now try the query-mget backend for a few test cases
 scan-mget

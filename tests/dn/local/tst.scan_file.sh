@@ -5,7 +5,7 @@
 #
 
 set -o errexit
-. $(dirname $0)/common.sh
+. $(dirname $0)/../common.sh
 
 function scan
 {
@@ -18,4 +18,4 @@ function scan
 	echo
 }
 
-. $(dirname $0)/scan_testcases.sh
+. $(dirname $0)/../scan_testcases.sh

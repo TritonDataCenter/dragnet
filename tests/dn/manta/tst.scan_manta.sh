@@ -5,7 +5,7 @@
 #
 
 set -o errexit
-. $(dirname $0)/common.sh
+. $(dirname $0)/../common.sh
 
 DN_MANTADIR=/dap/public/dragnet/testdata
 tmpfile="/var/tmp/$(basename $0).$$"
@@ -28,7 +28,7 @@ if [[ -z "$MANTA_URL" || -z "$MANTA_USER" ]]; then
 	exit 2
 fi
 
-. $(dirname $0)/scan_testcases.sh
+. $(dirname $0)/../scan_testcases.sh
 
 #
 # The "before" and "after" filters should prune the number of objects scanned.
