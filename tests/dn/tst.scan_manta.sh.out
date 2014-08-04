@@ -2300,7 +2300,7 @@ wendell, putpublicobject
 {"fields":{"host":"wendell","operation":"putpublicobject","latency":4},"value":9}
 {"fields":{"host":"wendell","operation":"putpublicobject","latency":64},"value":2}
 
-# dn scan-manta -b latency[aggr=lquantize;step=100]
+# dn scan-manta -b latency[aggr=lquantize,step=100]
 
            value  ------------- Distribution ------------- count
                0 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@             1592
@@ -2346,7 +2346,7 @@ wendell, putpublicobject
             4000 |                                         13
             4100 |                                         0
 
-# dn scan-manta --points -b latency[aggr=lquantize;step=100]
+# dn scan-manta --points -b latency[aggr=lquantize,step=100]
 {"fields":{"latency":0},"value":1592}
 {"fields":{"latency":1000},"value":10}
 {"fields":{"latency":100},"value":222}
@@ -2381,7 +2381,7 @@ wendell, putpublicobject
 {"fields":{"latency":3900},"value":15}
 {"fields":{"latency":4000},"value":13}
 
-# dn scan-manta --counters -b timestamp[date;field=time;aggr=lquantize;step=86400]
+# dn scan-manta --counters -b timestamp[date,field=time,aggr=lquantize,step=86400]
 
                      value  ------------- Distribution ------------- count
   2014-05-01T00:00:00.000Z |@@@@@@@@@                                500
@@ -2391,7 +2391,7 @@ wendell, putpublicobject
   2014-05-05T00:00:00.000Z |@@@@                                     250
   2014-05-06T00:00:00.000Z |                                         0
 
-# dn scan-manta --points --counters -b timestamp[date;field=time;aggr=lquantize;step=86400]
+# dn scan-manta --points --counters -b timestamp[date,field=time,aggr=lquantize,step=86400]
 {"fields":{"timestamp":1398902400},"value":500}
 {"fields":{"timestamp":1398988800},"value":500}
 {"fields":{"timestamp":1399075200},"value":500}
@@ -2409,7 +2409,7 @@ VALUE
 
 submitted 2 inputs
 submitted 2 inputs
-# dn scan-manta --counters --time-format=%Y/%m-%d -b timestamp[date;field=time;aggr=lquantize;step=60] --after 2014-05-02T04:05:06.123 --before 2014-05-02T04:15:10
+# dn scan-manta --counters --time-format=%Y/%m-%d -b timestamp[date,field=time,aggr=lquantize,step=60] --after 2014-05-02T04:05:06.123 --before 2014-05-02T04:15:10
 
                      value  ------------- Distribution ------------- count
   2014-05-02T04:07:00.000Z |@@@@@@@@@@@@@@@@@@@@                     2
@@ -2421,7 +2421,7 @@ submitted 2 inputs
   2014-05-02T04:13:00.000Z |@@@@@@@@@@@@@@@@@@@@                     2
   2014-05-02T04:14:00.000Z |                                         0
 
-# dn scan-manta --points --counters --time-format=%Y/%m-%d -b timestamp[date;field=time;aggr=lquantize;step=60] --after 2014-05-02T04:05:06.123 --before 2014-05-02T04:15:10
+# dn scan-manta --points --counters --time-format=%Y/%m-%d -b timestamp[date,field=time,aggr=lquantize,step=60] --after 2014-05-02T04:05:06.123 --before 2014-05-02T04:15:10
 {"fields":{"timestamp":1399003620},"value":2}
 {"fields":{"timestamp":1399003980},"value":2}
 

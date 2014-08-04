@@ -1495,7 +1495,7 @@ wendell, putpublicobject
 {"fields":{"host":"wendell","operation":"putpublicobject","latency":16},"value":2}
 {"fields":{"host":"wendell","operation":"putpublicobject","latency":1},"value":2}
 
-# dn scan-file -b latency[aggr=lquantize;step=100]
+# dn scan-file -b latency[aggr=lquantize,step=100]
 
            value  ------------- Distribution ------------- count
                0 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@          191
@@ -1540,7 +1540,7 @@ wendell, putpublicobject
             3900 |                                         3
             4000 |                                         0
 
-# dn scan-file --points -b latency[aggr=lquantize;step=100]
+# dn scan-file --points -b latency[aggr=lquantize,step=100]
 {"fields":{"latency":0},"value":191}
 {"fields":{"latency":1000},"value":2}
 {"fields":{"latency":100},"value":12}

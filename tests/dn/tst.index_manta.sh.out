@@ -1400,7 +1400,7 @@ wendell, putpublicobject
             2048 |@@@@@                                    5
             4096 |                                         0
 
-# dn query-mjob -b latency[aggr=lquantize;step=100]
+# dn query-mjob -b latency[aggr=lquantize,step=100]
 
            value  ------------- Distribution ------------- count
                0 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@            1647

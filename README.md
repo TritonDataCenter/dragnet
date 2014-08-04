@@ -185,7 +185,7 @@ values into buckets.  Here's a histogram of the "latency" field from this log:
 "aggr=quantize" specifies a power-of-two bucketization.  You can also do a
 linear quantization, say with steps of size 50 (notice the quotes):
 
-    $ dn scan-file -b 'latency[aggr=lquantize;step=50]' \
+    $ dn scan-file -b 'latency[aggr=lquantize,step=50]' \
         ./tests/data/2014/05-02/one.log
 
                value  ------------- Distribution ------------- count
@@ -304,7 +304,7 @@ quantization with steps of size 3600 (for 3600 seconds per hour).  When using a
 "date" field, you have to specify what underlying JSON field should be parsed
 as a date:
 
-    $ dn scan-file -b 'timestamp[date;field=time;aggr=lquantize;step=3600]' \
+    $ dn scan-file -b 'timestamp[date,field=time,aggr=lquantize,step=3600]' \
         -b req.method ./tests/data/2014/05-02/one.log
     TIMESTAMP                REQ.METHOD VALUE
     2014-05-02T00:00:00.000Z DELETE         2
@@ -445,7 +445,7 @@ You can scan the entire directory tree by using "scan-tree" instead of
 
 You can index it the same way:
 
-    $ dn index-tree -c 'timestamp[date;field=time;aggr=lquantize;step=86400]' \
+    $ dn index-tree -c 'timestamp[date,field=time,aggr=lquantize,step=86400]' \
          -c req.method,res.statusCode,latency[aggr=quantize] \
          ./tests/data data_index
     indexes created
@@ -512,7 +512,7 @@ Similarly, you can run "index-manta" to index data stored in Manta, and its
 arguments are just like "index-tree", but the paths represent Manta paths rather
 than local filesystem paths:
 
-    $ dn index-manta -c 'timestamp[date;field=time;aggr=lquantize;step=86400]' \
+    $ dn index-manta -c 'timestamp[date,field=time,aggr=lquantize,step=86400]' \
         -c req.method,res.statusCode --interval=day \
 	/dap/public/dragnet/testdata /dap/stor/dragnet_test_index
     using existing asset: "/dap/public/dragnet/assets/dragnet-0.0.0.tgz"
@@ -739,7 +739,7 @@ INDEX\_OPTIONS include:
 
 To specify the time resolution of each index file, you specify your own
 "timestamp" column.  For example, specifying column
-`timestamp[date;field=time;aggr=lquantize;step=60]` adds a field called
+`timestamp[date,field=time,aggr=lquantize,step=60]` adds a field called
 "timestamp" to the index which is the result of parsing the "time" field in the
 raw data as an ISO 8601 timestamp and converting that to a Unix timestamp
 (seconds since the epoch).  The result is bucketed by minute (`step=60`).  If

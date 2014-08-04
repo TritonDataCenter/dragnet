@@ -32,8 +32,8 @@ set -o errexit
 . $(dirname $0)/common.sh
 
 tmpdir="/var/tmp/$(basename $0).$$"
-fields='timestamp[date;field=time;aggr=lquantize;step=3600],host,operation,req.caller,req.method,latency[aggr=quantize]'
-dayfields='timestamp[aggr=lquantize;step=3600],host,operation,req.caller,req.method,latency[aggr=quantize]'
+fields='timestamp[date,field=time,aggr=lquantize,step=3600],host,operation,req.caller,req.method,latency[aggr=quantize]'
+dayfields='timestamp[aggr=lquantize,step=3600],host,operation,req.caller,req.method,latency[aggr=quantize]'
 echo "using tmpdir \"$tmpdir" >&2
 
 echo "creating hourly index" >&2

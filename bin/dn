@@ -21,6 +21,7 @@ var FileDataSource = require('../lib/source-file');
 var FileSetDataSource = require('../lib/source-fileset');
 var MantaDataSource = require('../lib/source-manta');
 var SkinnerFlattener = require('../lib/skinner-flattener');
+var attrsParse = require('../lib/attr-parser');
 
 var timeRequireDone = process.hrtime(timeStarted);
 
@@ -335,7 +336,11 @@ function dnExpandArray(options, field)
 	var tmp = options[field];
 	options[field] = [];
 	tmp.forEach(function (v) {
-		v.split(',').forEach(function (s) { options[field].push(s); });
+		var list = attrsParse(v);
+		if (list instanceof Error)
+			fatal(new VError(list, 'bad value for "%s" ("%s")',
+			    field, v));
+		list.forEach(function (s) { options[field].push(s); });
 	});
 }
 

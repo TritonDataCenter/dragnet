@@ -37,4 +37,4 @@ scan -b latency[aggr=quantize],operation,host
 scan -b host,operation,latency[aggr=quantize]
 
 # Try a linear quantization
-scan -b latency[aggr=lquantize\;step=100]
+scan -b latency[aggr=lquantize,step=100]

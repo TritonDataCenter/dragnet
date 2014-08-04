@@ -1515,7 +1515,7 @@ wendell, putpublicobject
             2048 |@@@@@                                    5
             4096 |                                         0
 
-# dn query-tree -b latency[aggr=lquantize;step=100]
+# dn query-tree -b latency[aggr=lquantize,step=100]
 
            value  ------------- Distribution ------------- count
                0 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@            1647
@@ -1545,7 +1545,7 @@ wendell, putpublicobject
 VALUE
   556
 
-# dn query-tree --counters -b timestamp[aggr=lquantize;step=86400]
+# dn query-tree --counters -b timestamp[aggr=lquantize,step=86400]
 
            value  ------------- Distribution ------------- count
       1398902400 |@@@@@@@@@                                500
@@ -1595,7 +1595,7 @@ Query Passthrough  noutputs:          24
 Flattener          ninputs:           24
 Flattener          noutputs:           1
 
-# dn query-tree --counters --time-field=timestamp -b timestamp[aggr=lquantize;step=60] --after 2014-05-02T04:05:06.123 --before 2014-05-02T04:15:10
+# dn query-tree --counters --time-field=timestamp -b timestamp[aggr=lquantize,step=60] --after 2014-05-02T04:05:06.123 --before 2014-05-02T04:15:10
 
            value  ------------- Distribution ------------- count
       1399003620 |@@@@@@@@@@@@@@@@@@@@                     2

@@ -1020,7 +1020,7 @@ wendell, putpublicobject
               16 |@@@@@@@@@@@@@@@@@@@@                     2
               32 |                                         0
 
-# dn query -b latency[aggr=lquantize;step=100]
+# dn query -b latency[aggr=lquantize,step=100]
 
            value  ------------- Distribution ------------- count
                0 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@          195

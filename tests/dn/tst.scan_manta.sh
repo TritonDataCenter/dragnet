@@ -35,13 +35,13 @@ fi
 # When comparing output, it's important to verify the correct number of inputs
 # submitted.
 #
-scan --counters -b 'timestamp[date;field=time;aggr=lquantize;step=86400]' \
+scan --counters -b 'timestamp[date,field=time,aggr=lquantize,step=86400]' \
     2>$tmpfile ; grep -w inputs $tmpfile; cat $tmpfile >&2
 scan --counters --time-format=%Y/%m-%d --time-field=time \
     --after 2014-05-02 --before 2014-05-03 \
     2>$tmpfile ; grep -w inputs $tmpfile; cat $tmpfile >&2
 scan --counters --time-format=%Y/%m-%d \
-    -b 'timestamp[date;field=time;aggr=lquantize;step=60]' \
+    -b 'timestamp[date,field=time,aggr=lquantize,step=60]' \
     --after "2014-05-02T04:05:06.123" --before "2014-05-02T04:15:10" \
     2>$tmpfile ; grep -w inputs $tmpfile; cat $tmpfile >&2
 rm -f $tmpfile
