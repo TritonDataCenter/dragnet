@@ -202,7 +202,7 @@ var dnOptions = [ {
 }, {
     'names': [ 'assetroot' ],
     'type': 'string',
-    'default': '/dap/public/dragnet/assets'
+    'default': '/manta/public/dragnet/assets'
 }, {
     'names': [ 'extra-reduce-phases' ],
     'type': 'number',
