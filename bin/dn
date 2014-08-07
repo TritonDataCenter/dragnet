@@ -1,0 +1,297 @@
+#!/usr/bin/env node
+/* vim: set syn=javascript: */
+
+/*
+ * dn: dragnet command-line interface
+ */
+
+var timeStarted = process.hrtime();
+var mod_assert = require('assert');
+var mod_bunyan = require('bunyan');
+var mod_dashdash = require('dashdash');
+var mod_jsprim = require('jsprim');
+var mod_path = require('path');
+var mod_tab = require('tab');
+var VError = require('verror');
+var sprintf = require('extsprintf').sprintf;
+var timeRequireDone = process.hrtime(timeStarted);
+
+var mod_config_local = require('../lib/config-local');
+
+/*
+ * Program name and usage
+ */
+var dnArg0 = mod_path.basename(process.argv[1]);
+var dnUsage = [
+    'usage: dn SUBCOMMAND [SUBCOMMAND_ARGS]'
+].join('\n');
+
+/*
+ * Subcommands
+ */
+var dnCmds = {
+    'datasource-add': dnCmdDatasourceAdd,
+    'datasource-list': dnCmdDatasourceList,
+    'datasource-remove': dnCmdDatasourceRemove
+};
+
+/*
+ * Internal state
+ */
+var dnTrackTime = false;	/* option to print program execution time */
+var dnLog;			/* bunyan logger */
+var dnConfigBackend;		/* dragnet configuration backend */
+var dnConfig;			/* dragnet configuration */
+
+/*
+ * Main program entry point.
+ */
+function main()
+{
+	var optind, cmdname, cmdfunc;
+
+	dnLog = new mod_bunyan({
+	    'name': 'dragnet',
+	    'level': process.env['LOG_LEVEL'] || 'warn'
+	});
+
+	process.stdout.on('error', function (err) {
+		if (err.code == 'EPIPE')
+			process.exit(0);
+		throw (err);
+	});
+
+	optind = 2;
+	if (process.argv[optind] == '-t') {
+		dnTrackTime = true;
+		optind++;
+	}
+
+	if (process.argv.length < optind + 1)
+		usage(new VError('no command specified'));
+
+	cmdname = process.argv[optind];
+	if (!dnCmds.hasOwnProperty(cmdname))
+		usage(new VError('no such command: "%s"', cmdname));
+
+	cmdfunc = dnCmds[cmdname];
+	dnConfigBackend = mod_config_local.createConfigBackend();
+	dnConfigBackend.load(function (err, config) {
+		if (err && err['code'] != 'ENOENT')
+			console.error('%s: warn: %s', dnArg0, err.message);
+		dnConfig = config;
+		cmdfunc(cmdname, process.argv.slice(optind + 1));
+	});
+}
+
+/*
+ * usage([error]): pretty-print an error message, then print usage information,
+ * then exit.
+ */
+function usage(err)
+{
+	if (err)
+		console.error('%s: %s', dnArg0, err.message);
+
+	console.error(dnUsage);
+	process.exit(2);
+}
+
+/*
+ * fatal(error): pretty-print an error message and exit.
+ */
+function fatal(err)
+{
+	console.error('%s: %s', dnArg0, err.message);
+	process.exit(1);
+}
+
+var dnOptions = [ {
+    'names': [ 'backend' ],
+    'type': 'string',
+    'default': 'file'
+}, {
+    'names': [ 'data-format' ],
+    'type': 'string',
+    'default': 'json'
+}, {
+    'names': [ 'filter', 'f' ],
+    'type': 'string'
+}, {
+    'names': [ 'path' ],
+    'type': 'string'
+}, {
+    'names': [ 'time-format' ],
+    'type': 'string'
+}, {
+    'names': [ 'verbose', 'v' ],
+    'type': 'bool',
+    'default': false
+} ];
+
+/*
+ * Given a list of option names, return the corresponding dashdash
+ * configuration.
+ */
+function dnOptionConfig(useroptions)
+{
+	var rv, i, j;
+	var options;
+
+	rv = [];
+	options = useroptions;
+	for (i = 0; i < options.length; i++) {
+		for (j = 0; j < dnOptions.length; j++) {
+			if (dnOptions[j].names.indexOf(options[i]) != -1)
+				break;
+		}
+
+		if (j == dnOptions.length)
+			throw (new VError('unknown option: "%s"', options[i]));
+
+		rv.push(dnOptions[j]);
+	}
+
+	return (rv);
+}
+
+/*
+ * Given "argv" (as trimmed by main()) and a list of user options, parse the
+ * arguments and return the dashdash "options" object.
+ */
+function dnParseArgs(argv, useroptions)
+{
+	var parser, rv;
+
+	parser = mod_dashdash.createParser({
+	    'options': dnOptionConfig(useroptions),
+	    'interspersed': true,
+	    'allowUnknown': false
+	});
+
+	try {
+		rv = parser.parse({ 'argv': argv, 'slice': 0 });
+	} catch (ex) {
+		usage(ex);
+	}
+
+	return (rv);
+}
+
+/*
+ * Check for missing or extra NON-option arguments.
+ */
+function dnCheckArgCount(options, expected)
+{
+	if (options._args.length < expected)
+		usage(new Error('missing arguments'));
+
+	if (options._args.length > expected)
+		usage(new Error('extra arguments'));
+}
+
+/*
+ * "dn datasource-add ..." implementation
+ */
+function dnCmdDatasourceAdd(cmdname, argv)
+{
+	var options, dsname, dsconfig, newconfig;
+
+	options = dnParseArgs(argv,
+	    [ 'backend', 'data-format', 'filter', 'path', 'time-format' ]);
+	if (!options.path)
+		usage(new Error('"path" option is required'));
+
+	dnCheckArgCount(options, 1);
+	dsname = options._args[0];
+	dsconfig = {
+	    'name': dsname,
+	    'backend': options.backend,
+	    'backend_config': {
+	        'path': options.path,
+		'timeFormat': options.time_format
+	    },
+	    'filter': options.filter || null,
+	    'dataFormat': options.data_format
+	};
+	newconfig = dnConfig.datasourceAdd(dsconfig);
+	if (newconfig instanceof Error)
+		fatal(newconfig);
+	dnConfigBackend.save(newconfig.serialize(), function (err) {
+		if (err)
+			fatal(err);
+		dnConfig = newconfig;
+	});
+}
+
+function dnCmdDatasourceRemove(cmdname, argv)
+{
+	var options, dsname, newconfig;
+
+	options = dnParseArgs(argv, []);
+	dnCheckArgCount(options, 1);
+	dsname = options._args[0];
+	newconfig = dnConfig.datasourceRemove(dsname);
+	dnConfigBackend.save(newconfig.serialize(), function (err) {
+		if (err)
+			fatal(err);
+		dnConfig = newconfig;
+	});
+}
+
+function dnCmdDatasourceList(cmdname, argv)
+{
+	var options, columns, tab;
+
+	options = dnParseArgs(argv, [ 'verbose' ]);
+	dnCheckArgCount(options, 0);
+
+	columns = [ {
+	    'label': 'DATASOURCE',
+	    'width': 20
+	}, {
+	    'label': 'LOCATION',
+	    'width': 59
+	} ];
+	tab = new mod_tab.TableOutputStream({
+	    'omitHeader': true,
+	    'columns': columns
+	});
+	tab.writeHeader();
+	dnConfig.datasourceList(function (dsname, ds) {
+		var location;
+
+		if (ds.ds_backend == 'manta')
+			location = sprintf('manta://us-east.manta.joyent.com%s',
+			    ds.ds_backend_config.path);
+		else
+			location = sprintf('file:/%s',
+			    ds.ds_backend_config.path);
+
+		tab.writeRow({
+		    'DATASOURCE': dsname,
+		    'LOCATION': location
+		});
+
+		if (!options.verbose)
+			return;
+
+		if (ds.ds_filter !== null) {
+			console.log(sprintf('%4s%-11s %s', '', 'filter:',
+			    JSON.stringify(ds.ds_filter)));
+		}
+
+		console.log(sprintf('%4s%-11s %s', '', 'dataFormat:',
+		    JSON.stringify(ds.ds_format)));
+
+		mod_jsprim.forEachKey(ds.ds_backend_config, function (k, v) {
+			if (k == 'path')
+				return;
+
+			console.log(sprintf('%4s%-11s %s', '', k + ':',
+			    JSON.stringify(v)));
+		});
+	});
+}
+
+main();

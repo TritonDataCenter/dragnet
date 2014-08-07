@@ -1,0 +1,70 @@
+# dn datasource-list
+DATASOURCE           LOCATION                                                   
+
+# dn datasource-list -v
+DATASOURCE           LOCATION                                                   
+
+# dn datasource-add junk --path=/junk
+
+# dn datasource-list
+DATASOURCE           LOCATION                                                   
+junk                 file://junk                                                
+
+# dn datasource-list -v
+DATASOURCE           LOCATION                                                   
+junk                 file://junk                                                
+    dataFormat: "json"
+
+# dn datasource-remove junk
+
+# dn datasource-list
+DATASOURCE           LOCATION                                                   
+
+# dn datasource-list -v
+DATASOURCE           LOCATION                                                   
+
+# dn datasource-add manta-based --backend=manta --path=/junk
+
+# dn datasource-list
+DATASOURCE           LOCATION                                                   
+manta-based          manta://us-east.manta.joyent.com/junk                      
+
+# dn datasource-list -v
+DATASOURCE           LOCATION                                                   
+manta-based          manta://us-east.manta.joyent.com/junk                      
+    dataFormat: "json"
+
+# dn datasource-add manta-based2 --backend=manta --path=/junk --time-format=%Y/%m/%d/%H --data-format=json-skinner
+
+# dn datasource-list
+DATASOURCE           LOCATION                                                   
+manta-based          manta://us-east.manta.joyent.com/junk                      
+manta-based2         manta://us-east.manta.joyent.com/junk                      
+
+# dn datasource-list -v
+DATASOURCE           LOCATION                                                   
+manta-based          manta://us-east.manta.joyent.com/junk                      
+    dataFormat: "json"
+manta-based2         manta://us-east.manta.joyent.com/junk                      
+    dataFormat: "json-skinner"
+    timeFormat: "%Y/%m/%d/%H"
+
+# dn datasource-remove manta-based2
+
+# dn datasource-list
+DATASOURCE           LOCATION                                                   
+manta-based          manta://us-east.manta.joyent.com/junk                      
+
+# dn datasource-list -v
+DATASOURCE           LOCATION                                                   
+manta-based          manta://us-east.manta.joyent.com/junk                      
+    dataFormat: "json"
+
+# dn datasource-remove manta-based
+
+# dn datasource-list
+DATASOURCE           LOCATION                                                   
+
+# dn datasource-list -v
+DATASOURCE           LOCATION                                                   
+
