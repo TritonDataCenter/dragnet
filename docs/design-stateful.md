@@ -42,9 +42,9 @@ include:
 Scan muskie logs:
 
     $ dn datasource-add --format=json --backend=manta
-	--filter='{ "eq": [ "audit", true ] }'
+        --filter='{ "eq": [ "audit", true ] }'
         --path=/poseidon/stor/logs/muskie --time-format=%Y/%m/%d/%H
-	muskie_logs
+        muskie_logs
 
     $ dn datasource-list
     NAME          LOCATION
@@ -131,13 +131,13 @@ you care about every time.  There's no state.  So it's:
 
     $ dn scan-manta --filter='{ "eq": [ "audit", true ] }'
         --time-format=%Y/%m/%d/%H 
-	/poseidon/stor/logs/muskie 
+        /poseidon/stor/logs/muskie 
 
     $ dn scan-manta --time-format=%Y/%m/%d/%H 
         --after=2014-06-12 --before=2014-06-13
         --filter='{ "and": [ { "eq": [ "audit", true ] }, { "eq": [ "req.method", "GET" ] } ] }'
          --breakdowns=operation
-	/poseidon/stor/logs/muskie 
+        /poseidon/stor/logs/muskie 
 
     $ dn index-manta --time-format=%Y/%m/%d/%H 
         --filter='{ "eq": [ "audit", true ] }'
@@ -191,7 +191,7 @@ number of errors:
 
     $ dn window-create errorCount
     $ dn window-add errorCount --filter '{ "ge": [ "res.statusCode", 500 ] }'
-	muskie_logs/requests
+        muskie_logs/requests
     $ dn window-fetch errorCount
     errorCount
       123
@@ -203,6 +203,30 @@ Now create a window that divides this by the total number of requests:
     $ dn window-fetch errorRate
     errorRate
     0.012
+
+
+## Implementation
+
+Plan:
+
+* switch to "stateful" branch
+* mv "dn" tool to "dn-base" (or torch it)
+* build "dn" tool for updating configuration based on local file
+    * datasource-add
+    * datasource-remove
+    * datasource-list
+    * scan
+    * query-add
+    * query-remove
+    * query-fetch
+    * query-list
+    * query-build
+
+Other notes:
+
+* start with local configuration file that lists data sources and queries
+* status: status is stored by the datasource backend (e.g., in a file or in
+  Manta)
 
 
 ## Open questions
