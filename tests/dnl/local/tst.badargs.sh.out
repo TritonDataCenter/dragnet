@@ -1,0 +1,6 @@
+dnl: bad value for "breakdowns" ("req.method,x[=bar]"): missing attribute name
+dnl: bad value for "breakdowns" ("req.method,[]"): missing field name
+dnl: bad value for "breakdowns" ("req.method,foo["): unexpected end of string
+dnl: invalid filter: Unexpected end of input
+dnl: invalid query: invalid filter: predicate { junk: [ 'foo', 'bar' ] }: unknown operator "junk"
+dnl: unsupported format: "junk"

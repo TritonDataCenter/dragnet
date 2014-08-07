@@ -1,8 +1,8 @@
-# dn query
+# dnl query
 VALUE
   250
 
-# dn query -b operation
+# dnl query -b operation
 OPERATION           VALUE
 deletepublicstorage    32
 deletestorage          42
@@ -15,7 +15,7 @@ putdirectory           19
 putobject              25
 putpublicobject        17
 
-# dn query -b operation,req.method,host
+# dnl query -b operation,req.method,host
 OPERATION           REQ.METHOD HOST    VALUE
 deletepublicstorage DELETE     janey       5
 deletepublicstorage DELETE     kearney    11
@@ -67,14 +67,14 @@ putpublicobject     PUT        ralph       3
 putpublicobject     PUT        sherri      4
 putpublicobject     PUT        wendell     4
 
-# dn query -b req.caller
+# dnl query -b req.caller
 REQ.CALLER VALUE
 admin         57
 null          69
 poseidon      64
 undefined     60
 
-# dn query -b operation,req.caller
+# dnl query -b operation,req.caller
 OPERATION           REQ.CALLER VALUE
 deletepublicstorage admin          6
 deletepublicstorage null           8
@@ -117,11 +117,11 @@ putpublicobject     null           4
 putpublicobject     poseidon       4
 putpublicobject     undefined      5
 
-# dn query -f { "eq": [ "req.method", "GET" ] }
+# dnl query -f { "eq": [ "req.method", "GET" ] }
 VALUE
    54
 
-# dn query -f { "eq": [ "req.method", "GET" ] } -b operation,req.method,host
+# dnl query -f { "eq": [ "req.method", "GET" ] } -b operation,req.method,host
 OPERATION        REQ.METHOD HOST    VALUE
 getjoberrors     GET        kearney     4
 getjoberrors     GET        ralph       5
@@ -138,15 +138,15 @@ getstorage       GET        ralph       3
 getstorage       GET        sherri      3
 getstorage       GET        wendell     6
 
-# dn query -f { "eq": [ "req.caller", "poseidon" ] }
+# dnl query -f { "eq": [ "req.caller", "poseidon" ] }
 VALUE
    64
 
-# dn query -f { "eq": [ "req.caller", "poseidon" ] } -b req.caller
+# dnl query -f { "eq": [ "req.caller", "poseidon" ] } -b req.caller
 REQ.CALLER VALUE
 poseidon      64
 
-# dn query -b latency[aggr=quantize]
+# dnl query -b latency[aggr=quantize]
 
            value  ------------- Distribution ------------- count
                0 |                                         0
@@ -164,7 +164,7 @@ poseidon      64
             2048 |@@@@@                                    31
             4096 |                                         0
 
-# dn query -b latency[aggr=quantize],operation,host
+# dnl query -b latency[aggr=quantize],operation,host
 LATENCY OPERATION           HOST    VALUE
       1 deletepublicstorage janey       1
       1 deletepublicstorage kearney     1
@@ -328,7 +328,7 @@ LATENCY OPERATION           HOST    VALUE
    2048 putpublicobject     kearney     1
    2048 putpublicobject     sherri      1
 
-# dn query -b host,operation,latency[aggr=quantize]
+# dnl query -b host,operation,latency[aggr=quantize]
 janey, deletepublicstorage
            value  ------------- Distribution ------------- count
                0 |                                         0
@@ -1020,7 +1020,7 @@ wendell, putpublicobject
               16 |@@@@@@@@@@@@@@@@@@@@                     2
               32 |                                         0
 
-# dn query -b latency[aggr=lquantize,step=100]
+# dnl query -b latency[aggr=lquantize,step=100]
 
            value  ------------- Distribution ------------- count
                0 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@          195
@@ -1046,7 +1046,7 @@ wendell, putpublicobject
             2000 |@@@@@                                    31
             2100 |                                         0
 
-# dn query
+# dnl query
 VALUE
    54
 

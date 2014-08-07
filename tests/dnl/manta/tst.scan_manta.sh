@@ -13,12 +13,12 @@ echo "using tmpfile \"$tmpfile\"" >&2
 
 function scan
 {
-	echo "# dn scan-manta" "$@"
-	dn scan-manta "$@" $DN_MANTADIR
+	echo "# dnl scan-manta" "$@"
+	dnl scan-manta "$@" $DN_MANTADIR
 	echo
 
-	echo "# dn scan-manta --points" "$@"
-	dn scan-manta --points "$@" $DN_MANTADIR | sort -d
+	echo "# dnl scan-manta --points" "$@"
+	dnl scan-manta --points "$@" $DN_MANTADIR | sort -d
 	echo
 }
 

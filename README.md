@@ -1,6 +1,6 @@
 # Dragnet
 
-"dn" is a tool for analyzing event stream data stored in files.  There are three
+"dnl" is a tool for analyzing event stream data stored in files.  There are three
 main kinds of commands:
 
 * scan: scan over *raw data* to execute a query
@@ -22,13 +22,13 @@ dragnet only supports newline-separated JSON.  Try it on the sample data in
 In the simplest mode, dragnet operates on raw files.  With no arguments,
 "scan-file" just counts records:
 
-    $ dn scan-file ./tests/data/2014/05-02/one.log 
+    $ dnl scan-file ./tests/data/2014/05-02/one.log 
     VALUE
       252
 
 You can also break out counts, e.g., by request method:
 
-    $ dn scan-file -b req.method ./tests/data/2014/05-02/one.log 
+    $ dnl scan-file -b req.method ./tests/data/2014/05-02/one.log 
     REQ.METHOD VALUE
     DELETE        71
     GET           58
@@ -37,7 +37,7 @@ You can also break out counts, e.g., by request method:
 
 You can break out results by more than one field:
 
-    $ dn scan-file -b req.method,res.statusCode ./tests/data/2014/05-02/one.log 
+    $ dnl scan-file -b req.method,res.statusCode ./tests/data/2014/05-02/one.log 
     REQ.METHOD RES.STATUSCODE VALUE
     DELETE     200                6
     DELETE     204               12
@@ -74,7 +74,7 @@ probably don't make sense, like a 200 from a DELETE.)
 You can specify multiple fields separated by commas, like above, or using "-b"
 more than once.  This example does the same thing as the previous one:
 
-    $ dn scan-file -b req.method -b res.statusCode \
+    $ dnl scan-file -b req.method -b res.statusCode \
         ./tests/data/2014/05-02/one.log 
     REQ.METHOD RES.STATUSCODE VALUE
     DELETE     200                6
@@ -108,7 +108,7 @@ more than once.  This example does the same thing as the previous one:
 
 The order of breakdowns matters.  If we reverse them, we get different output:
 
-    $ dn scan-file -b res.statusCode,req.method ./tests/data/2014/05-02/one.log
+    $ dnl scan-file -b res.statusCode,req.method ./tests/data/2014/05-02/one.log
     RES.STATUSCODE REQ.METHOD VALUE
     200            DELETE         6
     200            GET           12
@@ -144,14 +144,14 @@ The order of breakdowns matters.  If we reverse them, we get different output:
 You can filter records using [node-krill](https://github.com/joyent/node-krill)
 filter syntax:
 
-    $ dn scan-file -f '{ "eq": [ "req.method", "GET" ] }' \
+    $ dnl scan-file -f '{ "eq": [ "req.method", "GET" ] }' \
         ./tests/data/2014/05-02/one.log
     VALUE
        58
 
 and you can combine this with breakdowns, of course:
 
-    $ dn scan-file -f '{ "eq": [ "req.method", "GET" ] }' \
+    $ dnl scan-file -f '{ "eq": [ "req.method", "GET" ] }' \
           -b operation ./tests/data/2014/05-02/one.log
     OPERATION        VALUE
     getjoberrors        17
@@ -164,7 +164,7 @@ and you can combine this with breakdowns, of course:
 To break down by numeric quantities, it's usually best to aggregate nearby
 values into buckets.  Here's a histogram of the "latency" field from this log:
 
-    $ dn scan-file -b latency[aggr=quantize] ./tests/data/2014/05-02/one.log
+    $ dnl scan-file -b latency[aggr=quantize] ./tests/data/2014/05-02/one.log
 
                value  ------------- Distribution ------------- count
                    0 |                                         0
@@ -185,7 +185,7 @@ values into buckets.  Here's a histogram of the "latency" field from this log:
 "aggr=quantize" specifies a power-of-two bucketization.  You can also do a
 linear quantization, say with steps of size 50 (notice the quotes):
 
-    $ dn scan-file -b 'latency[aggr=lquantize,step=50]' \
+    $ dnl scan-file -b 'latency[aggr=lquantize,step=50]' \
         ./tests/data/2014/05-02/one.log
 
                value  ------------- Distribution ------------- count
@@ -217,7 +217,7 @@ linear quantization, say with steps of size 50 (notice the quotes):
 These are modeled after DTrace's aggregating actions.  You can combine these
 with other breakdowns:
 
-    $ dn scan-file -f '{ "eq": [ "req.method", "GET" ] }' \
+    $ dnl scan-file -f '{ "eq": [ "req.method", "GET" ] }' \
           -b req.method,operation,latency[aggr=quantize] \
           ./tests/data/2014/05-02/one.log
     GET, getjoberrors
@@ -271,11 +271,11 @@ with other breakdowns:
                 2048 |@@@@                                     3
                 4096 |                                         0
 
-If the last field isn't an aggregation, "dn" won't print a histogram, but it
+If the last field isn't an aggregation, "dnl" won't print a histogram, but it
 will still group nearby values.  For example, if we reverse the order of that
 last example:
 
-    $ dn scan-file -f '{ "eq": [ "req.method", "GET" ] }' \
+    $ dnl scan-file -f '{ "eq": [ "req.method", "GET" ] }' \
           -b latency[aggr=quantize],req.method,operation \
           ./tests/data/2014/05-02/one.log
     LATENCY REQ.METHOD OPERATION        VALUE
@@ -304,7 +304,7 @@ quantization with steps of size 3600 (for 3600 seconds per hour).  When using a
 "date" field, you have to specify what underlying JSON field should be parsed
 as a date:
 
-    $ dn scan-file -b 'timestamp[date,field=time,aggr=lquantize,step=3600]' \
+    $ dnl scan-file -b 'timestamp[date,field=time,aggr=lquantize,step=3600]' \
         -b req.method ./tests/data/2014/05-02/one.log
     TIMESTAMP                REQ.METHOD VALUE
     2014-05-02T00:00:00.000Z DELETE         2
@@ -341,7 +341,7 @@ queries much faster.  You can index a file much the way you write a query.
 Here's an example that creates indexes on the request method, operation, and
 latency:
 
-    $ dn index-file -c req.method,operation,latency[aggr=quantize] \
+    $ dnl index-file -c req.method,operation,latency[aggr=quantize] \
           ./tests/data/2014/05-02/one.log myindex
     index "myindex" created
 
@@ -380,7 +380,7 @@ similar query would have:
 You can query an index with the same syntax you'd use for scanning, but with the
 "query-file" command:
 
-    $ dn query-file -f '{ "eq": [ "req.method", "GET" ] }' \
+    $ dnl query-file -f '{ "eq": [ "req.method", "GET" ] }' \
           -b latency[aggr=quantize],req.method,operation myindex 
     LATENCY REQ.METHOD OPERATION        VALUE
           2 GET        getjoberrors         3
@@ -432,11 +432,11 @@ data:
 You can scan the entire directory tree by using "scan-tree" instead of
 "scan-file":
 
-    $ dn scan-tree ./tests/data
+    $ dnl scan-tree ./tests/data
     VALUE
      2252
 
-    $ dn scan-tree -b req.method ./tests/data
+    $ dnl scan-tree -b req.method ./tests/data
     REQ.METHOD VALUE
     DELETE       582
     GET          556
@@ -445,7 +445,7 @@ You can scan the entire directory tree by using "scan-tree" instead of
 
 You can index it the same way:
 
-    $ dn index-tree -c 'timestamp[date,field=time,aggr=lquantize,step=86400]' \
+    $ dnl index-tree -c 'timestamp[date,field=time,aggr=lquantize,step=86400]' \
          -c req.method,res.statusCode,latency[aggr=quantize] \
          ./tests/data data_index
     indexes created
@@ -462,13 +462,13 @@ You can index it the same way:
 
 Notice there are many index files: one for each hour of data from the original
 data set.  The number of indexes doesn't depend on the size or number of input
-files.  You never need to worry about the number of index files, though.  "dn"
+files.  You never need to worry about the number of index files, though.  "dnl"
 takes care of searching whichever set of them need to be searched.
 
 You can query these indexes using "query-tree" and specifying the index
 directory:
 
-    $ dn query-tree -b req.method data_index
+    $ dnl query-tree -b req.method data_index
     REQ.METHOD VALUE
     DELETE       580
     GET          556
@@ -485,7 +485,7 @@ Service](https://apidocs.joyent.com/manta/).  When working with Manta:
 * Data operations (scanning, indexing, and querying) are executed in Manta
   compute jobs to avoid copying data out of the object store.  Only the final
   results of scan and query operations are downloaded so they can be printed by
-  the "dn" command.
+  the "dnl" command.
 * You can still use the --time-format, --before, and --after options to prune
   directories to search when scanning, indexing, or querying.
 * You're responsible for cost of storing data and running compute jobs on Manta.
@@ -501,7 +501,7 @@ For sample data, there's a Manta copy of the test data shipped with Dragnet in
 just like "scan-tree" except that the argument is a path in Manta rather than a
 path to a local directory:
 
-    $ dn scan-manta /dap/public/dragnet/testdata
+    $ dnl scan-manta /dap/public/dragnet/testdata
     using existing asset: "/dap/public/dragnet/assets/dragnet-0.0.0.tgz"
     submitted job 9ed83408-0a41-c6b7-ebde-8c2d3d8f1a3c
     submitted 9 inputs
@@ -512,7 +512,7 @@ Similarly, you can run "index-manta" to index data stored in Manta, and its
 arguments are just like "index-tree", but the paths represent Manta paths rather
 than local filesystem paths:
 
-    $ dn index-manta -c 'timestamp[date,field=time,aggr=lquantize,step=86400]' \
+    $ dnl index-manta -c 'timestamp[date,field=time,aggr=lquantize,step=86400]' \
         -c req.method,res.statusCode --interval=day \
 	/dap/public/dragnet/testdata /dap/stor/dragnet_test_index
     using existing asset: "/dap/public/dragnet/assets/dragnet-0.0.0.tgz"
@@ -529,14 +529,14 @@ than local filesystem paths:
 
 And you can query it with "query-mjob":
 
-    $ dn query-mjob /dap/stor/dragnet_test_index
+    $ dnl query-mjob /dap/stor/dragnet_test_index
     using existing asset: "/dap/public/dragnet/assets/dragnet-0.0.0.tgz"
     submitted job ddf8b4cc-f804-4899-e857-876a293f37b0
     submitted 5 inputs
     VALUE
      2250
 
-    $ dn query-mjob -b req.method /dap/stor/dragnet_test_index
+    $ dnl query-mjob -b req.method /dap/stor/dragnet_test_index
     using existing asset: "/dap/public/dragnet/assets/dragnet-0.0.0.tgz"
     submitted job 4483dbf4-341e-4984-bf10-a6bae004001d
     submitted 5 inputs
@@ -552,14 +552,14 @@ Manta-based query commands in the future.)
 
 ## Reference
 
-If you don't already know what "dn" does, you're better off starting with the
+If you don't already know what "dnl" does, you're better off starting with the
 "Getting Started" section above.
 
 ### Scanning raw data
 
 General forms:
 
-    dn scan-file  [-b|--breakdowns COLUMN[,COLUMN...]]
+    dnl scan-file  [-b|--breakdowns COLUMN[,COLUMN...]]
                   [-f|--filter FILTER]
                   [--before END_TIMESTAMP] [--after START_TIMESTAMP]
                   [--time-field=FIELDNAME]
@@ -567,7 +567,7 @@ General forms:
                   [--counters] [--points] [--warnings]
                   DATA_FILE
 
-    dn scan-tree  [-b|--breakdowns COLUMN[,COLUMN...]]
+    dnl scan-tree  [-b|--breakdowns COLUMN[,COLUMN...]]
                   [-f|--filter FILTER]
                   [--before END_TIMESTAMP] [--after START_TIMESTAMP]
                   [--time-field=FIELDNAME]
@@ -576,7 +576,7 @@ General forms:
                   [--counters] [--points] [--warnings]
                   DATA_DIRECTORY
 
-    dn scan-manta [-b|--breakdowns COLUMN[,COLUMN...]]
+    dnl scan-manta [-b|--breakdowns COLUMN[,COLUMN...]]
                   [-f|--filter FILTER]
                   [--before END_TIMESTAMP] [--after START_TIMESTAMP]
                   [--time-field=FIELDNAME]
@@ -587,20 +587,20 @@ General forms:
 
 Scan the records in a single newline-separated-JSON data file:
 
-    dn scan-file SCAN_OPTIONS data_file
+    dnl scan-file SCAN_OPTIONS data_file
 
 Scan the records in all files in "data\_directory":
 
-    dn scan-tree SCAN_OPTIONS data_directory
+    dnl scan-tree SCAN_OPTIONS data_directory
 
 Scan the records in all Manta objects under "/$MANTA\_USER/stor/my\_data":
 
-    dn scan-manta SCAN_OPTIONS "/$MANTA_USER/stor/my_data"
+    dnl scan-manta SCAN_OPTIONS "/$MANTA_USER/stor/my_data"
 
 Scan only data from the first few days of July, assuming data is laid out under
 "data\_directory/YYYY/MM/DD":
 
-    dn scan-tree SCAN_OPTIONS --time-format=%Y/%m/%d
+    dnl scan-tree SCAN_OPTIONS --time-format=%Y/%m/%d
         --after 2014-07-01 --before 2014-07-04
         data_directory
 
@@ -662,7 +662,7 @@ There are a few debugging options:
 
 General forms:
 
-    dn index-file   [-c|--columns COLUMN[,COLUMN...]]
+    dnl index-file   [-c|--columns COLUMN[,COLUMN...]]
                     [-f|--filter FILTER]
                     [--before END_TIMESTAMP] [--after START_TIMESTAMP]
                     [--data-format json|json-skinner]
@@ -670,7 +670,7 @@ General forms:
                     [--counters] [--warnings]
                     DATA_FILE INDEX_FILE
 
-    dn index-tree   [-c|--columns COLUMN[,COLUMN...]]
+    dnl index-tree   [-c|--columns COLUMN[,COLUMN...]]
                     [-f|--filter FILTER]
                     [--before END_TIMESTAMP] [--after START_TIMESTAMP]
                     [--time-format=TIME_FORMAT]
@@ -679,7 +679,7 @@ General forms:
                     [--counters] [--warnings]
                     DATA_DIRECTORY INDEX_DIRECTORY
 
-    dn rollup-tree  [-c|--columns COLUMN[,COLUMN...]]
+    dnl rollup-tree  [-c|--columns COLUMN[,COLUMN...]]
                     [-f|--filter FILTER]
                     [--before END_TIMESTAMP] [--after START_TIMESTAMP]
                     [-i|--interval hour|day]
@@ -687,7 +687,7 @@ General forms:
                     [--counters] [--warnings]
                     INDEX_DIRECTORY
 
-    dn index-manta  [-c|--columns COLUMN[,COLUMN...]]
+    dnl index-manta  [-c|--columns COLUMN[,COLUMN...]]
                     [-f|--filter FILTER]
                     [--before END_TIMESTAMP] [--after START_TIMESTAMP]
                     [--time-format=TIME_FORMAT]
@@ -698,37 +698,37 @@ General forms:
 
 Generate a single index file from a single newline-separated-JSON data file:
 
-    dn index-file INDEX_OPTIONS data_file index_file
+    dnl index-file INDEX_OPTIONS data_file index_file
 
 Generate hourly index files into "index\_directory" from data stored in
 "data\_directory":
 
-    dn index-tree INDEX_OPTIONS data_directory index_directory
+    dnl index-tree INDEX_OPTIONS data_directory index_directory
 
 Generate daily index files instead:
 
-    dn index-tree INDEX_OPTIONS --interval=day data_directory index_directory
+    dnl index-tree INDEX_OPTIONS --interval=day data_directory index_directory
 
 Generate hourly indexes, but only for the first few days of July, assuming data
 is laid out under "data\_directory/YYYY/MM/DD"
 
-    dn index-tree INDEX_OPTIONS 
+    dnl index-tree INDEX_OPTIONS 
         --time-format=%Y/%m/%d --after 2014-07-01 --before 2014-07-04
         data_directory index_directory
 
 Generate daily indexes from hourly indexes:
 
-    dn rollup-tree INDEX_OPTIONS --source=hour index_directory
+    dnl rollup-tree INDEX_OPTIONS --source=hour index_directory
 
 INDEX\_OPTIONS include:
 
-* `-c | --columns COLUMN[,COLUMN]`: Same as columns for "dn scan --breakdowns".
-* `-f | --filter FILTER`: Same as "dn scan --filter".
-* `--after START_TIMESTAMP`: Same as "dn scan --after".
-* `--before END_TIMESTAMP`: Same as "dn scan --before".
-* `--time-format TIME_FORMAT`: Same as "dn scan --time-format".  This only
+* `-c | --columns COLUMN[,COLUMN]`: Same as columns for "dnl scan --breakdowns".
+* `-f | --filter FILTER`: Same as "dnl scan --filter".
+* `--after START_TIMESTAMP`: Same as "dnl scan --after".
+* `--before END_TIMESTAMP`: Same as "dnl scan --before".
+* `--time-format TIME_FORMAT`: Same as "dnl scan --time-format".  This only
   applies to --index-tree.
-* `--data-format json | json-skinner`: Same as "dn scan --data-format".  This
+* `--data-format json | json-skinner`: Same as "dnl scan --data-format".  This
   only applies to --index-file and --index-tree.
 * `-i | --interval INTERVAL`: Specifies that indexes should be chunked into
   files by INTERVAL, which is either "hour" or "day".  This is only supported
@@ -747,44 +747,44 @@ you want the resolution to be 10 seconds instead, use `step=10`.
 
 There are a few debugging options:
 
-* `--counters`: See "dn scan --counters".
-* `--warnings`: See "dn scan --warnings".
+* `--counters`: See "dnl scan --counters".
+* `--warnings`: See "dnl scan --warnings".
 
-When using forms "dn index-tree", you must include at least one column that's a
+When using forms "dnl index-tree", you must include at least one column that's a
 "date" field.  That field will be used to figure out which hourly or daily index
 file a given data point should wind up in.
 
 
 ### Querying
 
-"dn query-file" and "dn query-tree" support arguments like "dn scan-file" and
-"dn scan-tree":
+"dnl query-file" and "dnl query-tree" support arguments like "dnl scan-file" and
+"dnl scan-tree":
 
-    dn query-file  [-b|--breakdowns COLUMN[,COLUMN...]]
+    dnl query-file  [-b|--breakdowns COLUMN[,COLUMN...]]
                    [-f|--filter FILTER]
                    [--before END_TIMESTAMP] [--after START_TIMESTAMP]
                    [--time-field TIME_FIELD]
                    [--points] [--counters]
                    INDEX_FILE
 
-    dn query-tree  [-b|--breakdowns COLUMN[,COLUMN...]]
+    dnl query-tree  [-b|--breakdowns COLUMN[,COLUMN...]]
                    [-f|--filter FILTER]
                    [--before END_TIMESTAMP] [--after START_TIMESTAMP]
                    [--time-field TIME_FIELD]
                    [--points] [--counters]
                    INDEX_DIRECTORY
 
-    dn query-manta [-b|--breakdowns COLUMN[,COLUMN...]]
+    dnl query-manta [-b|--breakdowns COLUMN[,COLUMN...]]
                    [-f|--filter FILTER]
                    [--before END_TIMESTAMP] [--after START_TIMESTAMP]
                    [--time-field TIME_FIELD]
                    [--points] [--counters]
                    INDEX_DIRECTORY
 
-All of these options work just as documented for "dn scan-file" and "dn
+All of these options work just as documented for "dnl scan-file" and "dnl
 scan-tree".  "INDEX\_FILE" should be a single index file to be queried.
-INDEX\_DIRECTORY refers to a directory of indexes created with "dn index-tree"
-or "dn index-manta".  "dn" will automatically select the daily indexes if
+INDEX\_DIRECTORY refers to a directory of indexes created with "dnl index-tree"
+or "dnl index-manta".  "dnl" will automatically select the daily indexes if
 available and fall back to hourly indexes if not.
 
 Several scan-related arguments are not supported by when querying because they
@@ -840,7 +840,7 @@ has to keep track of.  You can do this in a few ways:
 
 ## Common issues
 
-#### "dn" dumps core with a message about memory allocation failed
+#### "dnl" dumps core with a message about memory allocation failed
 
 See "Memory usage" above.
 
@@ -863,15 +863,15 @@ processing pipeline, and warnings should print out a warning when records are
 dropped.
 
 
-#### "dn" exits 0 without producing any output
+#### "dnl" exits 0 without producing any output
 
 See "Some data is missing".  In many of those cases, the problem ends up
 applying to all records and all of them get dropped.
 
 
-#### "dn" reports a premature exit
+#### "dnl" reports a premature exit
 
-This is always a bug.  It means Node exited before "dn" expected it to, which
+This is always a bug.  It means Node exited before "dnl" expected it to, which
 usually means a missed callback.
 
 

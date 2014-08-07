@@ -2,7 +2,7 @@
 /* vim: set syn=javascript: */
 
 /*
- * dn: create, query, and destroy indexes on data stored in Manta
+ * dnl: create, query, and destroy indexes on data stored in Manta
  */
 
 var timeStarted = process.hrtime();
@@ -30,7 +30,7 @@ var timeRequireDone = process.hrtime(timeStarted);
  */
 var dnArg0 = mod_path.basename(process.argv[1]);
 var dnUsage = [
-    'usage: dn scan-file   [-b|--breakdowns COLUMN[,COLUMN...]]',
+    'usage: dnl scan-file   [-b|--breakdowns COLUMN[,COLUMN...]]',
     '                      [-f|--filter FILTER]',
     '                      [--before END_TIMESTAMP] [--after START_TIMESTAMP]',
     '                      [--time-field=FIELDNAME]',
@@ -38,7 +38,7 @@ var dnUsage = [
     '                      [--counters] [--points] [--warnings]',
     '                      DATA_FILE',
     '',
-    '       dn scan-tree   [-b|--breakdowns COLUMN[,COLUMN...]]',
+    '       dnl scan-tree   [-b|--breakdowns COLUMN[,COLUMN...]]',
     '                      [-f|--filter FILTER]',
     '                      [--before END_TIMESTAMP] [--after START_TIMESTAMP]',
     '                      [--time-field=FIELDNAME]',
@@ -47,7 +47,7 @@ var dnUsage = [
     '                      [--counters] [--points] [--warnings]',
     '                      DATA_DIRECTORY',
     '',
-    '       dn scan-manta  [-b|--breakdowns COLUMN[,COLUMN...]]',
+    '       dnl scan-manta  [-b|--breakdowns COLUMN[,COLUMN...]]',
     '                      [-f|--filter FILTER]',
     '                      [--before END_TIMESTAMP] [--after START_TIMESTAMP]',
     '                      [--time-field=FIELDNAME]',
@@ -59,7 +59,7 @@ var dnUsage = [
     '                      [--dry-run] [--counters] [--points] [--warnings]',
     '                      DATA_DIRECTORY',
     '',
-    '       dn index-file  [-c|--columns COLUMN[,COLUMN...]]',
+    '       dnl index-file  [-c|--columns COLUMN[,COLUMN...]]',
     '                      [-f|--filter FILTER]',
     '                      [--before END_TIMESTAMP] [--after START_TIMESTAMP]',
     '                      [--data-format json|json-skinner]',
@@ -67,7 +67,7 @@ var dnUsage = [
     '                      [--counters] [--warnings]',
     '                      DATA_FILE INDEX_FILE',
     '',
-    '       dn index-tree  [-c|--columns COLUMN[,COLUMN...]]',
+    '       dnl index-tree  [-c|--columns COLUMN[,COLUMN...]]',
     '                      [-f|--filter FILTER]',
     '                      [--before END_TIMESTAMP] [--after START_TIMESTAMP]',
     '                      [--time-format=TIME_FORMAT]',
@@ -76,7 +76,7 @@ var dnUsage = [
     '                      [--counters] [--warnings]',
     '                      DATA_DIRECTORY INDEX_DIRECTORY',
     '',
-    '       dn index-manta [-c|--columns COLUMN[,COLUMN...]]',
+    '       dnl index-manta [-c|--columns COLUMN[,COLUMN...]]',
     '                      [-f|--filter FILTER]',
     '                      [--before END_TIMESTAMP] [--after START_TIMESTAMP]',
     '                      [--time-format=TIME_FORMAT]',
@@ -88,7 +88,7 @@ var dnUsage = [
     '                      [--dry-run] [--counters] [--warnings]',
     '                      DATA_DIRECTORY INDEX_DIRECTORY',
     '',
-    '       dn rollup-tree [-c|--columns COLUMN[,COLUMN...]]',
+    '       dnl rollup-tree [-c|--columns COLUMN[,COLUMN...]]',
     '                      [-f|--filter FILTER]',
     '                      [--before END_TIMESTAMP] [--after START_TIMESTAMP]',
     '                      [-i|--interval hour|day]',
@@ -96,21 +96,21 @@ var dnUsage = [
     '                      [--counters] [--warnings]',
     '                      INDEX_DIRECTORY',
     '',
-    '       dn query-file [-b|--breakdowns COLUMN[,COLUMN...]]',
+    '       dnl query-file [-b|--breakdowns COLUMN[,COLUMN...]]',
     '                     [-f|--filter FILTER]',
     '                     [--before END_TIMESTAMP] [--after START_TIMESTAMP]',
     '                     [--time-field TIME_FIELD]',
     '                     [--points] [--counters]',
     '                     INDEX_FILE',
     '',
-    '       dn query-tree [-b|--breakdowns COLUMN[,COLUMN...]]',
+    '       dnl query-tree [-b|--breakdowns COLUMN[,COLUMN...]]',
     '                     [-f|--filter FILTER]',
     '                     [--before END_TIMESTAMP] [--after START_TIMESTAMP]',
     '                     [--time-field TIME_FIELD]',
     '                     [--points] [--counters]',
     '                     INDEX_DIRECTORY',
     '',
-    '       dn query-mjob [-b|--breakdowns COLUMN[,COLUMN...]]',
+    '       dnl query-mjob [-b|--breakdowns COLUMN[,COLUMN...]]',
     '                     [-f|--filter FILTER]',
     '                     [--before END_TIMESTAMP] [--after START_TIMESTAMP]',
     '                     [--time-field TIME_FIELD]',
@@ -118,7 +118,7 @@ var dnUsage = [
     '                     [--points] [--counters]',
     '                     INDEX_DIRECTORY',
     '',
-    '       dn query-mget [-b|--breakdowns COLUMN[,COLUMN...]]',
+    '       dnl query-mget [-b|--breakdowns COLUMN[,COLUMN...]]',
     '                     [-f|--filter FILTER]',
     '                     [--before END_TIMESTAMP] [--after START_TIMESTAMP]',
     '                     [--time-field TIME_FIELD]',
@@ -382,7 +382,7 @@ function dnCheckArgCount(options, expected)
 }
 
 /*
- * "dn index-file" implementation
+ * "dnl index-file" implementation
  */
 function cmdIndexFile(cmdname, argv)
 {
@@ -411,7 +411,7 @@ function cmdIndexFile(cmdname, argv)
 }
 
 /*
- * "dn index-tree" implementation
+ * "dnl index-tree" implementation
  */
 function cmdIndexTree(cmdname, argv)
 {
@@ -449,7 +449,7 @@ function cmdIndexTree(cmdname, argv)
 }
 
 /*
- * "dn index-manta" implementation
+ * "dnl index-manta" implementation
  */
 function cmdIndexManta(cmdname, argv)
 {
@@ -495,7 +495,7 @@ function cmdIndexManta(cmdname, argv)
 }
 
 /*
- * "dn rollup-tree" implementation
+ * "dnl rollup-tree" implementation
  */
 function cmdRollupTree(cmdname, argv)
 {
@@ -526,7 +526,7 @@ function cmdRollupTree(cmdname, argv)
 }
 
 /*
- * Common function used by "dn index-file", "dn index-tree", and "dn
+ * Common function used by "dnl index-file", "dnl index-tree", and "dnl
  * rollup-tree".
  */
 function dnIndex(source, options, indexargs, callback)
@@ -573,7 +573,7 @@ function dnIndex(source, options, indexargs, callback)
 }
 
 /*
- * "dn query-file" implementation
+ * "dnl query-file" implementation
  */
 function cmdQueryFile(cmdname, argv)
 {
@@ -591,7 +591,7 @@ function cmdQueryFile(cmdname, argv)
 }
 
 /*
- * "dn query-tree" implementation
+ * "dnl query-tree" implementation
  */
 function cmdQueryTree(cmdname, argv)
 {
@@ -612,7 +612,7 @@ function cmdQueryTree(cmdname, argv)
 }
 
 /*
- * "dn query-mjob" implementation
+ * "dnl query-mjob" implementation
  */
 function cmdQueryMjob(cmdname, argv)
 {
@@ -640,7 +640,7 @@ function cmdQueryMjob(cmdname, argv)
 }
 
 /*
- * "dn query-mget" implementation
+ * "dnl query-mget" implementation
  */
 function cmdQueryMget(cmdname, argv)
 {
@@ -710,7 +710,7 @@ function dnQueryConstructQuery(options)
 }
 
 /*
- * Common function used by "dn query-file" and "dn query-tree".
+ * Common function used by "dnl query-file" and "dnl query-tree".
  */
 function dnQuery(source, options, queryargs, callback)
 {
@@ -730,7 +730,7 @@ function dnQuery(source, options, queryargs, callback)
 }
 
 /*
- * "dn scan-file" implementation.
+ * "dnl scan-file" implementation.
  */
 function cmdScanFile(cmdname, argv)
 {
@@ -748,7 +748,7 @@ function cmdScanFile(cmdname, argv)
 }
 
 /*
- * "dn scan-tree" implementation.
+ * "dnl scan-tree" implementation.
  */
 function cmdScanTree(cmdname, argv)
 {
@@ -783,7 +783,7 @@ function dnMantaClient(log)
 }
 
 /*
- * "dn scan-manta" implementation.
+ * "dnl scan-manta" implementation.
  */
 function cmdScanManta(cmdname, argv)
 {
@@ -817,7 +817,7 @@ function cmdScanManta(cmdname, argv)
 }
 
 /*
- * Common function used by "dn scan-file" and "dn scan-tree".
+ * Common function used by "dnl scan-file" and "dnl scan-tree".
  */
 function dnScan(source, options, scanargs, callback)
 {

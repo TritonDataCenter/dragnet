@@ -14,21 +14,21 @@ echo "using Manta tmpdir \"$tmpdir" >&2
 
 function scan
 {
-	echo "# dn query-mjob" "$@"
-	dn query-mjob "$@" "$tmpdir"
+	echo "# dnl query-mjob" "$@"
+	dnl query-mjob "$@" "$tmpdir"
 	echo
 }
 
 function scan-mget
 {
-	echo "# dn query-mget" "$@"
-	dn query-mget "$@" "$tmpdir" "$localtmpdir"
+	echo "# dnl query-mget" "$@"
+	dnl query-mget "$@" "$tmpdir" "$localtmpdir"
 	echo
 }
 
 # Try all the "scan" test cases with an index that should handle them all.
 echo "creating indexes" >&2
-dn index-manta -c 'timestamp[date,field=time,aggr=lquantize,step=86400]' \
+dnl index-manta -c 'timestamp[date,field=time,aggr=lquantize,step=86400]' \
     -c host,operation,req.caller,req.method,latency[aggr=quantize] \
     --interval=day \
     $DN_MANTADIR "$tmpdir"
@@ -44,7 +44,7 @@ mrm -r "$tmpdir"
 
 # That should have been pretty exhaustive, but try an index with a filter on it.
 echo "creating filtered index" >&2
-dn index-manta -f '{ "eq": [ "req.method", "GET" ] }' \
+dnl index-manta -f '{ "eq": [ "req.method", "GET" ] }' \
     -c 'timestamp[date,field=time,aggr=lquantize,step=86400]' \
     $DN_MANTADIR "$tmpdir"
 scan

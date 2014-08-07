@@ -1,13 +1,128 @@
-by_day/2014-05-01.sqlite
-by_day/2014-05-02.sqlite
-by_day/2014-05-03.sqlite
-by_day/2014-05-04.sqlite
-by_day/2014-05-05.sqlite
-# dn query-mjob
+./by_hour/2014-05-01-00.sqlite
+./by_hour/2014-05-01-01.sqlite
+./by_hour/2014-05-01-02.sqlite
+./by_hour/2014-05-01-03.sqlite
+./by_hour/2014-05-01-04.sqlite
+./by_hour/2014-05-01-05.sqlite
+./by_hour/2014-05-01-06.sqlite
+./by_hour/2014-05-01-07.sqlite
+./by_hour/2014-05-01-08.sqlite
+./by_hour/2014-05-01-09.sqlite
+./by_hour/2014-05-01-10.sqlite
+./by_hour/2014-05-01-11.sqlite
+./by_hour/2014-05-01-12.sqlite
+./by_hour/2014-05-01-13.sqlite
+./by_hour/2014-05-01-14.sqlite
+./by_hour/2014-05-01-15.sqlite
+./by_hour/2014-05-01-16.sqlite
+./by_hour/2014-05-01-17.sqlite
+./by_hour/2014-05-01-18.sqlite
+./by_hour/2014-05-01-19.sqlite
+./by_hour/2014-05-01-20.sqlite
+./by_hour/2014-05-01-21.sqlite
+./by_hour/2014-05-01-22.sqlite
+./by_hour/2014-05-01-23.sqlite
+./by_hour/2014-05-02-00.sqlite
+./by_hour/2014-05-02-01.sqlite
+./by_hour/2014-05-02-02.sqlite
+./by_hour/2014-05-02-03.sqlite
+./by_hour/2014-05-02-04.sqlite
+./by_hour/2014-05-02-05.sqlite
+./by_hour/2014-05-02-06.sqlite
+./by_hour/2014-05-02-07.sqlite
+./by_hour/2014-05-02-08.sqlite
+./by_hour/2014-05-02-09.sqlite
+./by_hour/2014-05-02-10.sqlite
+./by_hour/2014-05-02-11.sqlite
+./by_hour/2014-05-02-12.sqlite
+./by_hour/2014-05-02-13.sqlite
+./by_hour/2014-05-02-14.sqlite
+./by_hour/2014-05-02-15.sqlite
+./by_hour/2014-05-02-16.sqlite
+./by_hour/2014-05-02-17.sqlite
+./by_hour/2014-05-02-18.sqlite
+./by_hour/2014-05-02-19.sqlite
+./by_hour/2014-05-02-20.sqlite
+./by_hour/2014-05-02-21.sqlite
+./by_hour/2014-05-02-22.sqlite
+./by_hour/2014-05-02-23.sqlite
+./by_hour/2014-05-03-00.sqlite
+./by_hour/2014-05-03-01.sqlite
+./by_hour/2014-05-03-02.sqlite
+./by_hour/2014-05-03-03.sqlite
+./by_hour/2014-05-03-04.sqlite
+./by_hour/2014-05-03-05.sqlite
+./by_hour/2014-05-03-06.sqlite
+./by_hour/2014-05-03-07.sqlite
+./by_hour/2014-05-03-08.sqlite
+./by_hour/2014-05-03-09.sqlite
+./by_hour/2014-05-03-10.sqlite
+./by_hour/2014-05-03-11.sqlite
+./by_hour/2014-05-03-12.sqlite
+./by_hour/2014-05-03-13.sqlite
+./by_hour/2014-05-03-14.sqlite
+./by_hour/2014-05-03-15.sqlite
+./by_hour/2014-05-03-16.sqlite
+./by_hour/2014-05-03-17.sqlite
+./by_hour/2014-05-03-18.sqlite
+./by_hour/2014-05-03-19.sqlite
+./by_hour/2014-05-03-20.sqlite
+./by_hour/2014-05-03-21.sqlite
+./by_hour/2014-05-03-22.sqlite
+./by_hour/2014-05-03-23.sqlite
+./by_hour/2014-05-04-00.sqlite
+./by_hour/2014-05-04-01.sqlite
+./by_hour/2014-05-04-02.sqlite
+./by_hour/2014-05-04-03.sqlite
+./by_hour/2014-05-04-04.sqlite
+./by_hour/2014-05-04-05.sqlite
+./by_hour/2014-05-04-06.sqlite
+./by_hour/2014-05-04-07.sqlite
+./by_hour/2014-05-04-08.sqlite
+./by_hour/2014-05-04-09.sqlite
+./by_hour/2014-05-04-10.sqlite
+./by_hour/2014-05-04-11.sqlite
+./by_hour/2014-05-04-12.sqlite
+./by_hour/2014-05-04-13.sqlite
+./by_hour/2014-05-04-14.sqlite
+./by_hour/2014-05-04-15.sqlite
+./by_hour/2014-05-04-16.sqlite
+./by_hour/2014-05-04-17.sqlite
+./by_hour/2014-05-04-18.sqlite
+./by_hour/2014-05-04-19.sqlite
+./by_hour/2014-05-04-20.sqlite
+./by_hour/2014-05-04-21.sqlite
+./by_hour/2014-05-04-22.sqlite
+./by_hour/2014-05-04-23.sqlite
+./by_hour/2014-05-05-00.sqlite
+./by_hour/2014-05-05-01.sqlite
+./by_hour/2014-05-05-02.sqlite
+./by_hour/2014-05-05-03.sqlite
+./by_hour/2014-05-05-04.sqlite
+./by_hour/2014-05-05-05.sqlite
+./by_hour/2014-05-05-06.sqlite
+./by_hour/2014-05-05-07.sqlite
+./by_hour/2014-05-05-08.sqlite
+./by_hour/2014-05-05-09.sqlite
+./by_hour/2014-05-05-10.sqlite
+./by_hour/2014-05-05-11.sqlite
+./by_hour/2014-05-05-12.sqlite
+./by_hour/2014-05-05-13.sqlite
+./by_hour/2014-05-05-14.sqlite
+./by_hour/2014-05-05-15.sqlite
+./by_hour/2014-05-05-16.sqlite
+./by_hour/2014-05-05-17.sqlite
+./by_hour/2014-05-05-18.sqlite
+./by_hour/2014-05-05-19.sqlite
+./by_hour/2014-05-05-20.sqlite
+./by_hour/2014-05-05-21.sqlite
+./by_hour/2014-05-05-22.sqlite
+./by_hour/2014-05-05-23.sqlite
+# dnl query-tree
 VALUE
  2250
 
-# dn query-mjob -b operation
+# dnl query-tree -b operation
 OPERATION           VALUE
 deletepublicstorage   294
 deletestorage         286
@@ -20,7 +135,7 @@ putdirectory          184
 putobject             195
 putpublicobject       184
 
-# dn query-mjob -b operation,req.method,host
+# dnl query-tree -b operation,req.method,host
 OPERATION           REQ.METHOD HOST    VALUE
 deletepublicstorage DELETE     janey      57
 deletepublicstorage DELETE     kearney    70
@@ -73,14 +188,14 @@ putpublicobject     PUT        ralph      34
 putpublicobject     PUT        sherri     43
 putpublicobject     PUT        wendell    41
 
-# dn query-mjob -b req.caller
+# dnl query-tree -b req.caller
 REQ.CALLER VALUE
 admin        570
 null         575
 poseidon     546
 undefined    559
 
-# dn query-mjob -b operation,req.caller
+# dnl query-tree -b operation,req.caller
 OPERATION           REQ.CALLER VALUE
 deletepublicstorage admin         82
 deletepublicstorage null          70
@@ -123,11 +238,11 @@ putpublicobject     null          46
 putpublicobject     poseidon      48
 putpublicobject     undefined     40
 
-# dn query-mjob -f { "eq": [ "req.method", "GET" ] }
+# dnl query-tree -f { "eq": [ "req.method", "GET" ] }
 VALUE
   556
 
-# dn query-mjob -f { "eq": [ "req.method", "GET" ] } -b operation,req.method,host
+# dnl query-tree -f { "eq": [ "req.method", "GET" ] } -b operation,req.method,host
 OPERATION        REQ.METHOD HOST    VALUE
 getjoberrors     GET        janey      38
 getjoberrors     GET        kearney    33
@@ -145,15 +260,15 @@ getstorage       GET        ralph      39
 getstorage       GET        sherri     39
 getstorage       GET        wendell    43
 
-# dn query-mjob -f { "eq": [ "req.caller", "poseidon" ] }
+# dnl query-tree -f { "eq": [ "req.caller", "poseidon" ] }
 VALUE
   546
 
-# dn query-mjob -f { "eq": [ "req.caller", "poseidon" ] } -b req.caller
+# dnl query-tree -f { "eq": [ "req.caller", "poseidon" ] } -b req.caller
 REQ.CALLER VALUE
 poseidon     546
 
-# dn query-mjob -b latency[aggr=quantize]
+# dnl query-tree -b latency[aggr=quantize]
 
            value  ------------- Distribution ------------- count
                0 |                                         0
@@ -171,7 +286,7 @@ poseidon     546
             2048 |@@@@@                                    302
             4096 |                                         0
 
-# dn query-mjob -b latency[aggr=quantize],operation,host
+# dnl query-tree -b latency[aggr=quantize],operation,host
 LATENCY OPERATION           HOST    VALUE
       1 deletepublicstorage janey       2
       1 deletepublicstorage kearney     4
@@ -549,7 +664,7 @@ LATENCY OPERATION           HOST    VALUE
    2048 putpublicobject     sherri      7
    2048 putpublicobject     wendell     5
 
-# dn query-mjob -b host,operation,latency[aggr=quantize]
+# dnl query-tree -b host,operation,latency[aggr=quantize]
 janey, deletepublicstorage
            value  ------------- Distribution ------------- count
                0 |                                         0
@@ -1400,7 +1515,7 @@ wendell, putpublicobject
             2048 |@@@@@                                    5
             4096 |                                         0
 
-# dn query-mjob -b latency[aggr=lquantize,step=100]
+# dnl query-tree -b latency[aggr=lquantize,step=100]
 
            value  ------------- Distribution ------------- count
                0 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@            1647
@@ -1426,21 +1541,87 @@ wendell, putpublicobject
             2000 |@@@@@                                    302
             2100 |                                         0
 
-# dn query-mget
-VALUE
- 2250
-
-# dn query-mget -f { "eq": [ "req.method", "GET"] }
+# dnl query-tree
 VALUE
   556
 
-# dn query-mget -f { "eq": [ "req.method", "GET"] } -b operation
-OPERATION        VALUE
-getjoberrors       181
-getpublicstorage   176
-getstorage         199
+# dnl query-tree --counters -b timestamp[aggr=lquantize,step=86400]
 
-# dn query-mjob
+           value  ------------- Distribution ------------- count
+      1398902400 |@@@@@@@@@                                500
+      1398988800 |@@@@@@@@@                                500
+      1399075200 |@@@@@@@@@                                500
+      1399161600 |@@@@@@@@@                                500
+      1399248000 |@@@@                                     250
+      1399334400 |                                         0
+FindStart          ninputs:            1
+FindStart          noutputs:           1
+FindStatter        ninputs:          123
+FindStatter        noutputs:         123
+FindTraverser      ninputs:          123
+FindTraverser      noutputs:         123
+FindFeedback       ndirectories:       1
+FindFeedback       ninputs:          123
+FindFeedback       noutputs:         120
+FindFeedback       nregfiles:        120
+Index List         ninputs:          120
+Index List         noutputs:         120
+Index Result Aggregator ninputs:          120
+Index Result Aggregator noutputs:         120
+Query Passthrough  ninputs:          120
+Query Passthrough  noutputs:         120
+Flattener          ninputs:          120
+Flattener          noutputs:           1
+
+# dnl query-tree --counters --time-field=timestamp --after 2014-05-02 --before 2014-05-03
 VALUE
-  556
+  500
+PathEnumerator     noutputs:          24
+FindStart          ninputs:           24
+FindStart          noutputs:          24
+FindStatter        ninputs:           25
+FindStatter        noutputs:          25
+FindTraverser      ninputs:           25
+FindTraverser      noutputs:          25
+FindFeedback       ninputs:           25
+FindFeedback       noutputs:          24
+FindFeedback       nregfiles:         24
+Index List         ninputs:           24
+Index List         noutputs:          24
+Index Result Aggregator ninputs:           24
+Index Result Aggregator noutputs:          24
+Query Passthrough  ninputs:           24
+Query Passthrough  noutputs:          24
+Flattener          ninputs:           24
+Flattener          noutputs:           1
+
+# dnl query-tree --counters --time-field=timestamp -b timestamp[aggr=lquantize,step=60] --after 2014-05-02T04:05:06.123 --before 2014-05-02T04:15:10
+
+           value  ------------- Distribution ------------- count
+      1399003620 |@@@@@@@@@@@@@@@@@@@@                     2
+      1399003680 |                                         0
+      1399003740 |                                         0
+      1399003800 |                                         0
+      1399003860 |                                         0
+      1399003920 |                                         0
+      1399003980 |@@@@@@@@@@@@@@@@@@@@                     2
+      1399004040 |                                         0
+PathEnumerator     noutputs:           2
+FindStart          ninputs:            1
+FindStart          noutputs:           1
+FindStatter        ninputs:            2
+FindStatter        noutputs:           2
+FindTraverser      ninputs:            2
+FindTraverser      noutputs:           2
+FindFeedback       ninputs:            2
+FindFeedback       noutputs:           1
+FindFeedback       nregfiles:          1
+Index List         ninputs:            2
+Index List         noutputs:           2
+Index Result Aggregator ninputs:            2
+Index Result Aggregator noutputs:           2
+Query Passthrough  ninputs:            2
+Query Passthrough  noutputs:           2
+Flattener          ninputs:            2
+Flattener          noutputs:           1
 

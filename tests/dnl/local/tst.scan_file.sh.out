@@ -1,11 +1,11 @@
-# dn scan-file
+# dnl scan-file
 VALUE
   250
 
-# dn scan-file --points
+# dnl scan-file --points
 {"fields":{},"value":250}
 
-# dn scan-file -b operation
+# dnl scan-file -b operation
 OPERATION           VALUE
 deletepublicstorage    32
 deletestorage          42
@@ -18,7 +18,7 @@ putdirectory           19
 putobject              25
 putpublicobject        17
 
-# dn scan-file --points -b operation
+# dnl scan-file --points -b operation
 {"fields":{"operation":"deletepublicstorage"},"value":32}
 {"fields":{"operation":"deletestorage"},"value":42}
 {"fields":{"operation":"getjoberrors"},"value":18}
@@ -30,7 +30,7 @@ putpublicobject        17
 {"fields":{"operation":"putobject"},"value":25}
 {"fields":{"operation":"putpublicobject"},"value":17}
 
-# dn scan-file -b operation,req.method,host
+# dnl scan-file -b operation,req.method,host
 OPERATION           REQ.METHOD HOST    VALUE
 deletepublicstorage DELETE     janey       5
 deletepublicstorage DELETE     kearney    11
@@ -82,7 +82,7 @@ putpublicobject     PUT        ralph       3
 putpublicobject     PUT        sherri      4
 putpublicobject     PUT        wendell     4
 
-# dn scan-file --points -b operation,req.method,host
+# dnl scan-file --points -b operation,req.method,host
 {"fields":{"operation":"deletepublicstorage","req.method":"DELETE","host":"janey"},"value":5}
 {"fields":{"operation":"deletepublicstorage","req.method":"DELETE","host":"kearney"},"value":11}
 {"fields":{"operation":"deletepublicstorage","req.method":"DELETE","host":"ralph"},"value":7}
@@ -133,20 +133,20 @@ putpublicobject     PUT        wendell     4
 {"fields":{"operation":"putpublicobject","req.method":"PUT","host":"sherri"},"value":4}
 {"fields":{"operation":"putpublicobject","req.method":"PUT","host":"wendell"},"value":4}
 
-# dn scan-file -b req.caller
+# dnl scan-file -b req.caller
 REQ.CALLER VALUE
 admin         57
 null          69
 poseidon      64
 undefined     60
 
-# dn scan-file --points -b req.caller
+# dnl scan-file --points -b req.caller
 {"fields":{"req.caller":"admin"},"value":57}
 {"fields":{"req.caller":"null"},"value":69}
 {"fields":{"req.caller":"poseidon"},"value":64}
 {"fields":{"req.caller":"undefined"},"value":60}
 
-# dn scan-file -b operation,req.caller
+# dnl scan-file -b operation,req.caller
 OPERATION           REQ.CALLER VALUE
 deletepublicstorage admin          6
 deletepublicstorage null           8
@@ -189,7 +189,7 @@ putpublicobject     null           4
 putpublicobject     poseidon       4
 putpublicobject     undefined      5
 
-# dn scan-file --points -b operation,req.caller
+# dnl scan-file --points -b operation,req.caller
 {"fields":{"operation":"deletepublicstorage","req.caller":"admin"},"value":6}
 {"fields":{"operation":"deletepublicstorage","req.caller":"null"},"value":8}
 {"fields":{"operation":"deletepublicstorage","req.caller":"poseidon"},"value":9}
@@ -231,14 +231,14 @@ putpublicobject     undefined      5
 {"fields":{"operation":"putpublicobject","req.caller":"poseidon"},"value":4}
 {"fields":{"operation":"putpublicobject","req.caller":"undefined"},"value":5}
 
-# dn scan-file -f { "eq": [ "req.method", "GET" ] }
+# dnl scan-file -f { "eq": [ "req.method", "GET" ] }
 VALUE
    54
 
-# dn scan-file --points -f { "eq": [ "req.method", "GET" ] }
+# dnl scan-file --points -f { "eq": [ "req.method", "GET" ] }
 {"fields":{},"value":54}
 
-# dn scan-file -f { "eq": [ "req.method", "GET" ] } -b operation,req.method,host
+# dnl scan-file -f { "eq": [ "req.method", "GET" ] } -b operation,req.method,host
 OPERATION        REQ.METHOD HOST    VALUE
 getjoberrors     GET        kearney     4
 getjoberrors     GET        ralph       5
@@ -255,7 +255,7 @@ getstorage       GET        ralph       3
 getstorage       GET        sherri      3
 getstorage       GET        wendell     6
 
-# dn scan-file --points -f { "eq": [ "req.method", "GET" ] } -b operation,req.method,host
+# dnl scan-file --points -f { "eq": [ "req.method", "GET" ] } -b operation,req.method,host
 {"fields":{"operation":"getjoberrors","req.method":"GET","host":"kearney"},"value":4}
 {"fields":{"operation":"getjoberrors","req.method":"GET","host":"ralph"},"value":5}
 {"fields":{"operation":"getjoberrors","req.method":"GET","host":"sherri"},"value":5}
@@ -271,21 +271,21 @@ getstorage       GET        wendell     6
 {"fields":{"operation":"getstorage","req.method":"GET","host":"sherri"},"value":3}
 {"fields":{"operation":"getstorage","req.method":"GET","host":"wendell"},"value":6}
 
-# dn scan-file -f { "eq": [ "req.caller", "poseidon" ] }
+# dnl scan-file -f { "eq": [ "req.caller", "poseidon" ] }
 VALUE
    64
 
-# dn scan-file --points -f { "eq": [ "req.caller", "poseidon" ] }
+# dnl scan-file --points -f { "eq": [ "req.caller", "poseidon" ] }
 {"fields":{},"value":64}
 
-# dn scan-file -f { "eq": [ "req.caller", "poseidon" ] } -b req.caller
+# dnl scan-file -f { "eq": [ "req.caller", "poseidon" ] } -b req.caller
 REQ.CALLER VALUE
 poseidon      64
 
-# dn scan-file --points -f { "eq": [ "req.caller", "poseidon" ] } -b req.caller
+# dnl scan-file --points -f { "eq": [ "req.caller", "poseidon" ] } -b req.caller
 {"fields":{"req.caller":"poseidon"},"value":64}
 
-# dn scan-file -b latency[aggr=quantize]
+# dnl scan-file -b latency[aggr=quantize]
 
            value  ------------- Distribution ------------- count
                0 |                                         0
@@ -303,7 +303,7 @@ poseidon      64
             2048 |@@@@@                                    31
             4096 |                                         0
 
-# dn scan-file --points -b latency[aggr=quantize]
+# dnl scan-file --points -b latency[aggr=quantize]
 {"fields":{"latency":1024},"value":16}
 {"fields":{"latency":128},"value":8}
 {"fields":{"latency":16},"value":89}
@@ -313,7 +313,7 @@ poseidon      64
 {"fields":{"latency":4},"value":38}
 {"fields":{"latency":64},"value":4}
 
-# dn scan-file -b latency[aggr=quantize],operation,host
+# dnl scan-file -b latency[aggr=quantize],operation,host
 LATENCY OPERATION           HOST    VALUE
       1 deletepublicstorage janey       1
       1 deletepublicstorage kearney     1
@@ -477,7 +477,7 @@ LATENCY OPERATION           HOST    VALUE
    2048 putpublicobject     kearney     1
    2048 putpublicobject     sherri      1
 
-# dn scan-file --points -b latency[aggr=quantize],operation,host
+# dnl scan-file --points -b latency[aggr=quantize],operation,host
 {"fields":{"latency":1024,"operation":"deletepublicstorage","host":"kearney"},"value":1}
 {"fields":{"latency":1024,"operation":"deletepublicstorage","host":"ralph"},"value":1}
 {"fields":{"latency":1024,"operation":"deletepublicstorage","host":"sherri"},"value":1}
@@ -640,7 +640,7 @@ LATENCY OPERATION           HOST    VALUE
 {"fields":{"latency":64,"operation":"headstorage","host":"ralph"},"value":1}
 {"fields":{"latency":64,"operation":"putobject","host":"sherri"},"value":1}
 
-# dn scan-file -b host,operation,latency[aggr=quantize]
+# dnl scan-file -b host,operation,latency[aggr=quantize]
 janey, deletepublicstorage
            value  ------------- Distribution ------------- count
                0 |                                         0
@@ -1332,7 +1332,7 @@ wendell, putpublicobject
               16 |@@@@@@@@@@@@@@@@@@@@                     2
               32 |                                         0
 
-# dn scan-file --points -b host,operation,latency[aggr=quantize]
+# dnl scan-file --points -b host,operation,latency[aggr=quantize]
 {"fields":{"host":"janey","operation":"deletepublicstorage","latency":16},"value":1}
 {"fields":{"host":"janey","operation":"deletepublicstorage","latency":1},"value":1}
 {"fields":{"host":"janey","operation":"deletepublicstorage","latency":2048},"value":2}
@@ -1495,7 +1495,7 @@ wendell, putpublicobject
 {"fields":{"host":"wendell","operation":"putpublicobject","latency":16},"value":2}
 {"fields":{"host":"wendell","operation":"putpublicobject","latency":1},"value":2}
 
-# dn scan-file -b latency[aggr=lquantize,step=100]
+# dnl scan-file -b latency[aggr=lquantize,step=100]
 
            value  ------------- Distribution ------------- count
                0 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@          191
@@ -1540,7 +1540,7 @@ wendell, putpublicobject
             3900 |                                         3
             4000 |                                         0
 
-# dn scan-file --points -b latency[aggr=lquantize,step=100]
+# dnl scan-file --points -b latency[aggr=lquantize,step=100]
 {"fields":{"latency":0},"value":191}
 {"fields":{"latency":1000},"value":2}
 {"fields":{"latency":100},"value":12}

@@ -12,20 +12,20 @@ function list_indexes
 
 function index-tree
 {
-	echo "# dn index-tree --counters $@ ..." 
-	dn index-tree --counters "$@" "$DN_DATADIR" "$tmpdir"
+	echo "# dnl index-tree --counters $@ ..." 
+	dnl index-tree --counters "$@" "$DN_DATADIR" "$tmpdir"
 }
 
 function rollup-tree
 {
-	echo "# dn rollup-tree --counters $@ ..." 
-	dn rollup-tree --counters "$@" "$tmpdir"
+	echo "# dnl rollup-tree --counters $@ ..." 
+	dnl rollup-tree --counters "$@" "$tmpdir"
 }
 
 function query
 {
-	echo "# dn query-tree --counters $@"
-	dn query-tree --counters "$@" "$tmpdir"
+	echo "# dnl query-tree --counters $@"
+	dnl query-tree --counters "$@" "$tmpdir"
 }
 
 set -o errexit
