@@ -17,6 +17,10 @@ var sprintf = require('extsprintf').sprintf;
 var timeRequireDone = process.hrtime(timeStarted);
 
 var mod_config_local = require('../lib/config-local');
+var mod_dragnet = require('../lib/dragnet');
+var mod_dragnet_impl = require('../lib/dragnet-impl'); /* XXX */
+var SkinnerFlattener = require('../lib/skinner-flattener');
+var attrsParse = require('../lib/attr-parser');
 
 /*
  * Program name and usage
@@ -32,16 +36,19 @@ var dnUsage = [
 var dnCmds = {
     'datasource-add': dnCmdDatasourceAdd,
     'datasource-list': dnCmdDatasourceList,
-    'datasource-remove': dnCmdDatasourceRemove
+    'datasource-remove': dnCmdDatasourceRemove,
+    'scan': dnCmdScan
 };
 
 /*
  * Internal state
  */
 var dnTrackTime = false;	/* option to print program execution time */
+var dnDone = false;		/* see process.on('exit') handler */
 var dnLog;			/* bunyan logger */
 var dnConfigBackend;		/* dragnet configuration backend */
 var dnConfig;			/* dragnet configuration */
+var dnStream;			/* data stream (for debugging) */
 
 /*
  * Main program entry point.
@@ -106,20 +113,56 @@ function fatal(err)
 	process.exit(1);
 }
 
+/*
+ * warn(context, kind, error): emit a warning.  This isn't just for arbitrary
+ * warnings, but specifically "vstream"-style warnings, which may have a
+ * "context" and always have a "kind" and an "error".
+ */
+function warn(context, kind, error)
+{
+	console.error('warn: %s', error.message);
+	if (context !== null)
+		console.error('    at ' + context.label());
+}
+
 var dnOptions = [ {
+    'names': [ 'after', 'A' ],
+    'type': 'date'
+}, {
+    'names': [ 'assetroot' ],
+    'type': 'string',
+    'default': '/manta/public/dragnet/assets'
+}, {
     'names': [ 'backend' ],
     'type': 'string',
     'default': 'file'
 }, {
+    'names': [ 'before', 'B' ],
+    'type': 'date'
+}, {
+    'names': [ 'breakdowns', 'b' ],
+    'type': 'arrayOfString',
+    'default': []
+}, {
     'names': [ 'data-format' ],
     'type': 'string',
     'default': 'json'
+}, {
+    'names': [ 'dry-run', 'n' ],
+    'type': 'bool',
+    'default': false
 }, {
     'names': [ 'filter', 'f' ],
     'type': 'string'
 }, {
     'names': [ 'path' ],
     'type': 'string'
+}, {
+    'names': [ 'points' ],
+    'type': 'bool'
+}, {
+    'names': [ 'raw' ],
+    'type': 'bool'
 }, {
     'names': [ 'time-format' ],
     'type': 'string'
@@ -175,7 +218,33 @@ function dnParseArgs(argv, useroptions)
 		usage(ex);
 	}
 
+	dnExpandArray(rv, 'breakdowns');
 	return (rv);
+}
+
+/*
+ * Given "options" as returned by dashdash's parser and a "field" whose value
+ * should be an array of strings, split up each entry of the field's value on
+ * commas.  This is because we want all of these to be equivalent:
+ *
+ *    -b one,two,three
+ *    -b one,two -b three
+ *    -b one -b two -b three
+ */
+function dnExpandArray(options, field)
+{
+	if (!Array.isArray(options[field]))
+		return;
+
+	var tmp = options[field];
+	options[field] = [];
+	tmp.forEach(function (v) {
+		var list = attrsParse(v);
+		if (list instanceof Error)
+			fatal(new VError(list, 'bad value for "%s" ("%s")',
+			    field, v));
+		list.forEach(function (s) { options[field].push(s); });
+	});
 }
 
 /*
@@ -221,9 +290,13 @@ function dnCmdDatasourceAdd(cmdname, argv)
 		if (err)
 			fatal(err);
 		dnConfig = newconfig;
+		dnDone = true;
 	});
 }
 
+/*
+ * "dn datasource-remove ..." implementation
+ */
 function dnCmdDatasourceRemove(cmdname, argv)
 {
 	var options, dsname, newconfig;
@@ -236,9 +309,13 @@ function dnCmdDatasourceRemove(cmdname, argv)
 		if (err)
 			fatal(err);
 		dnConfig = newconfig;
+		dnDone = true;
 	});
 }
 
+/*
+ * "dn datasource-list ..." implementation
+ */
 function dnCmdDatasourceList(cmdname, argv)
 {
 	var options, columns, tab;
@@ -292,6 +369,387 @@ function dnCmdDatasourceList(cmdname, argv)
 			    JSON.stringify(v)));
 		});
 	});
+
+	dnDone = true;
 }
+
+/*
+ * Given a datasource by name, return a Datasource instance for it.
+ */
+function dnDatasourceBackend(dsname)
+{
+	var dsconfig, datasource;
+
+	dsconfig = dnConfig.datasourceGet(dsname);
+	if (dsconfig === null)
+		fatal('unknown datasource: "%s"', dsname);
+
+	datasource = mod_dragnet.datasourceFor({
+	    'log': dnLog,
+	    'dsconfig': dsconfig
+	});
+	if (datasource instanceof Error)
+		fatal(datasource);
+
+	return (datasource);
+}
+
+/*
+ * "dn scan ..." implementation
+ */
+function dnCmdScan(cmdname, argv)
+{
+	var options, dsname, ds;
+	var queryconfig, qc, scanargs, op;
+
+	options = dnParseArgs(argv, [
+	    /* general scan arguments */
+	    'before', 'after', 'filter', 'breakdowns', 'raw', 'points',
+
+	    /* manta-specific arguments */
+	    'assetroot', 'dry-run'
+	]);
+
+	dnCheckArgCount(options, 1);
+	dsname = options._args[0];
+	ds = dnDatasourceBackend(dsname);
+
+	queryconfig = {};
+	queryconfig.breakdowns = options.breakdowns;
+	if (options.after)
+		queryconfig.timeAfter = options.after;
+	if (options.before)
+		queryconfig.timeBefore = options.before;
+	if (options.time_field)
+		queryconfig.timeField = options.time_field;
+	if (options.filter) {
+		try {
+			queryconfig.filter = JSON.parse(options.filter);
+		} catch (ex) {
+			fatal(new VError(ex, 'invalid filter'));
+		}
+	}
+	qc = mod_dragnet.queryLoad({ 'query': queryconfig });
+	if (qc instanceof Error)
+		fatal(qc);
+
+	scanargs = {
+	    'query': qc,
+	    'dryRun': options.dry_run,
+	    'assetroot': options.assetroot
+	};
+	op = ds.scan(scanargs);
+	dnOutput(qc, options, op, function () { ds.close(); });
+}
+
+/*
+ * Given a stream in a "vstream" pipeline, walk the whole pipeline and attach a
+ * "warn" listener for each one that will print warnings to the console.
+ */
+function dnShowWarnings(op)
+{
+	op.vsHead().vsWalk(function (s) { s.on('warn', warn); });
+}
+
+/*
+ * Given a stream in a "vstream" pipeline, walk the whole pipeline and emit all
+ * non-zero counters for each stream.
+ */
+function dnPrintCounters(stream)
+{
+	stream.vsHead().vsWalk(function (s) {
+		s.vsDumpCounters(process.stderr);
+	});
+}
+
+/*
+ * Given a query configuration, command-line options, and a stream that will
+ * emit results, print out the results.  This takes care of looking at the "raw"
+ * and "points" options and flattening data points as needed.  This is used for
+ * both "query" and "scan" (which output the same thing).
+ */
+function dnOutput(query, options, op, callback)
+{
+	var output, stream;
+
+	op.on('error', fatal);
+
+	if (options.points) {
+		stream = op;
+	} else {
+		stream = new SkinnerFlattener({
+		    'skinnerOptions': mod_dragnet_impl.queryAggrStreamConfig(
+		        { 'query': query })
+		});
+		op.pipe(stream);
+	}
+
+	dnStream = stream;
+	output = options.raw || options.points ? dnOutputRaw : dnOutputPretty;
+	stream.on('data', function (rows) {
+		output({ 'query': query, 'rows': rows });
+	});
+
+	stream.on('end', function () {
+		if (options.counters)
+			dnPrintCounters(stream);
+		dnDone = true;
+		if (callback)
+			callback();
+	});
+}
+
+/*
+ * Outputter that emits data as plain JSON.
+ */
+function dnOutputRaw(results)
+{
+	console.log(JSON.stringify(results.rows));
+}
+
+/*
+ * Outputter that pretty-prints data.
+ */
+function dnOutputPretty(results)
+{
+	var coldefs, tablefields, quantized;
+
+	coldefs = results.query.qc_breakdowns;
+	quantized = coldefs.length > 0 && coldefs[coldefs.length - 1].aggr;
+
+	/*
+	 * Take a pass over the results and replace quantized values with the
+	 * real values.  Do the same to replace timestamps.
+	 */
+	coldefs.forEach(function (c, j) {
+		var bucketizer;
+
+		if (quantized && j == coldefs.length - 1)
+			return;
+
+		if (results.query.qc_bucketizers.hasOwnProperty(c.name)) {
+			bucketizer = results.query.qc_bucketizers[c.name];
+			results.rows.forEach(function (row) {
+				row[j] = bucketizer.bucketMin(row[j]);
+			});
+		}
+
+		if (c.hasOwnProperty('date')) {
+			results.rows.forEach(function (row) {
+				row[j] = new Date(row[j] * 1000).toISOString();
+			});
+		}
+	});
+
+	if (quantized) {
+		dnOutputPrettyQuantized(results);
+		return;
+	}
+
+	tablefields = coldefs.map(function (c) {
+		return ({
+		    'label': c.name.toUpperCase(),
+		    'width': c.name.toUpperCase().toString().length
+		});
+	});
+	tablefields.push({
+	    'label': 'VALUE',
+	    'width': 'VALUE'.length,
+	    'align': 'right'
+	});
+
+	if (results.rows.length === 0)
+		return;
+
+	if (results.rows.length == 1 && typeof (results.rows[0]) == 'number')
+		results.rows[0] = [ results.rows[0] ];
+
+	results.rows.forEach(function (row) {
+		var width;
+
+		mod_assert.ok(row.length == coldefs.length + 1);
+		coldefs.forEach(function (c, j) {
+			if (typeof (row[j]) == 'number')
+				tablefields[j].align = 'right';
+			else
+				mod_assert.equal('string', typeof (row[j]));
+
+			width = row[j].toString().length;
+			if (tablefields[j].width < width)
+				tablefields[j].width = width;
+		});
+
+		mod_assert.equal('number', typeof (row[row.length - 1]));
+		width = row[row.length - 1].toString().length;
+		if (tablefields[row.length - 1].width < width)
+			tablefields[row.length - 1].width = width;
+	});
+
+	mod_tab.emitTable({
+	    'columns': tablefields,
+	    'rows': results.rows.slice(0).sort(function (a, b) {
+		var j, d;
+
+		mod_assert.ok(Array.isArray(a) && Array.isArray(b));
+		mod_assert.equal(a.length, b.length);
+		for (j = 0; j < a.length; j++) {
+			if (typeof (a[j]) == 'string')
+				d = a[j].localeCompare(b[j]);
+			else
+				d = a[j] - b[j];
+
+			if (d !== 0)
+				return (d);
+		}
+
+		return (0);
+	    })
+	});
+}
+
+function dnOutputPrettyQuantized(results)
+{
+	var coldefs, quantizedcol, stream, bucketizer, last, distr, groups;
+
+	coldefs = results.query.qc_breakdowns;
+	quantizedcol = coldefs[coldefs.length - 1];
+	mod_assert.equal(typeof (quantizedcol.aggr), 'string');
+	bucketizer = results.query.qc_bucketizers[quantizedcol.name];
+	mod_assert.ok(bucketizer !== null);
+	stream = process.stdout;
+	groups = [];
+	last = null;
+	distr = [];
+
+	results.rows.forEach(function (row) {
+		var discrete_values = row.slice(0, coldefs.length - 1);
+		var key = discrete_values.join(', ') + '\n';
+		if (distr.length > 0 && key !== last) {
+			groups.push({
+			    'label': last,
+			    'distr': distr
+			});
+		}
+
+		if (key !== last) {
+			last = key;
+			distr = [];
+		}
+
+		distr.push([ row[coldefs.length - 1], row[coldefs.length] ]);
+	});
+
+	if (last !== null) {
+		groups.push({
+		    'label': last,
+		    'distr': distr
+		});
+	}
+
+	groups.sort(function (a, b) {
+		return (a.label.localeCompare(b.label));
+	});
+	groups.forEach(function (g, i) {
+		if (i !== 0)
+			stream.write('\n');
+		stream.write(g.label);
+		dnPrintDistribution(stream, g.distr, bucketizer,
+		    quantizedcol.hasOwnProperty('date'));
+	});
+}
+
+function dnPrintDistribution(stream, distr, bucketizer, asdate)
+{
+	var fmt, total, count, normalized, dots;
+	var bi, di, i, min;
+
+	if (asdate) {
+		stream.write('          ');
+		fmt = '  %24s |%s %s\n';
+	} else {
+		fmt = '%16s |%s %s\n';
+	}
+	stream.write('           ');
+	stream.write(
+	    'value  ------------- Distribution ------------- count\n');
+
+	if (distr.length === 0)
+		return;
+
+	total = 0;
+	for (di = 0; di < distr.length; di++)
+		total += distr[di][1];
+
+	/*
+	 * If there's a large number of empty buckets at the beginning, we're
+	 * probably lookint at large values (like timestamps) where the user
+	 * doesn't really want us to print all the leading empty buckets.
+	 */
+	if (distr[0][0] > 100)
+		bi = distr[0][0];
+	else
+		bi = 0;
+
+	for (di = 0; di < distr.length + 1; bi++) {
+		if (di == distr.length) {
+			count = 0;
+			di++;
+		} else if (distr[di][0] == bi) {
+			count = distr[di][1];
+			di++;
+		} else {
+			count = 0;
+		}
+
+		normalized = Math.round(40 * count / total);
+		dots = '';
+		for (i = 0; i < normalized; i++)
+			dots += '@';
+		for (; i < 40; i++)
+			dots += ' ';
+
+		min = bucketizer.bucketMin(bi);
+		stream.write(sprintf(fmt, asdate ?
+		    new Date(min * 1000).toISOString() : min.toString(),
+		    dots, count));
+	}
+}
+
+/*
+ * Add an "exit" listener to check whether we exited prematurely.  Node exits
+ * with success when there's no more work to do, but there are many kinds of
+ * bugs that result in accidentally leaving no work to do (as when failing to
+ * invoke a pipeline callback without scheduling additional work).  To make sure
+ * we don't accidentally do this, we explicitly set dnDone when we're ready to
+ * exit and we consider it a serious error if we're about to exit 0 with dnDone
+ * false.
+ *
+ * This implementation does not affect --abort-on-uncaught-exception since that
+ * will trigger an abort before we get here.  Nor does this paper over uncaught
+ * exceptions, since we'll come through here with a non-zero code, won't do
+ * anything, and Node will dump the exception like it normally does.
+ */
+process.on('exit', function (code) {
+	if (dnTrackTime) {
+		var timeDone = process.hrtime(timeStarted);
+		console.error('timing stats:');
+		console.error('    require: ', timeRequireDone);
+		console.error('    total:   ', timeDone);
+	}
+
+	if (code === 0 && !dnDone) {
+		console.error('ERROR: internal error: premature exit');
+		if (dnStream !== undefined) {
+			dnStream.vsHead().vsWalk(function (s) {
+				s.vsDumpCounters(process.stderr);
+			});
+			console.error('----');
+			dnStream.vsHead().vsWalk(function (s) {
+				s.vsDumpDebug(process.stderr);
+			});
+		}
+		process.exit(1);
+	}
+});
 
 main();
