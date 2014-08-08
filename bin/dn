@@ -37,6 +37,9 @@ var dnCmds = {
     'datasource-add': dnCmdDatasourceAdd,
     'datasource-list': dnCmdDatasourceList,
     'datasource-remove': dnCmdDatasourceRemove,
+    'metric-add': dnCmdMetricAdd,
+    'metric-remove': dnCmdMetricRemove,
+    'metric-list': dnCmdMetricList,
     'scan': dnCmdScan
 };
 
@@ -85,7 +88,7 @@ function main()
 	dnConfigBackend = mod_config_local.createConfigBackend();
 	dnConfigBackend.load(function (err, config) {
 		if (err && err['code'] != 'ENOENT')
-			console.error('%s: warn: %s', dnArg0, err.message);
+			fatal(err);
 		dnConfig = config;
 		cmdfunc(cmdname, process.argv.slice(optind + 1));
 	});
@@ -147,6 +150,9 @@ var dnOptions = [ {
     'names': [ 'data-format' ],
     'type': 'string',
     'default': 'json'
+}, {
+    'names': [ 'datasource' ],
+    'type': 'string'
 }, {
     'names': [ 'dry-run', 'n' ],
     'type': 'bool',
@@ -219,6 +225,13 @@ function dnParseArgs(argv, useroptions)
 	}
 
 	dnExpandArray(rv, 'breakdowns');
+	if (rv.filter) {
+		try {
+			rv.filter = JSON.parse(rv.filter);
+		} catch (ex) {
+			usage(new VError(ex, 'invalid filter'));
+		}
+	}
 	return (rv);
 }
 
@@ -243,7 +256,11 @@ function dnExpandArray(options, field)
 		if (list instanceof Error)
 			fatal(new VError(list, 'bad value for "%s" ("%s")',
 			    field, v));
-		list.forEach(function (s) { options[field].push(s); });
+		list.forEach(function (s) {
+			if (!s.field)
+				s.field = s.name;
+			options[field].push(s);
+		});
 	});
 }
 
@@ -305,6 +322,8 @@ function dnCmdDatasourceRemove(cmdname, argv)
 	dnCheckArgCount(options, 1);
 	dsname = options._args[0];
 	newconfig = dnConfig.datasourceRemove(dsname);
+	if (newconfig instanceof Error)
+		fatal(newconfig);
 	dnConfigBackend.save(newconfig.serialize(), function (err) {
 		if (err)
 			fatal(err);
@@ -395,6 +414,106 @@ function dnDatasourceBackend(dsname)
 }
 
 /*
+ * "dn metric-add ..." implementation
+ */
+function dnCmdMetricAdd(cmdname, argv)
+{
+	var options, metname, mconfig, newconfig;
+
+	options = dnParseArgs(argv, [ 'breakdowns', 'datasource', 'filter' ]);
+	if (!options.datasource)
+		usage(new VError('"datasource" option is required'));
+
+	dnCheckArgCount(options, 1);
+	metname = options._args[0];
+	mconfig = {
+	    'name': metname,
+	    'datasource': options.datasource,
+	    'filter': options.filter || null,
+	    'breakdowns': options.breakdowns
+	};
+
+	newconfig = dnConfig.metricAdd(mconfig);
+	if (newconfig instanceof Error)
+		fatal(newconfig);
+
+	dnConfigBackend.save(newconfig.serialize(), function (err) {
+		if (err)
+			fatal(err);
+		dnConfig = newconfig;
+		dnDone = true;
+	});
+}
+
+/*
+ * "dn metric-remove ..." implementation
+ */
+function dnCmdMetricRemove(cmdname, argv)
+{
+	var options, metname, newconfig;
+
+	options = dnParseArgs(argv, []);
+	dnCheckArgCount(options, 1);
+	metname = options._args[0];
+	newconfig = dnConfig.metricRemove(metname);
+	if (newconfig instanceof Error)
+		fatal(newconfig);
+	dnConfigBackend.save(newconfig.serialize(), function (err) {
+		if (err)
+			fatal(err);
+		dnConfig = newconfig;
+		dnDone = true;
+	});
+}
+
+/*
+ * "dn metric-list ..." implementation
+ */
+function dnCmdMetricList(cmdname, argv)
+{
+	var options, columns, tab;
+
+	options = dnParseArgs(argv, [ 'verbose' ]);
+	dnCheckArgCount(options, 0);
+
+	columns = [ {
+	    'label': 'DATASOURCE',
+	    'width': 20
+	}, {
+	    'label': 'METRIC',
+	    'width': 20
+	} ];
+	tab = new mod_tab.TableOutputStream({
+	    'omitHeader': true,
+	    'columns': columns
+	});
+	tab.writeHeader();
+	dnConfig.metricList(function (metname, mconfig) {
+		tab.writeRow({
+		    'DATASOURCE': mconfig.m_datasource,
+		    'METRIC': metname
+		});
+
+		if (!options.verbose)
+			return;
+
+		if (mconfig.m_filter !== null) {
+			console.log(sprintf('%4s%-11s %s', '', 'filter:',
+			    JSON.stringify(mconfig.m_filter)));
+		}
+
+		if (mconfig.m_breakdowns.length === 0)
+			return;
+
+		console.log(sprintf('%4s%-11s %s', '', 'breakdowns:',
+		    mconfig.m_breakdowns.map(
+		        function (b) { return (b.b_name); }).join(', ')));
+	});
+
+	dnDone = true;
+}
+
+/*
  * "dn scan ..." implementation
  */
 function dnCmdScan(cmdname, argv)
@@ -422,13 +541,8 @@ function dnCmdScan(cmdname, argv)
 		queryconfig.timeBefore = options.before;
 	if (options.time_field)
 		queryconfig.timeField = options.time_field;
-	if (options.filter) {
-		try {
-			queryconfig.filter = JSON.parse(options.filter);
-		} catch (ex) {
-			fatal(new VError(ex, 'invalid filter'));
-		}
-	}
+	if (options.filter)
+		queryconfig.filter = options.filter;
 	qc = mod_dragnet.queryLoad({ 'query': queryconfig });
 	if (qc instanceof Error)
 		fatal(qc);
