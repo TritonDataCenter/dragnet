@@ -9,6 +9,7 @@ var timeStarted = process.hrtime();
 var mod_assert = require('assert');
 var mod_bunyan = require('bunyan');
 var mod_dashdash = require('dashdash');
+var mod_fs = require('fs');
 var mod_jsprim = require('jsprim');
 var mod_path = require('path');
 var mod_tab = require('tab');
@@ -40,6 +41,7 @@ var dnCmds = {
     'metric-add': dnCmdMetricAdd,
     'metric-remove': dnCmdMetricRemove,
     'metric-list': dnCmdMetricList,
+    'build': dnCmdBuild,
     'scan': dnCmdScan
 };
 
@@ -147,6 +149,9 @@ var dnOptions = [ {
     'type': 'arrayOfString',
     'default': []
 }, {
+    'names': [ 'counters' ],
+    'type': 'bool'
+}, {
     'names': [ 'data-format' ],
     'type': 'string',
     'default': 'json'
@@ -159,6 +164,16 @@ var dnOptions = [ {
     'default': false
 }, {
     'names': [ 'filter', 'f' ],
+    'type': 'string'
+}, {
+    'names': [ 'interval', 'i' ],
+    'type': 'string',
+    'default': 'day'
+}, {
+    'names': [ 'index-config' ],
+    'type': 'string'
+}, {
+    'names': [ 'index-path' ],
     'type': 'string'
 }, {
     'names': [ 'path' ],
@@ -284,7 +299,8 @@ function dnCmdDatasourceAdd(cmdname, argv)
 	var options, dsname, dsconfig, newconfig;
 
 	options = dnParseArgs(argv,
-	    [ 'backend', 'data-format', 'filter', 'path', 'time-format' ]);
+	    [ 'backend', 'data-format', 'filter', 'path', 'time-format',
+	        'index-path' ]);
 	if (!options.path)
 		usage(new Error('"path" option is required'));
 
@@ -295,6 +311,7 @@ function dnCmdDatasourceAdd(cmdname, argv)
 	    'backend': options.backend,
 	    'backend_config': {
 	        'path': options.path,
+		'indexPath': options.index_path,
 		'timeFormat': options.time_format
 	    },
 	    'filter': options.filter || null,
@@ -390,27 +407,6 @@ function dnCmdDatasourceList(cmdname, argv)
 	});
 
 	dnDone = true;
-}
-
-/*
- * Given a datasource by name, return a Datasource instance for it.
- */
-function dnDatasourceBackend(dsname)
-{
-	var dsconfig, datasource;
-
-	dsconfig = dnConfig.datasourceGet(dsname);
-	if (dsconfig === null)
-		fatal('unknown datasource: "%s"', dsname);
-
-	datasource = mod_dragnet.datasourceFor({
-	    'log': dnLog,
-	    'dsconfig': dsconfig
-	});
-	if (datasource instanceof Error)
-		fatal(datasource);
-
-	return (datasource);
 }
 
 /*
@@ -514,6 +510,65 @@ function dnCmdMetricList(cmdname, argv)
 }
 
 /*
+ * "dn build ..." implementation
+ */
+function dnCmdBuild(cmdname, argv)
+{
+	var options, dsname, buildargs;
+
+	options = dnParseArgs(argv, [
+	    /* general options */
+	    'after', 'before', 'dry-run', 'index-config', 'interval',
+
+	    /* manta-specific options */
+	    'assetroot'
+	]);
+	dnCheckArgCount(options, 1);
+	dsname = options._args[0];
+
+	buildargs = {
+	    'log': dnLog,
+	    'config': dnConfig,
+	    'dsname': dsname,
+	    'dryRun': options.dry_run,
+	    'interval': options.interval,
+	    'timeBefore': options.before || null,
+	    'timeAfter': options.after || null,
+	    'assetroot': options.assetroot
+	};
+	if (options.index_config) {
+		mod_fs.readFile(options.index_config, function (err, contents) {
+			var parsed;
+			if (err)
+				fatal(new VError(err, 'read "%s"',
+				    options.index_config));
+
+			try {
+				parsed = JSON.parse(contents);
+			} catch (ex) {
+				fatal(new VError(ex, 'parse "%s"',
+				    options.index_config));
+			}
+
+			buildargs['indexConfig'] = parsed;
+			dnBuild(dsname, buildargs);
+		});
+	} else {
+		dnBuild(dsname, buildargs);
+	}
+}
+
+function dnBuild(dsname, buildargs)
+{
+	dnStream = mod_dragnet.build(buildargs, function (err) {
+		if (err)
+			fatal(err);
+		console.error('indexes for "%s" built', dsname);
+		dnDone = true;
+	});
+}
+
+/*
  * "dn scan ..." implementation
  */
 function dnCmdScan(cmdname, argv)
@@ -524,6 +579,7 @@ function dnCmdScan(cmdname, argv)
 	options = dnParseArgs(argv, [
 	    /* general scan arguments */
 	    'before', 'after', 'filter', 'breakdowns', 'raw', 'points',
+	    'counters',
 
 	    /* manta-specific arguments */
 	    'assetroot', 'dry-run'
@@ -531,7 +587,13 @@ function dnCmdScan(cmdname, argv)
 
 	dnCheckArgCount(options, 1);
 	dsname = options._args[0];
-	ds = dnDatasourceBackend(dsname);
+	ds = mod_dragnet.datasourceForName({
+	    'log': dnLog,
+	    'config': dnConfig,
+	    'dsname': dsname
+	});
+	if (ds instanceof Error)
+		fatal(ds);
 
 	queryconfig = {};
 	queryconfig.breakdowns = options.breakdowns;
