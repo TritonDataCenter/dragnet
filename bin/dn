@@ -42,6 +42,7 @@ var dnCmds = {
     'metric-remove': dnCmdMetricRemove,
     'metric-list': dnCmdMetricList,
     'build': dnCmdBuild,
+    'query': dnCmdQuery,
     'scan': dnCmdScan
 };
 
@@ -568,16 +569,41 @@ function dnBuild(dsname, buildargs)
 	});
 }
 
+function dnQueryConfig(options)
+{
+	var queryconfig, qc;
+
+	queryconfig = {};
+	queryconfig.breakdowns = options.breakdowns;
+	if (options.after)
+		queryconfig.timeAfter = options.after;
+	if (options.before)
+		queryconfig.timeBefore = options.before;
+	if (options.time_field)
+		queryconfig.timeField = options.time_field;
+	if (options.filter)
+		queryconfig.filter = options.filter;
+	qc = mod_dragnet.queryLoad({ 'query': queryconfig });
+	if (qc instanceof Error)
+		fatal(qc);
+
+	return ({
+	    'query': qc,
+	    'dryRun': options.dry_run,
+	    'assetroot': options.assetroot
+	});
+}
+
 /*
  * "dn scan ..." implementation
  */
 function dnCmdScan(cmdname, argv)
 {
 	var options, dsname, ds;
-	var queryconfig, qc, scanargs, op;
+	var scanargs, op;
 
 	options = dnParseArgs(argv, [
-	    /* general scan arguments */
+	    /* general scan/query arguments */
 	    'before', 'after', 'filter', 'breakdowns', 'raw', 'points',
 	    'counters',
 
@@ -595,27 +621,41 @@ function dnCmdScan(cmdname, argv)
 	if (ds instanceof Error)
 		fatal(ds);
 
-	queryconfig = {};
-	queryconfig.breakdowns = options.breakdowns;
-	if (options.after)
-		queryconfig.timeAfter = options.after;
-	if (options.before)
-		queryconfig.timeBefore = options.before;
-	if (options.time_field)
-		queryconfig.timeField = options.time_field;
-	if (options.filter)
-		queryconfig.filter = options.filter;
-	qc = mod_dragnet.queryLoad({ 'query': queryconfig });
-	if (qc instanceof Error)
-		fatal(qc);
-
-	scanargs = {
-	    'query': qc,
-	    'dryRun': options.dry_run,
-	    'assetroot': options.assetroot
-	};
+	scanargs = dnQueryConfig(options);
 	op = ds.scan(scanargs);
-	dnOutput(qc, options, op, function () { ds.close(); });
+	dnOutput(scanargs.query, options, op, function () { ds.close(); });
+}
+
+/*
+ * "dn query ..." implementation
+ */
+function dnCmdQuery(cmdname, argv)
+{
+	var options, dsname, ds;
+	var queryargs, op;
+
+	options = dnParseArgs(argv, [
+	    /* general scan/query arguments */
+	    'before', 'after', 'filter', 'breakdowns', 'raw', 'points',
+	    'counters',
+
+	    /* manta-specific arguments */
+	    'assetroot', 'dry-run'
+	]);
+
+	dnCheckArgCount(options, 1);
+	dsname = options._args[0];
+	ds = mod_dragnet.datasourceForName({
+	    'log': dnLog,
+	    'config': dnConfig,
+	    'dsname': dsname
+	});
+	if (ds instanceof Error)
+		fatal(ds);
+
+	queryargs = dnQueryConfig(options);
+	op = ds.query(queryargs);
+	dnOutput(queryargs.query, options, op, function () { ds.close(); });
 }
 
 /*
