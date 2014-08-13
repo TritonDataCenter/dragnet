@@ -186,6 +186,9 @@ var dnOptions = [ {
     'names': [ 'raw' ],
     'type': 'bool'
 }, {
+    'names': [ 'time-field' ],
+    'type': 'string'
+}, {
     'names': [ 'time-format' ],
     'type': 'string'
 }, {
@@ -270,11 +273,19 @@ function dnExpandArray(options, field)
 	tmp.forEach(function (v) {
 		var list = attrsParse(v);
 		if (list instanceof Error)
-			fatal(new VError(list, 'bad value for "%s" ("%s")',
+			usage(new VError(list, 'bad value for "%s" ("%s")',
 			    field, v));
 		list.forEach(function (s) {
 			if (!s.field)
 				s.field = s.name;
+
+			if (s.hasOwnProperty('step')) {
+				s.step = parseInt(s.step, 10);
+				if (isNaN(s.step))
+					usage(new VError('field "%s": "step" ' +
+					    'must be a number', s.name));
+			}
+
 			options[field].push(s);
 		});
 	});
@@ -300,8 +311,8 @@ function dnCmdDatasourceAdd(cmdname, argv)
 	var options, dsname, dsconfig, newconfig;
 
 	options = dnParseArgs(argv,
-	    [ 'backend', 'data-format', 'filter', 'path', 'time-format',
-	        'index-path' ]);
+	    [ 'backend', 'data-format', 'filter', 'path', 'time-field',
+		'time-format', 'index-path' ]);
 	if (!options.path)
 		usage(new Error('"path" option is required'));
 
@@ -313,7 +324,8 @@ function dnCmdDatasourceAdd(cmdname, argv)
 	    'backend_config': {
 	        'path': options.path,
 		'indexPath': options.index_path,
-		'timeFormat': options.time_format
+		'timeFormat': options.time_format,
+		'timeField': options.time_field
 	    },
 	    'filter': options.filter || null,
 	    'dataFormat': options.data_format
@@ -590,6 +602,7 @@ function dnQueryConfig(options)
 	return ({
 	    'query': qc,
 	    'dryRun': options.dry_run,
+	    'interval': options.interval,
 	    'assetroot': options.assetroot
 	});
 }
@@ -637,7 +650,7 @@ function dnCmdQuery(cmdname, argv)
 	options = dnParseArgs(argv, [
 	    /* general scan/query arguments */
 	    'before', 'after', 'filter', 'breakdowns', 'raw', 'points',
-	    'counters',
+	    'counters', 'interval',
 
 	    /* manta-specific arguments */
 	    'assetroot', 'dry-run'
