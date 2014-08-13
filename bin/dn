@@ -42,6 +42,8 @@ var dnCmds = {
     'metric-remove': dnCmdMetricRemove,
     'metric-list': dnCmdMetricList,
     'build': dnCmdBuild,
+    'index-scan': dnCmdIndexScan,
+    'index-read': dnCmdIndexRead,
     'query': dnCmdQuery,
     'scan': dnCmdScan
 };
@@ -522,6 +524,26 @@ function dnCmdMetricList(cmdname, argv)
 	dnDone = true;
 }
 
+function dnReadIndexConfig(filename, callback)
+{
+	mod_fs.readFile(filename, function (err, contents) {
+		var parsed;
+		if (err) {
+			callback(new VError(err, 'read "%s"', filename));
+			return;
+		}
+
+		try {
+			parsed = JSON.parse(contents);
+		} catch (ex) {
+			callback(new VError(ex, 'parse "%s"', filename));
+			return;
+		}
+
+		callback(null, parsed);
+	});
+}
+
 /*
  * "dn build ..." implementation
  */
@@ -549,21 +571,13 @@ function dnCmdBuild(cmdname, argv)
 	    'timeAfter': options.after || null,
 	    'assetroot': options.assetroot
 	};
+
 	if (options.index_config) {
-		mod_fs.readFile(options.index_config, function (err, contents) {
-			var parsed;
+		dnReadIndexConfig(options.index_config, function (err, config) {
 			if (err)
-				fatal(new VError(err, 'read "%s"',
-				    options.index_config));
+				fatal(err);
 
-			try {
-				parsed = JSON.parse(contents);
-			} catch (ex) {
-				fatal(new VError(ex, 'parse "%s"',
-				    options.index_config));
-			}
-
-			buildargs['indexConfig'] = parsed;
+			buildargs['indexConfig'] = config;
 			dnBuild(dsname, buildargs);
 		});
 	} else {
@@ -608,35 +622,89 @@ function dnQueryConfig(options)
 }
 
 /*
- * "dn scan ..." implementation
+ * "dn index-read ..." implementation
  */
-function dnCmdScan(cmdname, argv)
+function dnCmdIndexRead(cmdname, argv)
 {
-	var options, dsname, ds;
-	var scanargs, op;
+	var options, dsname, opargs;
+
+	options = dnParseArgs(argv, [ 'index-config', 'interval' ]);
+	dnCheckArgCount(options, 1);
+	dsname = options._args[0];
+
+	opargs = {
+	    'log': dnLog,
+	    'config': dnConfig,
+	    'dsname': dsname,
+	    'interval': options.interval
+	};
+	if (options.index_config) {
+		dnReadIndexConfig(options.index_config,
+		    function (err, indexConfig) {
+			if (err)
+				fatal(err);
+
+			opargs.indexConfig = indexConfig;
+			dnIndexRead(opargs);
+		    });
+	} else {
+		dnIndexRead(opargs);
+	}
+}
+
+function dnIndexRead(opargs)
+{
+	mod_dragnet.indexRead(opargs, function (err) {
+		if (err)
+			fatal(err);
+		dnDone = true;
+	});
+}
+
+/*
+ * "dn index-scan ..." implementation
+ */
+function dnCmdIndexScan(cmdname, argv)
+{
+	var options, dsname, opargs;
 
 	options = dnParseArgs(argv, [
 	    /* general scan/query arguments */
-	    'before', 'after', 'filter', 'breakdowns', 'raw', 'points',
-	    'counters',
-
-	    /* manta-specific arguments */
-	    'assetroot', 'dry-run'
+	    'before', 'after', 'filter', 'breakdowns',
+	    'counters', 'index-config', 'interval'
 	]);
 
+	options.points = true;
 	dnCheckArgCount(options, 1);
 	dsname = options._args[0];
-	ds = mod_dragnet.datasourceForName({
+
+	opargs = {
 	    'log': dnLog,
 	    'config': dnConfig,
-	    'dsname': dsname
-	});
-	if (ds instanceof Error)
-		fatal(ds);
+	    'dsname': dsname,
+	    'interval': options.interval,
+	    'timeBefore': options.before || null,
+	    'timeAfter': options.after || null
+	};
+	if (options.index_config) {
+		dnReadIndexConfig(options.index_config,
+		    function (err, indexConfig) {
+			if (err)
+				fatal(err);
 
-	scanargs = dnQueryConfig(options);
-	op = ds.scan(scanargs);
-	dnOutput(scanargs.query, options, op, function () { ds.close(); });
+			opargs.indexConfig = indexConfig;
+			dnIndexScan(opargs, options);
+		    });
+	} else {
+		dnIndexScan(opargs, options);
+	}
+}
+
+function dnIndexScan(opargs, options)
+{
+	var op;
+	dnStream = op = mod_dragnet.indexScan(opargs);
+	dnOutput(null, options, op);
 }
 
 /*
@@ -669,6 +737,38 @@ function dnCmdQuery(cmdname, argv)
 	queryargs = dnQueryConfig(options);
 	op = ds.query(queryargs);
 	dnOutput(queryargs.query, options, op, function () { ds.close(); });
+}
+
+/*
+ * "dn scan ..." implementation
+ */
+function dnCmdScan(cmdname, argv)
+{
+	var options, dsname, ds;
+	var scanargs, op;
+
+	options = dnParseArgs(argv, [
+	    /* general scan/query arguments */
+	    'before', 'after', 'filter', 'breakdowns', 'raw', 'points',
+	    'counters',
+
+	    /* manta-specific arguments */
+	    'assetroot', 'dry-run'
+	]);
+
+	dnCheckArgCount(options, 1);
+	dsname = options._args[0];
+	ds = mod_dragnet.datasourceForName({
+	    'log': dnLog,
+	    'config': dnConfig,
+	    'dsname': dsname
+	});
+	if (ds instanceof Error)
+		fatal(ds);
+
+	scanargs = dnQueryConfig(options);
+	op = ds.scan(scanargs);
+	dnOutput(scanargs.query, options, op, function () { ds.close(); });
 }
 
 /*
