@@ -197,6 +197,9 @@ var dnOptions = [ {
     'names': [ 'verbose', 'v' ],
     'type': 'bool',
     'default': false
+}, {
+    'names': [ 'warnings' ],
+    'type': 'bool'
 } ];
 
 /*
@@ -587,11 +590,13 @@ function dnCmdBuild(cmdname, argv)
 
 function dnBuild(dsname, buildargs)
 {
-	dnStream = mod_dragnet.build(buildargs, function (err) {
+	dnStream = mod_dragnet.build(buildargs, function (err, ds) {
 		if (err)
 			fatal(err);
-		console.error('indexes for "%s" built', dsname);
+		if (!buildargs.dryRun)
+			console.error('indexes for "%s" built', dsname);
 		dnDone = true;
+		ds.close();
 	});
 }
 
@@ -605,10 +610,9 @@ function dnQueryConfig(options)
 		queryconfig.timeAfter = options.after;
 	if (options.before)
 		queryconfig.timeBefore = options.before;
-	if (options.time_field)
-		queryconfig.timeField = options.time_field;
 	if (options.filter)
 		queryconfig.filter = options.filter;
+
 	qc = mod_dragnet.queryLoad({ 'query': queryconfig });
 	if (qc instanceof Error)
 		fatal(qc);
@@ -750,7 +754,7 @@ function dnCmdScan(cmdname, argv)
 	options = dnParseArgs(argv, [
 	    /* general scan/query arguments */
 	    'before', 'after', 'filter', 'breakdowns', 'raw', 'points',
-	    'counters',
+	    'counters', 'warnings',
 
 	    /* manta-specific arguments */
 	    'assetroot', 'dry-run'
@@ -813,11 +817,20 @@ function dnOutput(query, options, op, callback)
 		op.pipe(stream);
 	}
 
-	dnStream = stream;
-	output = options.raw || options.points ? dnOutputRaw : dnOutputPretty;
-	stream.on('data', function (rows) {
-		output({ 'query': query, 'rows': rows });
-	});
+	if (!options.dry_run) {
+		dnStream = stream;
+		output = options.raw || options.points ?
+		    dnOutputRaw : dnOutputPretty;
+
+		stream.on('data', function (rows) {
+			output({ 'query': query, 'rows': rows });
+		});
+
+		if (options.warnings)
+			dnShowWarnings(op);
+	} else {
+		stream.on('data', function () {});
+	}
 
 	stream.on('end', function () {
 		if (options.counters)
