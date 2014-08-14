@@ -8,7 +8,7 @@
 file=$DN_DATADIR/2014/05-01/one.log
 function try
 {
-	if dnl scan-file "$@" $file 2>&1; then
+	if dn scan "$@" input 2>&1; then
 		echo "unexpected success (args: $@)"
 		exit 1
 	fi
@@ -16,9 +16,15 @@ function try
 	return 0
 }
 
+dn_clear_config
+dn datasource-add --path=$file input
 try -b host -b req.method,x[=bar]
 try -b host -b req.method,[]
 try -b host -b req.method,foo[
 try -f '{'
 try -f '{ "junk": [ "foo", "bar" ] }'
-try --data-format=junk
+
+dn datasource-remove input
+dn datasource-add --path=$file --data-format=junk input
+try
+dn_clear_config

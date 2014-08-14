@@ -1,0 +1,10 @@
+dn: bad value for "breakdowns" ("req.method,x[=bar]"): missing attribute name
+usage: dn SUBCOMMAND [SUBCOMMAND_ARGS]
+dn: bad value for "breakdowns" ("req.method,[]"): missing field name
+usage: dn SUBCOMMAND [SUBCOMMAND_ARGS]
+dn: bad value for "breakdowns" ("req.method,foo["): unexpected end of string
+usage: dn SUBCOMMAND [SUBCOMMAND_ARGS]
+dn: invalid filter: Unexpected end of input
+usage: dn SUBCOMMAND [SUBCOMMAND_ARGS]
+dn: invalid query: invalid filter: predicate { junk: [ 'foo', 'bar' ] }: unknown operator "junk"
+dn: unsupported format: "junk"
