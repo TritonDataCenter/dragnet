@@ -42,6 +42,7 @@ var dnCmds = {
     'metric-remove': dnCmdMetricRemove,
     'metric-list': dnCmdMetricList,
     'build': dnCmdBuild,
+    'index-config': dnCmdIndexConfig,
     'index-scan': dnCmdIndexScan,
     'index-read': dnCmdIndexRead,
     'query': dnCmdQuery,
@@ -623,6 +624,28 @@ function dnQueryConfig(options)
 	    'interval': options.interval,
 	    'assetroot': options.assetroot
 	});
+}
+
+/*
+ * "dn index-config" implementation
+ */
+function dnCmdIndexConfig(cmdname, argv)
+{
+	var options, dsname, cfg;
+
+	options = dnParseArgs(argv, []);
+	dnCheckArgCount(options, 1);
+	dsname = options._args[0];
+
+	cfg = mod_dragnet.indexConfig({
+	    'config': dnConfig,
+	    'dsname': dsname
+	});
+	if (cfg instanceof Error)
+		fatal(cfg);
+
+	console.log(JSON.stringify(cfg));
+	dnDone = true;
 }
 
 /*
