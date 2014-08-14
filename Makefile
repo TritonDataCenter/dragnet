@@ -21,7 +21,6 @@ JSSTYLE		 = jsstyle
 JSON_FILES	 = package.json
 JS_FILES	:= $(shell find lib schema -name '*.js')
 JS_FILES	+= bin/dn \
-		   bin/dnl \
 		   tools/pathenum \
 		   tools/mktestdata \
 		   tools/validate-schema
