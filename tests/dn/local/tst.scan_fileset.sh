@@ -9,15 +9,18 @@ set -o errexit
 
 function scan
 {
-	echo "# dnl scan-tree" "$@"
-	dnl scan-tree "$@" $DN_DATADIR
+	echo "# dn scan" "$@"
+	dn scan "$@" test_input
 	echo
 
-	echo "# dnl scan-tree --points" "$@"
-	dnl scan-tree --points "$@" $DN_DATADIR | sort -d
+	echo "# dn scan --points" "$@"
+	dn scan --points "$@" test_input | sort -d
 	echo
 }
 
+dn_clear_config
+dn datasource-add test_input --path=$DN_DATADIR \
+    --time-format=%Y/%m-%d --time-field=time
 . $(dirname $0)/../scan_testcases.sh
 
 #
@@ -25,9 +28,16 @@ function scan
 # When comparing output, it's important to verify the correct number of records
 # returned as well as the expected number of files scanned.
 #
+scan --dry-run -b 'timestamp[date,field=time,aggr=lquantize,step=86400]' 2>&1
 scan --counters -b 'timestamp[date,field=time,aggr=lquantize,step=86400]' 2>&1
-scan --counters --time-format=%Y/%m-%d --time-field=time \
-    --after 2014-05-02 --before 2014-05-03 2>&1
-scan --counters --time-format=%Y/%m-%d \
+
+scan --dry-run --counters --after 2014-05-02 --before 2014-05-03 2>&1
+scan --counters --after 2014-05-02 --before 2014-05-03 2>&1
+
+scan --dry-run --counters  \
     -b 'timestamp[date,field=time,aggr=lquantize,step=60]' \
     --after "2014-05-02T04:05:06.123" --before "2014-05-02T04:15:10" 2>&1
+scan --counters -b 'timestamp[date,field=time,aggr=lquantize,step=60]' \
+    --after "2014-05-02T04:05:06.123" --before "2014-05-02T04:15:10" 2>&1
+
+dn_clear_config

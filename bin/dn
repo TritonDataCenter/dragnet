@@ -856,7 +856,7 @@ function dnOutput(query, options, op, callback)
 	}
 
 	stream.on('end', function () {
-		if (options.counters)
+		if (!options.dry_run && options.counters)
 			dnPrintCounters(stream);
 		dnDone = true;
 		if (callback)
