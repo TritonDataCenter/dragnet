@@ -1,0 +1,31 @@
+# dn scan stdin-skinner
+VALUE
+  250
+# dn scan stdin-skinner
+VALUE
+  500
+# dn scan stdin-skinner
+VALUE
+  750
+REQ.METHOD VALUE
+DELETE        74
+GET           54
+HEAD          61
+PUT           61
+# dn scan stdin-skinner
+VALUE
+  750
+# dn scan stdin-skinner -b req.method
+REQ.METHOD VALUE
+DELETE       222
+GET          162
+HEAD         183
+PUT          183
+building index
+VALUE
+  750
+REQ.METHOD VALUE
+DELETE       222
+GET          162
+HEAD         183
+PUT          183
