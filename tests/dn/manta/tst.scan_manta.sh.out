@@ -1,11 +1,11 @@
-# dnl scan-manta
+# dn scan
 VALUE
  2252
 
-# dnl scan-manta --points
+# dn scan --points
 {"fields":{},"value":2252}
 
-# dnl scan-manta -b operation
+# dn scan -b operation
 OPERATION           VALUE
 deletepublicstorage   296
 deletestorage         286
@@ -18,7 +18,7 @@ putdirectory          184
 putobject             195
 putpublicobject       184
 
-# dnl scan-manta --points -b operation
+# dn scan --points -b operation
 {"fields":{"operation":"deletepublicstorage"},"value":296}
 {"fields":{"operation":"deletestorage"},"value":286}
 {"fields":{"operation":"getjoberrors"},"value":181}
@@ -30,7 +30,7 @@ putpublicobject       184
 {"fields":{"operation":"putobject"},"value":195}
 {"fields":{"operation":"putpublicobject"},"value":184}
 
-# dnl scan-manta -b operation,req.method,host
+# dn scan -b operation,req.method,host
 OPERATION           REQ.METHOD HOST    VALUE
 deletepublicstorage DELETE     janey      57
 deletepublicstorage DELETE     kearney    70
@@ -83,7 +83,7 @@ putpublicobject     PUT        ralph      34
 putpublicobject     PUT        sherri     43
 putpublicobject     PUT        wendell    41
 
-# dnl scan-manta --points -b operation,req.method,host
+# dn scan --points -b operation,req.method,host
 {"fields":{"operation":"deletepublicstorage","req.method":"DELETE","host":"janey"},"value":57}
 {"fields":{"operation":"deletepublicstorage","req.method":"DELETE","host":"kearney"},"value":70}
 {"fields":{"operation":"deletepublicstorage","req.method":"DELETE","host":"ralph"},"value":55}
@@ -135,20 +135,20 @@ putpublicobject     PUT        wendell    41
 {"fields":{"operation":"putpublicobject","req.method":"PUT","host":"sherri"},"value":43}
 {"fields":{"operation":"putpublicobject","req.method":"PUT","host":"wendell"},"value":41}
 
-# dnl scan-manta -b req.caller
+# dn scan -b req.caller
 REQ.CALLER VALUE
 admin        570
 null         575
 poseidon     546
 undefined    561
 
-# dnl scan-manta --points -b req.caller
+# dn scan --points -b req.caller
 {"fields":{"req.caller":"admin"},"value":570}
 {"fields":{"req.caller":"null"},"value":575}
 {"fields":{"req.caller":"poseidon"},"value":546}
 {"fields":{"req.caller":"undefined"},"value":561}
 
-# dnl scan-manta -b operation,req.caller
+# dn scan -b operation,req.caller
 OPERATION           REQ.CALLER VALUE
 deletepublicstorage admin         82
 deletepublicstorage null          70
@@ -191,7 +191,7 @@ putpublicobject     null          46
 putpublicobject     poseidon      48
 putpublicobject     undefined     40
 
-# dnl scan-manta --points -b operation,req.caller
+# dn scan --points -b operation,req.caller
 {"fields":{"operation":"deletepublicstorage","req.caller":"admin"},"value":82}
 {"fields":{"operation":"deletepublicstorage","req.caller":"null"},"value":70}
 {"fields":{"operation":"deletepublicstorage","req.caller":"poseidon"},"value":67}
@@ -233,14 +233,14 @@ putpublicobject     undefined     40
 {"fields":{"operation":"putpublicobject","req.caller":"poseidon"},"value":48}
 {"fields":{"operation":"putpublicobject","req.caller":"undefined"},"value":40}
 
-# dnl scan-manta -f { "eq": [ "req.method", "GET" ] }
+# dn scan -f { "eq": [ "req.method", "GET" ] }
 VALUE
   556
 
-# dnl scan-manta --points -f { "eq": [ "req.method", "GET" ] }
+# dn scan --points -f { "eq": [ "req.method", "GET" ] }
 {"fields":{},"value":556}
 
-# dnl scan-manta -f { "eq": [ "req.method", "GET" ] } -b operation,req.method,host
+# dn scan -f { "eq": [ "req.method", "GET" ] } -b operation,req.method,host
 OPERATION        REQ.METHOD HOST    VALUE
 getjoberrors     GET        janey      38
 getjoberrors     GET        kearney    33
@@ -258,7 +258,7 @@ getstorage       GET        ralph      39
 getstorage       GET        sherri     39
 getstorage       GET        wendell    43
 
-# dnl scan-manta --points -f { "eq": [ "req.method", "GET" ] } -b operation,req.method,host
+# dn scan --points -f { "eq": [ "req.method", "GET" ] } -b operation,req.method,host
 {"fields":{"operation":"getjoberrors","req.method":"GET","host":"janey"},"value":38}
 {"fields":{"operation":"getjoberrors","req.method":"GET","host":"kearney"},"value":33}
 {"fields":{"operation":"getjoberrors","req.method":"GET","host":"ralph"},"value":38}
@@ -275,21 +275,21 @@ getstorage       GET        wendell    43
 {"fields":{"operation":"getstorage","req.method":"GET","host":"sherri"},"value":39}
 {"fields":{"operation":"getstorage","req.method":"GET","host":"wendell"},"value":43}
 
-# dnl scan-manta -f { "eq": [ "req.caller", "poseidon" ] }
+# dn scan -f { "eq": [ "req.caller", "poseidon" ] }
 VALUE
   546
 
-# dnl scan-manta --points -f { "eq": [ "req.caller", "poseidon" ] }
+# dn scan --points -f { "eq": [ "req.caller", "poseidon" ] }
 {"fields":{},"value":546}
 
-# dnl scan-manta -f { "eq": [ "req.caller", "poseidon" ] } -b req.caller
+# dn scan -f { "eq": [ "req.caller", "poseidon" ] } -b req.caller
 REQ.CALLER VALUE
 poseidon     546
 
-# dnl scan-manta --points -f { "eq": [ "req.caller", "poseidon" ] } -b req.caller
+# dn scan --points -f { "eq": [ "req.caller", "poseidon" ] } -b req.caller
 {"fields":{"req.caller":"poseidon"},"value":546}
 
-# dnl scan-manta -b latency[aggr=quantize]
+# dn scan -b latency[aggr=quantize]
 
            value  ------------- Distribution ------------- count
                0 |                                         0
@@ -307,7 +307,7 @@ poseidon     546
             2048 |@@@@@                                    302
             4096 |                                         0
 
-# dnl scan-manta --points -b latency[aggr=quantize]
+# dn scan --points -b latency[aggr=quantize]
 {"fields":{"latency":1024},"value":136}
 {"fields":{"latency":128},"value":165}
 {"fields":{"latency":16},"value":682}
@@ -317,7 +317,7 @@ poseidon     546
 {"fields":{"latency":4},"value":348}
 {"fields":{"latency":64},"value":57}
 
-# dnl scan-manta -b latency[aggr=quantize],operation,host
+# dn scan -b latency[aggr=quantize],operation,host
 LATENCY OPERATION           HOST    VALUE
       1 deletepublicstorage janey       2
       1 deletepublicstorage kearney     4
@@ -695,7 +695,7 @@ LATENCY OPERATION           HOST    VALUE
    2048 putpublicobject     sherri      7
    2048 putpublicobject     wendell     5
 
-# dnl scan-manta --points -b latency[aggr=quantize],operation,host
+# dn scan --points -b latency[aggr=quantize],operation,host
 {"fields":{"latency":1024,"operation":"deletepublicstorage","host":"janey"},"value":4}
 {"fields":{"latency":1024,"operation":"deletepublicstorage","host":"kearney"},"value":4}
 {"fields":{"latency":1024,"operation":"deletepublicstorage","host":"ralph"},"value":2}
@@ -1072,7 +1072,7 @@ LATENCY OPERATION           HOST    VALUE
 {"fields":{"latency":64,"operation":"putpublicobject","host":"sherri"},"value":1}
 {"fields":{"latency":64,"operation":"putpublicobject","host":"wendell"},"value":2}
 
-# dnl scan-manta -b host,operation,latency[aggr=quantize]
+# dn scan -b host,operation,latency[aggr=quantize]
 janey, deletepublicstorage
            value  ------------- Distribution ------------- count
                0 |                                         0
@@ -1923,7 +1923,7 @@ wendell, putpublicobject
             2048 |@@@@@                                    5
             4096 |                                         0
 
-# dnl scan-manta --points -b host,operation,latency[aggr=quantize]
+# dn scan --points -b host,operation,latency[aggr=quantize]
 {"fields":{"host":"janey","operation":"deletepublicstorage","latency":1024},"value":4}
 {"fields":{"host":"janey","operation":"deletepublicstorage","latency":128},"value":3}
 {"fields":{"host":"janey","operation":"deletepublicstorage","latency":16},"value":16}
@@ -2300,7 +2300,7 @@ wendell, putpublicobject
 {"fields":{"host":"wendell","operation":"putpublicobject","latency":4},"value":9}
 {"fields":{"host":"wendell","operation":"putpublicobject","latency":64},"value":2}
 
-# dnl scan-manta -b latency[aggr=lquantize,step=100]
+# dn scan -b latency[aggr=lquantize,step=100]
 
            value  ------------- Distribution ------------- count
                0 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@             1592
@@ -2346,7 +2346,7 @@ wendell, putpublicobject
             4000 |                                         13
             4100 |                                         0
 
-# dnl scan-manta --points -b latency[aggr=lquantize,step=100]
+# dn scan --points -b latency[aggr=lquantize,step=100]
 {"fields":{"latency":0},"value":1592}
 {"fields":{"latency":1000},"value":10}
 {"fields":{"latency":100},"value":222}
@@ -2381,7 +2381,77 @@ wendell, putpublicobject
 {"fields":{"latency":3900},"value":15}
 {"fields":{"latency":4000},"value":13}
 
-# dnl scan-manta --counters -b timestamp[date,field=time,aggr=lquantize,step=86400]
+# dn scan -n -b timestamp[date,field=time,aggr=lquantize,step=86400]
+{
+    "name": "dragnet scan",
+    "phases": [
+        {
+            "type": "map",
+            "assets": [
+                "/manta/public/dragnet/assets/dragnet-0.0.2.tgz"
+            ],
+            "init": "tar xzf \"/assets/manta/public/dragnet/assets/dragnet-0.0.2.tgz\"",
+            "exec": "export DRAGNET_CONFIG=/dragnetrc\nexport PATH=$PATH:/dragnet/bin\nset -o pipefail\nset -o errexit\nrm -f $DRAGNET_CONFIG\ndn datasource-add input --path=/dev/stdin --data-format=json \ndn scan --points input --breakdowns=timestamp[date,field=time,aggr=lquantize,step=86400]"
+        },
+        {
+            "type": "reduce",
+            "memory": 2048,
+            "assets": [
+                "/manta/public/dragnet/assets/dragnet-0.0.2.tgz"
+            ],
+            "init": "tar xzf \"/assets/manta/public/dragnet/assets/dragnet-0.0.2.tgz\"",
+            "exec": "export DRAGNET_CONFIG=/dragnetrc\nexport PATH=$PATH:/dragnet/bin\nset -o pipefail\nset -o errexit\nrm -f $DRAGNET_CONFIG\ndn datasource-add input --path=/dev/stdin --data-format=json-skinner \ndn scan --points input --breakdowns=timestamp[date,field=timestamp,aggr=lquantize,step=86400]"
+        }
+    ]
+}
+
+Inputs:
+/dap/public/dragnet/testdata/2014/05-05/more.log
+/dap/public/dragnet/testdata/2014/05-04/one.log
+/dap/public/dragnet/testdata/2014/05-04/two.log
+/dap/public/dragnet/testdata/2014/05-03/one.log
+/dap/public/dragnet/testdata/2014/05-03/two.log
+/dap/public/dragnet/testdata/2014/05-02/one.log
+/dap/public/dragnet/testdata/2014/05-02/two.log
+/dap/public/dragnet/testdata/2014/05-01/one.log
+/dap/public/dragnet/testdata/2014/05-01/two.log
+
+# dn scan --points -n -b timestamp[date,field=time,aggr=lquantize,step=86400]
+{
+    "name": "dragnet scan",
+    "phases": [
+        {
+            "type": "map",
+            "assets": [
+                "/manta/public/dragnet/assets/dragnet-0.0.2.tgz"
+            ],
+            "init": "tar xzf \"/assets/manta/public/dragnet/assets/dragnet-0.0.2.tgz\"",
+            "exec": "export DRAGNET_CONFIG=/dragnetrc\nexport PATH=$PATH:/dragnet/bin\nset -o pipefail\nset -o errexit\nrm -f $DRAGNET_CONFIG\ndn datasource-add input --path=/dev/stdin --data-format=json \ndn scan --points input --breakdowns=timestamp[date,field=time,aggr=lquantize,step=86400]"
+        },
+        {
+            "type": "reduce",
+            "memory": 2048,
+            "assets": [
+                "/manta/public/dragnet/assets/dragnet-0.0.2.tgz"
+            ],
+            "init": "tar xzf \"/assets/manta/public/dragnet/assets/dragnet-0.0.2.tgz\"",
+            "exec": "export DRAGNET_CONFIG=/dragnetrc\nexport PATH=$PATH:/dragnet/bin\nset -o pipefail\nset -o errexit\nrm -f $DRAGNET_CONFIG\ndn datasource-add input --path=/dev/stdin --data-format=json-skinner \ndn scan --points input --breakdowns=timestamp[date,field=timestamp,aggr=lquantize,step=86400]"
+        }
+    ]
+}
+
+Inputs:
+/dap/public/dragnet/testdata/2014/05-05/more.log
+/dap/public/dragnet/testdata/2014/05-04/one.log
+/dap/public/dragnet/testdata/2014/05-04/two.log
+/dap/public/dragnet/testdata/2014/05-03/one.log
+/dap/public/dragnet/testdata/2014/05-03/two.log
+/dap/public/dragnet/testdata/2014/05-02/one.log
+/dap/public/dragnet/testdata/2014/05-02/two.log
+/dap/public/dragnet/testdata/2014/05-01/one.log
+/dap/public/dragnet/testdata/2014/05-01/two.log
+
+# dn scan --counters -b timestamp[date,field=time,aggr=lquantize,step=86400]
 
                      value  ------------- Distribution ------------- count
   2014-05-01T00:00:00.000Z |@@@@@@@@@                                500
@@ -2391,7 +2461,7 @@ wendell, putpublicobject
   2014-05-05T00:00:00.000Z |@@@@                                     250
   2014-05-06T00:00:00.000Z |                                         0
 
-# dnl scan-manta --points --counters -b timestamp[date,field=time,aggr=lquantize,step=86400]
+# dn scan --points --counters -b timestamp[date,field=time,aggr=lquantize,step=86400]
 {"fields":{"timestamp":1398902400},"value":500}
 {"fields":{"timestamp":1398988800},"value":500}
 {"fields":{"timestamp":1399075200},"value":500}
@@ -2400,16 +2470,128 @@ wendell, putpublicobject
 
 submitted 9 inputs
 submitted 9 inputs
-# dnl scan-manta --counters --time-format=%Y/%m-%d --time-field=time --after 2014-05-02 --before 2014-05-03
+# dn scan -n --after 2014-05-02 --before 2014-05-03
+{
+    "name": "dragnet scan",
+    "phases": [
+        {
+            "type": "map",
+            "assets": [
+                "/manta/public/dragnet/assets/dragnet-0.0.2.tgz"
+            ],
+            "init": "tar xzf \"/assets/manta/public/dragnet/assets/dragnet-0.0.2.tgz\"",
+            "exec": "export DRAGNET_CONFIG=/dragnetrc\nexport PATH=$PATH:/dragnet/bin\nset -o pipefail\nset -o errexit\nrm -f $DRAGNET_CONFIG\ndn datasource-add input --path=/dev/stdin --data-format=json  --time-field=time\ndn scan --points input --before \"2014-05-03T00:00:00.000Z\" --after \"2014-05-02T00:00:00.000Z\""
+        },
+        {
+            "type": "reduce",
+            "memory": 2048,
+            "assets": [
+                "/manta/public/dragnet/assets/dragnet-0.0.2.tgz"
+            ],
+            "init": "tar xzf \"/assets/manta/public/dragnet/assets/dragnet-0.0.2.tgz\"",
+            "exec": "export DRAGNET_CONFIG=/dragnetrc\nexport PATH=$PATH:/dragnet/bin\nset -o pipefail\nset -o errexit\nrm -f $DRAGNET_CONFIG\ndn datasource-add input --path=/dev/stdin --data-format=json-skinner \ndn scan --points input "
+        }
+    ]
+}
+
+Inputs:
+/dap/public/dragnet/testdata/2014/05-02/one.log
+/dap/public/dragnet/testdata/2014/05-02/two.log
+
+# dn scan --points -n --after 2014-05-02 --before 2014-05-03
+{
+    "name": "dragnet scan",
+    "phases": [
+        {
+            "type": "map",
+            "assets": [
+                "/manta/public/dragnet/assets/dragnet-0.0.2.tgz"
+            ],
+            "init": "tar xzf \"/assets/manta/public/dragnet/assets/dragnet-0.0.2.tgz\"",
+            "exec": "export DRAGNET_CONFIG=/dragnetrc\nexport PATH=$PATH:/dragnet/bin\nset -o pipefail\nset -o errexit\nrm -f $DRAGNET_CONFIG\ndn datasource-add input --path=/dev/stdin --data-format=json  --time-field=time\ndn scan --points input --before \"2014-05-03T00:00:00.000Z\" --after \"2014-05-02T00:00:00.000Z\""
+        },
+        {
+            "type": "reduce",
+            "memory": 2048,
+            "assets": [
+                "/manta/public/dragnet/assets/dragnet-0.0.2.tgz"
+            ],
+            "init": "tar xzf \"/assets/manta/public/dragnet/assets/dragnet-0.0.2.tgz\"",
+            "exec": "export DRAGNET_CONFIG=/dragnetrc\nexport PATH=$PATH:/dragnet/bin\nset -o pipefail\nset -o errexit\nrm -f $DRAGNET_CONFIG\ndn datasource-add input --path=/dev/stdin --data-format=json-skinner \ndn scan --points input "
+        }
+    ]
+}
+
+Inputs:
+/dap/public/dragnet/testdata/2014/05-02/one.log
+/dap/public/dragnet/testdata/2014/05-02/two.log
+
+# dn scan --counters --after 2014-05-02 --before 2014-05-03
 VALUE
   500
 
-# dnl scan-manta --points --counters --time-format=%Y/%m-%d --time-field=time --after 2014-05-02 --before 2014-05-03
+# dn scan --points --counters --after 2014-05-02 --before 2014-05-03
 {"fields":{},"value":500}
 
 submitted 2 inputs
 submitted 2 inputs
-# dnl scan-manta --counters --time-format=%Y/%m-%d -b timestamp[date,field=time,aggr=lquantize,step=60] --after 2014-05-02T04:05:06.123 --before 2014-05-02T04:15:10
+# dn scan -n -b timestamp[date,field=time,aggr=lquantize,step=60] --after 2014-05-02T04:05:06.123 --before 2014-05-02T04:15:10
+{
+    "name": "dragnet scan",
+    "phases": [
+        {
+            "type": "map",
+            "assets": [
+                "/manta/public/dragnet/assets/dragnet-0.0.2.tgz"
+            ],
+            "init": "tar xzf \"/assets/manta/public/dragnet/assets/dragnet-0.0.2.tgz\"",
+            "exec": "export DRAGNET_CONFIG=/dragnetrc\nexport PATH=$PATH:/dragnet/bin\nset -o pipefail\nset -o errexit\nrm -f $DRAGNET_CONFIG\ndn datasource-add input --path=/dev/stdin --data-format=json  --time-field=time\ndn scan --points input --before \"2014-05-02T04:15:10.000Z\" --after \"2014-05-02T04:05:06.123Z\" --breakdowns=timestamp[date,field=time,aggr=lquantize,step=60]"
+        },
+        {
+            "type": "reduce",
+            "memory": 2048,
+            "assets": [
+                "/manta/public/dragnet/assets/dragnet-0.0.2.tgz"
+            ],
+            "init": "tar xzf \"/assets/manta/public/dragnet/assets/dragnet-0.0.2.tgz\"",
+            "exec": "export DRAGNET_CONFIG=/dragnetrc\nexport PATH=$PATH:/dragnet/bin\nset -o pipefail\nset -o errexit\nrm -f $DRAGNET_CONFIG\ndn datasource-add input --path=/dev/stdin --data-format=json-skinner \ndn scan --points input --breakdowns=timestamp[date,field=timestamp,aggr=lquantize,step=60]"
+        }
+    ]
+}
+
+Inputs:
+/dap/public/dragnet/testdata/2014/05-02/one.log
+/dap/public/dragnet/testdata/2014/05-02/two.log
+
+# dn scan --points -n -b timestamp[date,field=time,aggr=lquantize,step=60] --after 2014-05-02T04:05:06.123 --before 2014-05-02T04:15:10
+{
+    "name": "dragnet scan",
+    "phases": [
+        {
+            "type": "map",
+            "assets": [
+                "/manta/public/dragnet/assets/dragnet-0.0.2.tgz"
+            ],
+            "init": "tar xzf \"/assets/manta/public/dragnet/assets/dragnet-0.0.2.tgz\"",
+            "exec": "export DRAGNET_CONFIG=/dragnetrc\nexport PATH=$PATH:/dragnet/bin\nset -o pipefail\nset -o errexit\nrm -f $DRAGNET_CONFIG\ndn datasource-add input --path=/dev/stdin --data-format=json  --time-field=time\ndn scan --points input --before \"2014-05-02T04:15:10.000Z\" --after \"2014-05-02T04:05:06.123Z\" --breakdowns=timestamp[date,field=time,aggr=lquantize,step=60]"
+        },
+        {
+            "type": "reduce",
+            "memory": 2048,
+            "assets": [
+                "/manta/public/dragnet/assets/dragnet-0.0.2.tgz"
+            ],
+            "init": "tar xzf \"/assets/manta/public/dragnet/assets/dragnet-0.0.2.tgz\"",
+            "exec": "export DRAGNET_CONFIG=/dragnetrc\nexport PATH=$PATH:/dragnet/bin\nset -o pipefail\nset -o errexit\nrm -f $DRAGNET_CONFIG\ndn datasource-add input --path=/dev/stdin --data-format=json-skinner \ndn scan --points input --breakdowns=timestamp[date,field=timestamp,aggr=lquantize,step=60]"
+        }
+    ]
+}
+
+Inputs:
+/dap/public/dragnet/testdata/2014/05-02/one.log
+/dap/public/dragnet/testdata/2014/05-02/two.log
+
+# dn scan --counters -b timestamp[date,field=time,aggr=lquantize,step=60] --after 2014-05-02T04:05:06.123 --before 2014-05-02T04:15:10
 
                      value  ------------- Distribution ------------- count
   2014-05-02T04:07:00.000Z |@@@@@@@@@@@@@@@@@@@@                     2
@@ -2421,7 +2603,7 @@ submitted 2 inputs
   2014-05-02T04:13:00.000Z |@@@@@@@@@@@@@@@@@@@@                     2
   2014-05-02T04:14:00.000Z |                                         0
 
-# dnl scan-manta --points --counters --time-format=%Y/%m-%d -b timestamp[date,field=time,aggr=lquantize,step=60] --after 2014-05-02T04:05:06.123 --before 2014-05-02T04:15:10
+# dn scan --points --counters -b timestamp[date,field=time,aggr=lquantize,step=60] --after 2014-05-02T04:05:06.123 --before 2014-05-02T04:15:10
 {"fields":{"timestamp":1399003620},"value":2}
 {"fields":{"timestamp":1399003980},"value":2}
 
