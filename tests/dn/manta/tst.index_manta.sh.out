@@ -3,11 +3,11 @@ by_day/2014-05-02.sqlite
 by_day/2014-05-03.sqlite
 by_day/2014-05-04.sqlite
 by_day/2014-05-05.sqlite
-# dnl query-mjob
+# dn query
 VALUE
  2250
 
-# dnl query-mjob -b operation
+# dn query -b operation
 OPERATION           VALUE
 deletepublicstorage   294
 deletestorage         286
@@ -20,7 +20,7 @@ putdirectory          184
 putobject             195
 putpublicobject       184
 
-# dnl query-mjob -b operation,req.method,host
+# dn query -b operation,req.method,host
 OPERATION           REQ.METHOD HOST    VALUE
 deletepublicstorage DELETE     janey      57
 deletepublicstorage DELETE     kearney    70
@@ -73,14 +73,14 @@ putpublicobject     PUT        ralph      34
 putpublicobject     PUT        sherri     43
 putpublicobject     PUT        wendell    41
 
-# dnl query-mjob -b req.caller
+# dn query -b req.caller
 REQ.CALLER VALUE
 admin        570
 null         575
 poseidon     546
 undefined    559
 
-# dnl query-mjob -b operation,req.caller
+# dn query -b operation,req.caller
 OPERATION           REQ.CALLER VALUE
 deletepublicstorage admin         82
 deletepublicstorage null          70
@@ -123,11 +123,11 @@ putpublicobject     null          46
 putpublicobject     poseidon      48
 putpublicobject     undefined     40
 
-# dnl query-mjob -f { "eq": [ "req.method", "GET" ] }
+# dn query -f { "eq": [ "req.method", "GET" ] }
 VALUE
   556
 
-# dnl query-mjob -f { "eq": [ "req.method", "GET" ] } -b operation,req.method,host
+# dn query -f { "eq": [ "req.method", "GET" ] } -b operation,req.method,host
 OPERATION        REQ.METHOD HOST    VALUE
 getjoberrors     GET        janey      38
 getjoberrors     GET        kearney    33
@@ -145,15 +145,15 @@ getstorage       GET        ralph      39
 getstorage       GET        sherri     39
 getstorage       GET        wendell    43
 
-# dnl query-mjob -f { "eq": [ "req.caller", "poseidon" ] }
+# dn query -f { "eq": [ "req.caller", "poseidon" ] }
 VALUE
   546
 
-# dnl query-mjob -f { "eq": [ "req.caller", "poseidon" ] } -b req.caller
+# dn query -f { "eq": [ "req.caller", "poseidon" ] } -b req.caller
 REQ.CALLER VALUE
 poseidon     546
 
-# dnl query-mjob -b latency[aggr=quantize]
+# dn query -b latency[aggr=quantize]
 
            value  ------------- Distribution ------------- count
                0 |                                         0
@@ -171,7 +171,7 @@ poseidon     546
             2048 |@@@@@                                    302
             4096 |                                         0
 
-# dnl query-mjob -b latency[aggr=quantize],operation,host
+# dn query -b latency[aggr=quantize],operation,host
 LATENCY OPERATION           HOST    VALUE
       1 deletepublicstorage janey       2
       1 deletepublicstorage kearney     4
@@ -549,7 +549,7 @@ LATENCY OPERATION           HOST    VALUE
    2048 putpublicobject     sherri      7
    2048 putpublicobject     wendell     5
 
-# dnl query-mjob -b host,operation,latency[aggr=quantize]
+# dn query -b host,operation,latency[aggr=quantize]
 janey, deletepublicstorage
            value  ------------- Distribution ------------- count
                0 |                                         0
@@ -1400,7 +1400,7 @@ wendell, putpublicobject
             2048 |@@@@@                                    5
             4096 |                                         0
 
-# dnl query-mjob -b latency[aggr=lquantize,step=100]
+# dn query -b latency[aggr=lquantize,step=100]
 
            value  ------------- Distribution ------------- count
                0 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@            1647
@@ -1426,21 +1426,7 @@ wendell, putpublicobject
             2000 |@@@@@                                    302
             2100 |                                         0
 
-# dnl query-mget
-VALUE
- 2250
-
-# dnl query-mget -f { "eq": [ "req.method", "GET"] }
-VALUE
-  556
-
-# dnl query-mget -f { "eq": [ "req.method", "GET"] } -b operation
-OPERATION        VALUE
-getjoberrors       181
-getpublicstorage   176
-getstorage         199
-
-# dnl query-mjob
+# dn query -f { "eq": [ "req.method", "GET" ] }
 VALUE
   556
 
