@@ -18,10 +18,14 @@ tst_maxvsz=160000
 # pid of process executed
 tst_pid=
 
-$tst_toolsdir/mktestdata $tst_nrecords | dnl scan-file /dev/stdin &
+
+dn_clear_config
+dn datasource-add stdin --path=/dev/stdin
+$tst_toolsdir/mktestdata $tst_nrecords | dn scan stdin &
 tst_pid=$!
 set -- $($tst_toolsdir/memwatch $tst_pid)
 echo "rss=$1 vsz=$2" >&2
+dn_clear_config
 
 if [[ $1 -gt $tst_maxrss ]]; then
 	echo "maximum rss exceeded (found $1, expected <= $tst_maxrss)" >&2
