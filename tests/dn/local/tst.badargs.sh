@@ -5,10 +5,12 @@
 
 . $(dirname $0)/../common.sh
 
+set -o pipefail
+
 file=$DN_DATADIR/2014/05-01/one.log
 function try
 {
-	if dn scan "$@" input 2>&1; then
+	if dn scan "$@" input 2>&1 | head -2; then
 		echo "unexpected success (args: $@)"
 		exit 1
 	fi

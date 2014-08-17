@@ -6,12 +6,10 @@ DATASOURCE           LOCATION
 
 # dn datasource-add junk3
 dn: "path" option is required
-usage: dn SUBCOMMAND [SUBCOMMAND_ARGS]
-
+usage: dn SUBCOMMAND [OPTIONS] ARGS
 # dn datasource-add junk3 --filter={ --path=/junk
 dn: invalid filter: Unexpected end of input
-usage: dn SUBCOMMAND [SUBCOMMAND_ARGS]
-
+usage: dn SUBCOMMAND [OPTIONS] ARGS
 # dn datasource-add junk --path=/junk
 
 # dn datasource-add junk2 --path=/junk --filter={ "eq": [ "req.method", "GET" ] }
@@ -79,12 +77,10 @@ DATASOURCE           METRIC
 
 # dn metric-add --datasource=manta-based --filter={ met1
 dn: invalid filter: Unexpected end of input
-usage: dn SUBCOMMAND [SUBCOMMAND_ARGS]
-
+usage: dn SUBCOMMAND [OPTIONS] ARGS
 # dn metric-add met1
 dn: "datasource" option is required
-usage: dn SUBCOMMAND [SUBCOMMAND_ARGS]
-
+usage: dn SUBCOMMAND [OPTIONS] ARGS
 # dn metric-add --datasource=manta-based met1
 
 # dn metric-list

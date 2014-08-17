@@ -27,9 +27,6 @@ var attrsParse = require('../lib/attr-parser');
  * Program name and usage
  */
 var dnArg0 = mod_path.basename(process.argv[1]);
-var dnUsage = [
-    'usage: dn SUBCOMMAND [SUBCOMMAND_ARGS]'
-].join('\n');
 
 /*
  * Subcommands
@@ -39,12 +36,12 @@ var dnCmds = {
     'datasource-list': dnCmdDatasourceList,
     'datasource-remove': dnCmdDatasourceRemove,
     'metric-add': dnCmdMetricAdd,
-    'metric-remove': dnCmdMetricRemove,
     'metric-list': dnCmdMetricList,
+    'metric-remove': dnCmdMetricRemove,
     'build': dnCmdBuild,
     'index-config': dnCmdIndexConfig,
-    'index-scan': dnCmdIndexScan,
     'index-read': dnCmdIndexRead,
+    'index-scan': dnCmdIndexScan,
     'query': dnCmdQuery,
     'scan': dnCmdScan
 };
@@ -106,10 +103,20 @@ function main()
  */
 function usage(err)
 {
+	var usagepath, usagetext;
+
 	if (err)
 		console.error('%s: %s', dnArg0, err.message);
 
-	console.error(dnUsage);
+	usagepath = mod_path.join(__dirname, '../share/usage.txt');
+
+	try {
+		usagetext = mod_fs.readFileSync(usagepath, 'utf8');
+	} catch (ex) {
+		fatal(new VError(ex, 'failed to read usage'));
+	}
+
+	console.error(usagetext);
 	process.exit(2);
 }
 

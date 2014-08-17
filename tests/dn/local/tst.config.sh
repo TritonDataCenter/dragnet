@@ -21,7 +21,7 @@ function rundn
 
 function shouldfail
 {
-	if "$@" 2>&1; then
+	if "$@" 2>&1 | head -3; then
 		echo "didn't expect that to succeed!" >&2
 		exit 1
 	fi
@@ -36,6 +36,7 @@ if [[ -f $HOME/.dragnetrc ]]; then
 fi
 
 set -o errexit
+set -o pipefail
 
 #
 # Data sources
