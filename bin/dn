@@ -564,7 +564,7 @@ function dnCmdBuild(cmdname, argv)
 
 	options = dnParseArgs(argv, [
 	    /* general options */
-	    'after', 'before', 'dry-run', 'index-config', 'interval',
+	    'after', 'before', 'counters', 'dry-run', 'index-config', 'interval',
 
 	    /* manta-specific options */
 	    'assetroot'
@@ -589,20 +589,23 @@ function dnCmdBuild(cmdname, argv)
 				fatal(err);
 
 			buildargs['indexConfig'] = config;
-			dnBuild(dsname, buildargs);
+			dnBuild(dsname, buildargs, options);
 		});
 	} else {
-		dnBuild(dsname, buildargs);
+		dnBuild(dsname, buildargs, options);
 	}
 }
 
-function dnBuild(dsname, buildargs)
+function dnBuild(dsname, buildargs, options)
 {
 	dnStream = mod_dragnet.build(buildargs, function (err, ds) {
 		if (err)
 			fatal(err);
-		if (!buildargs.dryRun)
+		if (!buildargs.dryRun) {
 			console.error('indexes for "%s" built', dsname);
+			if (options.counters)
+				dnPrintCounters(dnStream);
+		}
 		dnDone = true;
 		ds.close();
 	});
