@@ -564,7 +564,8 @@ function dnCmdBuild(cmdname, argv)
 
 	options = dnParseArgs(argv, [
 	    /* general options */
-	    'after', 'before', 'counters', 'dry-run', 'index-config', 'interval',
+	    'after', 'before', 'counters', 'dry-run', 'index-config',
+	    'interval', 'warnings',
 
 	    /* manta-specific options */
 	    'assetroot'
@@ -605,6 +606,8 @@ function dnBuild(dsname, buildargs, options)
 			console.error('indexes for "%s" built', dsname);
 			if (options.counters)
 				dnPrintCounters(dnStream);
+			if (options.warnings)
+				dnShowWarnings(dnStream);
 		}
 		dnDone = true;
 		ds.close();
