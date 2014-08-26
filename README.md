@@ -1,14 +1,25 @@
 # Dragnet
 
-"dn" is a tool for analyzing event stream data stored in files.  There are three
-main kinds of commands:
+Dragnet is a tool for analyzing event stream data stored in files.  There are
+three main commands:
 
 * scan: scan over *raw data* to execute a query
-* index: scan over raw data to produce an index
+* build: scan over raw data to produce an index for quickly answering predefined
+  queries
 * query: search *indexes* to execute a query
 
-The point is to index data and then query the index.  Scan is available to check
-results and to run ad-hoc queries that it may not make sense to index.
+The prototypical use case is analyzing request logs from a production service.
+The workflow for Dragnet looks like this:
+
+* Predefine a bunch of metrics you care about (like total request count,
+  request count by server instance, request type, and so on).
+* When you accumulate new logs (e.g., hourly or daily), you *build* the index.
+* Whenever you want the values of those metrics, you *query* the index.  This
+  might be part of a constantly-updating dashboard, a daily report, or a
+  threshold-based alarm.
+* If you want to gather new metrics, you can define them and rebuild.
+* If you want to run a complex query just once, you can *scan* the raw data
+  rather than adding the query as a metric.
 
 **This project is still a prototype.**  The commands and library interfaces may
 change incompatibly at any time!
@@ -17,56 +28,60 @@ change incompatibly at any time!
 ## Getting started
 
 dragnet only supports newline-separated JSON.  Try it on the sample data in
-./tests/data.
+./tests/data.  Start by defining a new **datasource**:
 
-In the simplest mode, dragnet operates on raw files.  With no arguments,
-"scan-file" just counts records:
+    $ dn datasource-list -v
+    DATASOURCE           LOCATION                                                   
+    my_logs              file://home/dap/dragnet/dragnet/tests/data                 
+        dataFormat: "json"
 
-    $ dn scan-file ./tests/data/2014/05-02/one.log 
+Now you can scan the data to count the total number of requests:
+
+    $ dn scan my_logs
     VALUE
-      252
+     2252
 
 You can also break out counts, e.g., by request method:
 
-    $ dn scan-file -b req.method ./tests/data/2014/05-02/one.log 
+    $ dn scan -b req.method my_logs
     REQ.METHOD VALUE
-    DELETE        71
-    GET           58
-    HEAD          56
-    PUT           67
+    DELETE       582
+    GET          556
+    HEAD         551
+    PUT          563
 
 You can break out results by more than one field:
 
-    $ dn scan-file -b req.method,res.statusCode ./tests/data/2014/05-02/one.log 
+    $ dn scan -b req.method,res.statusCode my_logs
     REQ.METHOD RES.STATUSCODE VALUE
-    DELETE     200                6
-    DELETE     204               12
-    DELETE     400               12
-    DELETE     404                8
-    DELETE     499               12
-    DELETE     500                8
-    DELETE     503               13
-    GET        200               12
-    GET        204                7
-    GET        400               11
-    GET        404                6
-    GET        499               10
-    GET        500                7
-    GET        503                5
-    HEAD       200                7
-    HEAD       204                5
-    HEAD       400                7
-    HEAD       404               10
-    HEAD       499               13
-    HEAD       500                3
-    HEAD       503               11
-    PUT        200               10
-    PUT        204                6
-    PUT        400               11
-    PUT        404               11
-    PUT        499                8
-    PUT        500               15
-    PUT        503                6
+    DELETE     200               75
+    DELETE     204               87
+    DELETE     400               94
+    DELETE     404               85
+    DELETE     499               83
+    DELETE     500               79
+    DELETE     503               79
+    GET        200               77
+    GET        204               83
+    GET        400               84
+    GET        404               74
+    GET        499               79
+    GET        500               73
+    GET        503               86
+    HEAD       200               71
+    HEAD       204               85
+    HEAD       400               66
+    HEAD       404               77
+    HEAD       499               88
+    HEAD       500               88
+    HEAD       503               76
+    PUT        200               80
+    PUT        204               79
+    PUT        400               83
+    PUT        404               88
+    PUT        499               68
+    PUT        500               83
+    PUT        503               82
 
 (This is randomly-generated data, which is why you see some combinations that
 probably don't make sense, like a 200 from a DELETE.)
@@ -74,89 +89,87 @@ probably don't make sense, like a 200 from a DELETE.)
 You can specify multiple fields separated by commas, like above, or using "-b"
 more than once.  This example does the same thing as the previous one:
 
-    $ dn scan-file -b req.method -b res.statusCode \
-        ./tests/data/2014/05-02/one.log 
+    $ dn scan -b req.method -b res.statusCode my_logs
     REQ.METHOD RES.STATUSCODE VALUE
-    DELETE     200                6
-    DELETE     204               12
-    DELETE     400               12
-    DELETE     404                8
-    DELETE     499               12
-    DELETE     500                8
-    DELETE     503               13
-    GET        200               12
-    GET        204                7
-    GET        400               11
-    GET        404                6
-    GET        499               10
-    GET        500                7
-    GET        503                5
-    HEAD       200                7
-    HEAD       204                5
-    HEAD       400                7
-    HEAD       404               10
-    HEAD       499               13
-    HEAD       500                3
-    HEAD       503               11
-    PUT        200               10
-    PUT        204                6
-    PUT        400               11
-    PUT        404               11
-    PUT        499                8
-    PUT        500               15
-    PUT        503                6
+    DELETE     200               75
+    DELETE     204               87
+    DELETE     400               94
+    DELETE     404               85
+    DELETE     499               83
+    DELETE     500               79
+    DELETE     503               79
+    GET        200               77
+    GET        204               83
+    GET        400               84
+    GET        404               74
+    GET        499               79
+    GET        500               73
+    GET        503               86
+    HEAD       200               71
+    HEAD       204               85
+    HEAD       400               66
+    HEAD       404               77
+    HEAD       499               88
+    HEAD       500               88
+    HEAD       503               76
+    PUT        200               80
+    PUT        204               79
+    PUT        400               83
+    PUT        404               88
+    PUT        499               68
+    PUT        500               83
+    PUT        503               82
 
 The order of breakdowns matters.  If we reverse them, we get different output:
 
-    $ dn scan-file -b res.statusCode,req.method ./tests/data/2014/05-02/one.log
+    $ dn scan -b res.statusCode,req.method my_logs
     RES.STATUSCODE REQ.METHOD VALUE
-    200            DELETE         6
-    200            GET           12
-    200            HEAD           7
-    200            PUT           10
-    204            DELETE        12
-    204            GET            7
-    204            HEAD           5
-    204            PUT            6
-    400            DELETE        12
-    400            GET           11
-    400            HEAD           7
-    400            PUT           11
-    404            DELETE         8
-    404            GET            6
-    404            HEAD          10
-    404            PUT           11
-    499            DELETE        12
-    499            GET           10
-    499            HEAD          13
-    499            PUT            8
-    500            DELETE         8
-    500            GET            7
-    500            HEAD           3
-    500            PUT           15
-    503            DELETE        13
-    503            GET            5
-    503            HEAD          11
-    503            PUT            6
+    200            DELETE        75
+    200            GET           77
+    200            HEAD          71
+    200            PUT           80
+    204            DELETE        87
+    204            GET           83
+    204            HEAD          85
+    204            PUT           79
+    400            DELETE        94
+    400            GET           84
+    400            HEAD          66
+    400            PUT           83
+    404            DELETE        85
+    404            GET           74
+    404            HEAD          77
+    404            PUT           88
+    499            DELETE        83
+    499            GET           79
+    499            HEAD          88
+    499            PUT           68
+    500            DELETE        79
+    500            GET           73
+    500            HEAD          88
+    500            PUT           83
+    503            DELETE        79
+    503            GET           86
+    503            HEAD          76
+    503            PUT           82
+
 
 ### Filters
 
 You can filter records using [node-krill](https://github.com/joyent/node-krill)
 filter syntax:
 
-    $ dn scan-file -f '{ "eq": [ "req.method", "GET" ] }' \
-        ./tests/data/2014/05-02/one.log
+    $ dn scan -f '{ "eq": [ "req.method", "GET" ] }' my_logs
     VALUE
-       58
+      556
 
 and you can combine this with breakdowns, of course:
 
-    $ dn scan-file -f '{ "eq": [ "req.method", "GET" ] }' \
-          -b operation ./tests/data/2014/05-02/one.log
+    $ dn scan -f '{ "eq": [ "req.method", "GET" ] }' -b operation my_logs
     OPERATION        VALUE
-    getjoberrors        17
-    getpublicstorage    14
-    getstorage          27
+    getjoberrors       181
+    getpublicstorage   176
+    getstorage         199
 
 
 ### Numeric breakdowns
@@ -164,311 +177,261 @@ and you can combine this with breakdowns, of course:
 To break down by numeric quantities, it's usually best to aggregate nearby
 values into buckets.  Here's a histogram of the "latency" field from this log:
 
-    $ dn scan-file -b latency[aggr=quantize] ./tests/data/2014/05-02/one.log
+    $ dn scan -b latency[aggr=quantize] my_logs
 
                value  ------------- Distribution ------------- count
                    0 |                                         0
-                   1 |@@                                       11
-                   2 |@@@@@@@@@                                55
-                   4 |@@@@@@@@                                 50
+                   1 |@@                                       113
+                   2 |@@@@@@@@                                 449
+                   4 |@@@@@@                                   348
                    8 |                                         0
-                  16 |@@@@@@@@@                                58
+                  16 |@@@@@@@@@@@@                             682
                   32 |                                         0
-                  64 |@@                                       10
-                 128 |@@@                                      18
+                  64 |@                                        57
+                 128 |@@@                                      165
                  256 |                                         0
                  512 |                                         0
-                1024 |@@                                       14
-                2048 |@@@@@@                                   36
+                1024 |@@                                       136
+                2048 |@@@@@                                    302
                 4096 |                                         0
 
 "aggr=quantize" specifies a power-of-two bucketization.  You can also do a
-linear quantization, say with steps of size 50 (notice the quotes):
+linear quantization, say with steps of size 200:
 
-    $ dn scan-file -b 'latency[aggr=lquantize,step=50]' \
-        ./tests/data/2014/05-02/one.log
+    $ dn scan -b latency[aggr=lquantize,step=200] my_logs
 
                value  ------------- Distribution ------------- count
-                   0 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@             174
-                  50 |                                         0
-                 100 |@@                                       15
-                 150 |@@                                       13
+                   0 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@         1814
                  200 |                                         0
-                 250 |                                         0
-                 300 |                                         0
-                 350 |                                         0
                  400 |                                         0
-                 450 |                                         0
-                 500 |                                         0
-                 550 |                                         0
                  600 |                                         0
-                 650 |                                         0
-                 700 |                                         0
-                 750 |                                         0
                  800 |                                         0
-                 850 |                                         0
-                 900 |                                         0
-                 950 |                                         0
-                1000 |                                         1
-                1050 |                                         0
-                1100 |                                         1
-    ...
+                1000 |                                         23
+                1200 |@                                        31
+                1400 |@                                        35
+                1600 |                                         18
+                1800 |                                         24
+                2000 |@                                        34
+                2200 |@                                        35
+                2400 |                                         28
+                2600 |@                                        33
+                2800 |                                         18
+                3000 |@                                        34
+                3200 |                                         27
+                3400 |@                                        34
+                3600 |                                         26
+                3800 |                                         25
+                4000 |                                         13
+                4200 |                                         0
 
 These are modeled after DTrace's aggregating actions.  You can combine these
-with other breakdowns:
+with filters and other breakdowns:
 
-    $ dn scan-file -f '{ "eq": [ "req.method", "GET" ] }' \
-          -b req.method,operation,latency[aggr=quantize] \
-          ./tests/data/2014/05-02/one.log
+    $ dn scan -f '{ "eq": [ "req.method", "GET" ] }' \
+        -b req.method,operation,latency[aggr=quantize] my_logs
     GET, getjoberrors
                value  ------------- Distribution ------------- count
                    0 |                                         0
-                   1 |                                         0
-                   2 |@@@@@@@                                  3
-                   4 |@@@@@                                    2
+                   1 |@@                                       9
+                   2 |@@@@@@@                                  32
+                   4 |@@@@@                                    24
                    8 |                                         0
-                  16 |@@@@@@@@@@@@@@@@                         7
+                  16 |@@@@@@@@@@@@@@                           63
                   32 |                                         0
-                  64 |@@@@@                                    2
-                 128 |                                         0
+                  64 |@                                        5
+                 128 |@@@                                      13
                  256 |                                         0
                  512 |                                         0
-                1024 |@@                                       1
-                2048 |@@@@@                                    2
+                1024 |@@@                                      13
+                2048 |@@@@@                                    22
                 4096 |                                         0
 
     GET, getpublicstorage
                value  ------------- Distribution ------------- count
                    0 |                                         0
-                   1 |                                         0
-                   2 |@@@@@@                                   2
-                   4 |@@@@@@@@@@@@@@@@@                        6
+                   1 |@@@                                      12
+                   2 |@@@@@@@@                                 37
+                   4 |@@@@@@                                   28
                    8 |                                         0
-                  16 |@@@@@@@@@                                3
+                  16 |@@@@@@@@@@@@                             51
                   32 |                                         0
-                  64 |                                         0
-                 128 |@@@                                      1
+                  64 |                                         1
+                 128 |@@@@                                     17
                  256 |                                         0
                  512 |                                         0
-                1024 |@@@                                      1
-                2048 |@@@                                      1
+                1024 |@@                                       9
+                2048 |@@@@@                                    21
                 4096 |                                         0
 
     GET, getstorage
                value  ------------- Distribution ------------- count
                    0 |                                         0
-                   1 |                                         0
-                   2 |@@@@@@@@@@                               7
-                   4 |@@@@@@                                   4
+                   1 |@@                                       12
+                   2 |@@@@@@@                                  37
+                   4 |@@@@@@                                   29
                    8 |                                         0
-                  16 |@@@@@@@@@@@@@                            9
+                  16 |@@@@@@@@@@@@@                            67
                   32 |                                         0
-                  64 |@                                        1
-                 128 |@                                        1
+                  64 |@@                                       9
+                 128 |@@                                       8
                  256 |                                         0
                  512 |                                         0
-                1024 |@@@                                      2
-                2048 |@@@@                                     3
+                1024 |@@                                       11
+                2048 |@@@@@                                    26
                 4096 |                                         0
 
 If the last field isn't an aggregation, "dn" won't print a histogram, but it
 will still group nearby values.  For example, if we reverse the order of that
 last example:
 
-    $ dn scan-file -f '{ "eq": [ "req.method", "GET" ] }' \
-          -b latency[aggr=quantize],req.method,operation \
-          ./tests/data/2014/05-02/one.log
+    $ dn scan -f '{ "eq": [ "req.method", "GET" ] }' \
+        -b latency[aggr=quantize],req.method,operation my_logs
     LATENCY REQ.METHOD OPERATION        VALUE
-          2 GET        getjoberrors         3
-          2 GET        getpublicstorage     2
-          2 GET        getstorage           7
-          4 GET        getjoberrors         2
-          4 GET        getpublicstorage     6
-          4 GET        getstorage           4
-         16 GET        getjoberrors         7
-         16 GET        getpublicstorage     3
-         16 GET        getstorage           9
-         64 GET        getjoberrors         2
-         64 GET        getstorage           1
-        128 GET        getpublicstorage     1
-        128 GET        getstorage           1
-       1024 GET        getjoberrors         1
-       1024 GET        getpublicstorage     1
-       1024 GET        getstorage           2
-       2048 GET        getjoberrors         2
-       2048 GET        getpublicstorage     1
-       2048 GET        getstorage           3
+          1 GET        getjoberrors         9
+          1 GET        getpublicstorage    12
+          1 GET        getstorage          12
+          2 GET        getjoberrors        32
+          2 GET        getpublicstorage    37
+          2 GET        getstorage          37
+          4 GET        getjoberrors        24
+          4 GET        getpublicstorage    28
+          4 GET        getstorage          29
+         16 GET        getjoberrors        63
+         16 GET        getpublicstorage    51
+         16 GET        getstorage          67
+         64 GET        getjoberrors         5
+         64 GET        getpublicstorage     1
+         64 GET        getstorage           9
+        128 GET        getjoberrors        13
+        128 GET        getpublicstorage    17
+        128 GET        getstorage           8
+       1024 GET        getjoberrors        13
+       1024 GET        getpublicstorage     9
+       1024 GET        getstorage          11
+       2048 GET        getjoberrors        22
+       2048 GET        getpublicstorage    21
+       2048 GET        getstorage          26
 
-You can get per-hour results by specifying a "date" field and doing a linear
-quantization with steps of size 3600 (for 3600 seconds per hour).  When using a
-"date" field, you have to specify what underlying JSON field should be parsed
+You can get per-day results by specifying a "date" field and doing a linear
+quantization with steps of size 86400 (for 86400 seconds per day).  When using
+a "date" field, you have to specify what underlying JSON field should be parsed
 as a date:
 
-    $ dn scan-file -b 'timestamp[date,field=time,aggr=lquantize,step=3600]' \
-        -b req.method ./tests/data/2014/05-02/one.log
+    $ dn scan -b timestamp[date,field=time,aggr=lquantize,step=86400] \
+        -b req.method my_logs
     TIMESTAMP                REQ.METHOD VALUE
-    2014-05-02T00:00:00.000Z DELETE         2
-    2014-05-02T00:00:00.000Z GET            4
-    2014-05-02T00:00:00.000Z PUT            5
-    2014-05-02T01:00:00.000Z DELETE         3
-    2014-05-02T01:00:00.000Z GET            3
-    2014-05-02T01:00:00.000Z HEAD           1
-    2014-05-02T01:00:00.000Z PUT            3
-    2014-05-02T02:00:00.000Z DELETE         5
-    2014-05-02T02:00:00.000Z GET            1
-    2014-05-02T02:00:00.000Z HEAD           2
-    2014-05-02T02:00:00.000Z PUT            3
-    2014-05-02T03:00:00.000Z DELETE         3
-    2014-05-02T03:00:00.000Z GET            3
-    2014-05-02T03:00:00.000Z HEAD           2
-    2014-05-02T03:00:00.000Z PUT            2
-    ...
-    2014-05-02T22:00:00.000Z DELETE         3
-    2014-05-02T22:00:00.000Z GET            1
-    2014-05-02T22:00:00.000Z HEAD           4
-    2014-05-02T22:00:00.000Z PUT            2
-    2014-05-02T23:00:00.000Z DELETE         3
-    2014-05-02T23:00:00.000Z GET            3
-    2014-05-02T23:00:00.000Z HEAD           3
-    2014-05-02T23:00:00.000Z PUT            1
+    2014-05-01T00:00:00.000Z DELETE       142
+    2014-05-01T00:00:00.000Z GET          113
+    2014-05-01T00:00:00.000Z HEAD         125
+    2014-05-01T00:00:00.000Z PUT          120
+    2014-05-02T00:00:00.000Z DELETE       133
+    2014-05-02T00:00:00.000Z GET          120
+    2014-05-02T00:00:00.000Z HEAD         125
+    2014-05-02T00:00:00.000Z PUT          122
+    2014-05-03T00:00:00.000Z DELETE       122
+    2014-05-03T00:00:00.000Z GET          124
+    2014-05-03T00:00:00.000Z HEAD         123
+    2014-05-03T00:00:00.000Z PUT          131
+    2014-05-04T00:00:00.000Z DELETE       128
+    2014-05-04T00:00:00.000Z GET          120
+    2014-05-04T00:00:00.000Z HEAD         127
+    2014-05-04T00:00:00.000Z PUT          125
+    2014-05-05T00:00:00.000Z DELETE        55
+    2014-05-05T00:00:00.000Z GET           79
+    2014-05-05T00:00:00.000Z HEAD          51
+    2014-05-05T00:00:00.000Z PUT           65
 
 
 ### Indexes
 
 All of the examples above used a full file scan just to demonstrate the data
 model.  The point of Dragnet is to create indexes that can answer these same
-queries much faster.  You can index a file much the way you write a query.
-Here's an example that creates indexes on the request method, operation, and
-latency:
+queries much faster.
 
-    $ dn index-file -c req.method,operation,latency[aggr=quantize] \
-          ./tests/data/2014/05-02/one.log myindex
-    index "myindex" created
+To build indexes, the datasource must have an index-path property, which tells
+Dragnet where the index should be stored.  So let's remove the datasource we
+added previously and re-add it with an index path.  We'll also specify a time
+field, which Dragnet will use to build per-day indexes by default:
 
-My sample data is fairly small, but the index is much smaller:
+    $ dn datasource-remove my_logs
+    $ dn datasource-add my_logs --path=$PWD/tests/data/ \
+        --index-path=$PWD/my_index --time-field=time
+    $ dn datasource-list -v
+    DATASOURCE           LOCATION                                                   
+    my_logs              file://home/dap/dragnet/dragnet/tests/data/                
+        dataFormat: "json"
+        indexPath:  "/home/dap/dragnet/dragnet/my_index"
+        timeField:  "time"
 
-    $ ls -lh ./tests/data/2014/05-02/one.log 
-    -rw-r--r--  1 dap  staff    55K Jul 29 15:21 ./tests/data/2014/05-02/one.log
+Now we can start adding metrics for the datasource.  Let's say we want to be
+able to quickly get the count of requests per minute, possibly broken out by
+status code.  Let's add this metric:
 
-    $ ls -lh myindex 
-    -rw-r--r--  1 dap  staff   8.0K Jul 29 15:47 myindex
+    $ dn metric-add --datasource=my_logs \
+        -b timestamp[field=time,date,aggr=lquantize,step=60] \
+        -b res.statusCode requests_bystatus
 
-Indexes are currently just sqlite databases with the same results that a
-similar query would have:
+Now build the index:
 
-    $ sqlite3 myindex '.schema dragnet_index'
-    CREATE TABLE dragnet_index(
-        req_method varchar(128),
-        operation varchar(128),
-        latency integer,
-        value integer
-    );
+    $ dn build my_logs
+    indexes for "my_logs" built
 
-    $ sqlite3 myindex 'select * from dragnet_index'
-    PUT|putobject|2|7
-    PUT|putobject|4|5
-    PUT|putobject|16|4
-    PUT|putobject|64|1
-    PUT|putobject|128|4
-    PUT|putobject|1024|1
-    PUT|putobject|2048|1
-    PUT|putpublicobject|1|5
-    PUT|putpublicobject|2|4
-    PUT|putpublicobject|4|8
-    ...
+By default, "dn build" builds daily indexes.  You can see the individual files:
 
-You can query an index with the same syntax you'd use for scanning, but with the
-"query-file" command:
+    $ find my_index -type f
+    my_index/by_day/2014-05-01.sqlite
+    my_index/by_day/2014-05-03.sqlite
+    my_index/by_day/2014-05-05.sqlite
+    my_index/by_day/2014-05-04.sqlite
+    my_index/by_day/2014-05-02.sqlite
 
-    $ dn query-file -f '{ "eq": [ "req.method", "GET" ] }' \
-          -b latency[aggr=quantize],req.method,operation myindex 
-    LATENCY REQ.METHOD OPERATION        VALUE
-          2 GET        getjoberrors         3
-          2 GET        getpublicstorage     2
-          2 GET        getstorage           7
-          4 GET        getjoberrors         2
-          4 GET        getpublicstorage     6
-          4 GET        getstorage           4
-         16 GET        getjoberrors         7
-         16 GET        getpublicstorage     3
-         16 GET        getstorage           9
-         64 GET        getjoberrors         2
-         64 GET        getstorage           1
-        128 GET        getpublicstorage     1
-        128 GET        getstorage           1
-       1024 GET        getjoberrors         1
-       1024 GET        getpublicstorage     1
-       1024 GET        getstorage           2
-       2048 GET        getjoberrors         2
-       2048 GET        getpublicstorage     1
-       2048 GET        getstorage           3
+The indexes are much smaller than the original data, since they contain only
+enough information to answer the queries.
 
-Query and scan should return the same results -- the point is that query should
-be much faster.
+You can query an index the same way you would scan the original data.
+Generally, the query will be much faster, since it's not scanning the raw data.
+Here's a count of all requests:
 
-
-### Beyond files
-
-All of the examples used a single data file and a single index file to
-demonstrate the main ideas, but Dragnet is designed for larger corpuses with
-many files.  Your data set can have as many files as you want, and Dragnet
-creates per-hour index files by default using the "time" field in each JSON
-object.
-
-Here's a directory with two files, each containing three hours' worth of random
-data:
-
-    $ find tests/data -type f
-    tests/data/2014/05-01/one.log
-    tests/data/2014/05-01/two.log
-    tests/data/2014/05-02/one.log
-    tests/data/2014/05-02/two.log
-    tests/data/2014/05-03/one.log
-    tests/data/2014/05-03/two.log
-    tests/data/2014/05-04/one.log
-    tests/data/2014/05-04/two.log
-    tests/data/2014/05-05/more.log
-
-You can scan the entire directory tree by using "scan-tree" instead of
-"scan-file":
-
-    $ dn scan-tree ./tests/data
+    $ dn query my_logs
     VALUE
-     2252
+     2250
 
-    $ dn scan-tree -b req.method ./tests/data
-    REQ.METHOD VALUE
-    DELETE       582
-    GET          556
-    HEAD         551
-    PUT          563
+Or just the server-side failures (status code at least 500):
 
-You can index it the same way:
+    $ dn query --filter='{ "ge": [ "res.statusCode", 500 ] }' my_logs
+    VALUE
+      646
 
-    $ dn index-tree -c 'timestamp[date,field=time,aggr=lquantize,step=86400]' \
-         -c req.method,res.statusCode,latency[aggr=quantize] \
-         ./tests/data data_index
-    indexes created
+Or the failures by day:
 
-    $ find data_index -type f 
-    data_index/by_hour/2014-05-01-00.sqlite
-    data_index/by_hour/2014-05-01-01.sqlite
-    data_index/by_hour/2014-05-01-02.sqlite
-    data_index/by_hour/2014-05-01-03.sqlite
-    ...
-    data_index/by_hour/2014-05-05-21.sqlite
-    data_index/by_hour/2014-05-05-22.sqlite
-    data_index/by_hour/2014-05-05-23.sqlite
+    $ dn query --filter='{ "ge": [ "res.statusCode", 500 ] }' \
+        -b timestamp[date,aggr=lquantize,step=86400] my_logs
 
-Notice there are many index files: one for each hour of data from the original
-data set.  The number of indexes doesn't depend on the size or number of input
-files.  You never need to worry about the number of index files, though.  "dn"
-takes care of searching whichever set of them need to be searched.
+                         value  ------------- Distribution ------------- count
+      2014-05-01T00:00:00.000Z |@@@@@@@@@                                142
+      2014-05-02T00:00:00.000Z |@@@@@@@@                                 132
+      2014-05-03T00:00:00.000Z |@@@@@@@@@                                144
+      2014-05-04T00:00:00.000Z |@@@@@@@@@@                               154
+      2014-05-05T00:00:00.000Z |@@@@@                                    74
+      2014-05-06T00:00:00.000Z |                                         0
 
-You can query these indexes using "query-tree" and specifying the index
-directory:
+Notice that you define metrics to build the index, but you don't need to query a
+specific metric.  You can query anything that can be fetched from the data that
+was gathered *for* those metrics.  If you ask for something that's not there,
+you'll get an error:
 
-    $ dn query-tree -b req.method data_index
+    $ dn query -b req.method my_logs
+    dn: index "/home/dap/dragnet/dragnet/my_index/by_day/2014-05-01.sqlite" query:
+    no metrics available to serve query
+
+But it will work if you add the metric and rebuild the index:
+
+    $ dn metric-add --datasource=my_logs -b req.method my_logs
+
+    $ dn build my_logs
+    indexes for "my_logs" built
+
+    $ dn query -b req.method my_logs
     REQ.METHOD VALUE
     DELETE       580
     GET          556
@@ -486,8 +449,10 @@ Service](https://apidocs.joyent.com/manta/).  When working with Manta:
   compute jobs to avoid copying data out of the object store.  Only the final
   results of scan and query operations are downloaded so they can be printed by
   the "dn" command.
-* You can still use the --time-format, --before, and --after options to prune
-  directories to search when scanning, indexing, or querying.
+* As with files, you can use --time-format and --time-field when creating the
+  data source, and then use --before and --after options to prune directories to
+  search when scanning, indexing, or querying.  For large datasets, this saves
+  an enormous amount of time just enumerating inputs.
 * You're responsible for cost of storing data and running compute jobs on Manta.
 
 To use Dragnet on Manta, first set up the Manta CLI tools using the [Manta
@@ -497,57 +462,61 @@ need to set MANTA\_URL, MANTA\_USER, and MANTA\_KEY\_ID as you would for the
 rest of the Manta command-line tools.  If "mls" works, you're good to go.
 
 For sample data, there's a Manta copy of the test data shipped with Dragnet in
-/dap/public/dragnet/testdata.  You can scan it with "scan-manta", which works
-just like "scan-tree" except that the argument is a path in Manta rather than a
-path to a local directory:
+/dap/public/dragnet/testdata.  You can scan add it like this:
 
-    $ dn scan-manta /dap/public/dragnet/testdata
-    using existing asset: "/dap/public/dragnet/assets/dragnet-0.0.0.tgz"
-    submitted job 9ed83408-0a41-c6b7-ebde-8c2d3d8f1a3c
+    $ dn datasource-add dragnet_test_manta --backend=manta \
+        --path=/dap/public/dragnet/testdata --time-field=time \
+
+Then you can scan it just as with local data.  There's a little more debug
+output in case you need to dig into the job:
+
+    $ dn scan dragnet_test_manta
+    using existing asset: "/manta/public/dragnet/assets/dragnet-0.0.2.tgz"
+    submitted job 4a74af91-4b3d-c69b-e607-efe0c2911826
     submitted 9 inputs
     VALUE
      2252
 
-Similarly, you can run "index-manta" to index data stored in Manta, and its
-arguments are just like "index-tree", but the paths represent Manta paths rather
-than local filesystem paths:
+Similarly, you can define metrics, build an index, and query it.  To do that, we
+have to specify an index path, which must be somewhere in Manta you have access
+to write:
 
-    $ dn index-manta -c 'timestamp[date,field=time,aggr=lquantize,step=86400]' \
-        -c req.method,res.statusCode --interval=day \
-	/dap/public/dragnet/testdata /dap/stor/dragnet_test_index
-    using existing asset: "/dap/public/dragnet/assets/dragnet-0.0.0.tgz"
-    submitted job 8cd54704-5501-cae6-9dbd-e9a84c0a9146
+    $ dn datasource-remove dragnet_test_manta
+
+    $ dn datasource-add dragnet_test_manta --backend=manta --time-field=time \
+        --path=/dap/public/dragnet/testdata \
+        --index-path=/$MANTA_USER/stor/myindex
+
+    $ dn metric-add --datasource=dragnet_test_manta \
+        -b timestamp[date,field=time,aggr=lquantize,step=86400],req.method \
+        by_method
+
+Now we can build the index:
+
+    $ dn build dragnet_test_manta
+    using existing asset: "/manta/public/dragnet/assets/dragnet-0.0.2.tgz"
+    submitted job 507242e7-7e76-6ae4-8ef4-cec1f9593909
     submitted 9 inputs
-    indexes created
+    indexes for "dragnet_test_manta" built
 
-    $ mfind -t o /dap/stor/dragnet_test_index
-    /dap/stor/dragnet_test_index/by_day/2014-05-01.sqlite
-    /dap/stor/dragnet_test_index/by_day/2014-05-02.sqlite
-    /dap/stor/dragnet_test_index/by_day/2014-05-03.sqlite
-    /dap/stor/dragnet_test_index/by_day/2014-05-04.sqlite
-    /dap/stor/dragnet_test_index/by_day/2014-05-05.sqlite
+and query it:
 
-And you can query it with "query-mjob":
-
-    $ dn query-mjob /dap/stor/dragnet_test_index
-    using existing asset: "/dap/public/dragnet/assets/dragnet-0.0.0.tgz"
-    submitted job ddf8b4cc-f804-4899-e857-876a293f37b0
+    $ dn query dragnet_test_manta
+    using existing asset: "/manta/public/dragnet/assets/dragnet-0.0.2.tgz"
+    submitted job 66f20f4f-9d5d-68ae-a860-b4f1fedc9f53
     submitted 5 inputs
     VALUE
      2250
 
-    $ dn query-mjob -b req.method /dap/stor/dragnet_test_index
-    using existing asset: "/dap/public/dragnet/assets/dragnet-0.0.0.tgz"
-    submitted job 4483dbf4-341e-4984-bf10-a6bae004001d
+    $ dn query -b req.method dragnet_test_manta
+    using existing asset: "/manta/public/dragnet/assets/dragnet-0.0.2.tgz"
+    submitted job 39b4e5d1-2449-4529-fcbf-916cb885d979
     submitted 5 inputs
     REQ.METHOD VALUE
     DELETE       580
     GET          556
     HEAD         551
     PUT          563
-
-(It's "query-mjob" rather than "query-manta" because there may be other
-Manta-based query commands in the future.)
 
 
 ## Reference
@@ -557,54 +526,23 @@ If you don't already know what "dn" does, you're better off starting with the
 
 ### Scanning raw data
 
-General forms:
+    dn scan [--before=START_TIME] [--after=END_TIME] [--filter=FILTER]
+            [--breakdowns=BREAKDOWN[,...]]
+            [--raw] [--points] [--counters] [--warnings] [--dry-run]
+            [--assetroot=ASSET_ROOT] DATASOURCE
 
-    dn scan-file  [-b|--breakdowns COLUMN[,COLUMN...]]
-                  [-f|--filter FILTER]
-                  [--before END_TIMESTAMP] [--after START_TIMESTAMP]
-                  [--time-field=FIELDNAME]
-                  [--data-format json|json-skinner]
-                  [--counters] [--points] [--warnings]
-                  DATA_FILE
+Scans all records in a datasource and aggregate the results.
 
-    dn scan-tree  [-b|--breakdowns COLUMN[,COLUMN...]]
-                  [-f|--filter FILTER]
-                  [--before END_TIMESTAMP] [--after START_TIMESTAMP]
-                  [--time-field=FIELDNAME]
-                  [--data-format json|json-skinner]
-                  [--time-format=TIME_FORMAT] 
-                  [--counters] [--points] [--warnings]
-                  DATA_DIRECTORY
+The datasource specifies a backend (local files or Manta), a path to the files,
+the file format, and a few option options describing how data is organized.  By
+default, records must be newline-separated JSON.
 
-    dn scan-manta [-b|--breakdowns COLUMN[,COLUMN...]]
-                  [-f|--filter FILTER]
-                  [--before END_TIMESTAMP] [--after START_TIMESTAMP]
-                  [--time-field=FIELDNAME]
-                  [--data-format json|json-skinner]
-                  [--time-format=TIME_FORMAT] 
-                  [--counters] [--points] [--warnings]
-                  DATA_DIRECTORY
+The basic operation is counting records.  The assumption is that records
+represent some useful metric (e.g., HTTP requests).  You can use --filter to
+skip records.  You can use --breakdowns to break out the results by some field
+(e.g., HTTP requests by request method).
 
-Scan the records in a single newline-separated-JSON data file:
-
-    dn scan-file SCAN_OPTIONS data_file
-
-Scan the records in all files in "data\_directory":
-
-    dn scan-tree SCAN_OPTIONS data_directory
-
-Scan the records in all Manta objects under "/$MANTA\_USER/stor/my\_data":
-
-    dn scan-manta SCAN_OPTIONS "/$MANTA_USER/stor/my_data"
-
-Scan only data from the first few days of July, assuming data is laid out under
-"data\_directory/YYYY/MM/DD":
-
-    dn scan-tree SCAN_OPTIONS --time-format=%Y/%m/%d
-        --after 2014-07-01 --before 2014-07-04
-        data_directory
-
-SCAN\_OPTIONS include:
+Options include:
 
 * `-b | --breakdowns COLUMN[,COLUMN...]`: A list of column definitions by which
   to break out the results.  With no breakdowns specified, the result of a scan
@@ -615,17 +553,22 @@ SCAN\_OPTIONS include:
   count for each unique combination of values for those columns (e.g., 15
   records with "req.method" equal to "GET" and "res.statusCode" equal to "200").
   To avoid exploding the number of results, you can group nearby values of
-  numeric quantities using an aggregation.  See "Getting started" below for
-  details.
+  numeric quantities using an aggregation.  See the tutorial above for details.
 * `-f | --filter FILTER`: A node-krill (JSON format) predicate to evaluate on
   each record.  Records not matching the filter, as well as records missing
   fields that are used by the filter, are dropped.
 * `--before END_TIMESTAMP`: Only scan data files containing data before
   END\_TIMESTAMP, and filter out data points after END\_TIMESTAMP (exclusive).
-  Requires you to specify `--time-format`.
+  Requires the datasource to have `--time-format` so that it can prune input
+  files and `--time-field` so that it can filter records within each bucket.
 * `--after START_TIMESTAMP`: Only scan data files containing data after
   START\_TIMESTAMP, and filter out data points before START\_TIMESTAMP
-  (inclusive).  Requires you to specify `--time-format`.
+  (inclusive).  Requires the datasource to have `--time-format` so that it can
+  prune input files and `--time-field` so that it can filter records within each
+  bucket.
+
+There are some options you specify when creating the datasource:
+
 * `--time-format TIME_FORMAT`: Specifies how the names of directories and files
   under "data\_directory" correspond with the timestamps of the data points
   contained in each file.  This is a format string like what strftime(3C)
@@ -660,143 +603,67 @@ There are a few debugging options:
 
 ### Indexing
 
-General forms:
-
-    dn index-file   [-c|--columns COLUMN[,COLUMN...]]
-                    [-f|--filter FILTER]
-                    [--before END_TIMESTAMP] [--after START_TIMESTAMP]
-                    [--data-format json|json-skinner]
-                    [-i|--interval hour|day]
-                    [--counters] [--warnings]
-                    DATA_FILE INDEX_FILE
-
-    dn index-tree   [-c|--columns COLUMN[,COLUMN...]]
-                    [-f|--filter FILTER]
-                    [--before END_TIMESTAMP] [--after START_TIMESTAMP]
-                    [--time-format=TIME_FORMAT]
-                    [--data-format json|json-skinner]
-                    [-i|--interval hour|day]
-                    [--counters] [--warnings]
-                    DATA_DIRECTORY INDEX_DIRECTORY
-
-    dn rollup-tree  [-c|--columns COLUMN[,COLUMN...]]
-                    [-f|--filter FILTER]
-                    [--before END_TIMESTAMP] [--after START_TIMESTAMP]
-                    [-i|--interval hour|day]
-                    [-s|--source hour]
-                    [--counters] [--warnings]
-                    INDEX_DIRECTORY
-
-    dn index-manta  [-c|--columns COLUMN[,COLUMN...]]
-                    [-f|--filter FILTER]
-                    [--before END_TIMESTAMP] [--after START_TIMESTAMP]
-                    [--time-format=TIME_FORMAT]
-                    [--data-format json|json-skinner]
-                    [-i|--interval hour|day]
-                    [--counters] [--warnings]
-                    DATA_DIRECTORY INDEX_DIRECTORY
+    dn build [--before=START_TIME] [--after=END_TIME]
+             [--interval=hour|day|all] [--index-config=CONFIG_FILE]
+             [--dry-run] [--assetroot=ASSET_ROOT]
+             DATASOURCE
 
 Generate a single index file from a single newline-separated-JSON data file:
 
-    dn index-file INDEX_OPTIONS data_file index_file
+    dn build --interval=all my_datasource
 
-Generate hourly index files into "index\_directory" from data stored in
-"data\_directory":
+This generates an index capable of answering all of the metrics you've defined
+on this datasource.
 
-    dn index-tree INDEX_OPTIONS data_directory index_directory
+Generate daily index files (the default):
 
-Generate daily index files instead:
-
-    dn index-tree INDEX_OPTIONS --interval=day data_directory index_directory
+    dn build --interval=day my_datasource
 
 Generate hourly indexes, but only for the first few days of July, assuming data
 is laid out under "data\_directory/YYYY/MM/DD"
 
-    dn index-tree INDEX_OPTIONS 
-        --time-format=%Y/%m/%d --after 2014-07-01 --before 2014-07-04
-        data_directory index_directory
+    dn build --interval=hour --after=2014-07-01 --before=2014-07-04
 
-Generate daily indexes from hourly indexes:
+Options include:
 
-    dn rollup-tree INDEX_OPTIONS --source=hour index_directory
-
-INDEX\_OPTIONS include:
-
-* `-c | --columns COLUMN[,COLUMN]`: Same as columns for "dn scan --breakdowns".
-* `-f | --filter FILTER`: Same as "dn scan --filter".
 * `--after START_TIMESTAMP`: Same as "dn scan --after".
 * `--before END_TIMESTAMP`: Same as "dn scan --before".
-* `--time-format TIME_FORMAT`: Same as "dn scan --time-format".  This only
-  applies to --index-tree.
-* `--data-format json | json-skinner`: Same as "dn scan --data-format".  This
-  only applies to --index-file and --index-tree.
 * `-i | --interval INTERVAL`: Specifies that indexes should be chunked into
-  files by INTERVAL, which is either "hour" or "day".  This is only supported
-  for "index-tree" and "rollup-tree".  The default is "hour".
-* `-s | --source hour`: Specifies that the underlying data for the index
-  should come from hourly indexes instead of the raw data files, which is useful
-  to build daily indexes more efficiently.  This only applies to rollup-tree.
+  files by INTERVAL, which is either "all", "hour" or "day".  The default is
+  "day".
 
-To specify the time resolution of each index file, you specify your own
-"timestamp" column.  For example, specifying column
+Like "scan", this uses several options on the datasource:
+
+* `--time-format TIME_FORMAT`: See "dn scan".
+* `--time-field TIME_FIELD`: See "dn scan".
+* `--data-format json | json-skinner`: See "dn scan".
+
+To specify the time resolution of a metric, specify your own "timestamp" column
+with each metric.  For example, specifying column
 `timestamp[date,field=time,aggr=lquantize,step=60]` adds a field called
 "timestamp" to the index which is the result of parsing the "time" field in the
 raw data as an ISO 8601 timestamp and converting that to a Unix timestamp
 (seconds since the epoch).  The result is bucketed by minute (`step=60`).  If
 you want the resolution to be 10 seconds instead, use `step=10`.
 
-There are a few debugging options:
-
-* `--counters`: See "dn scan --counters".
-* `--warnings`: See "dn scan --warnings".
-
-When using forms "dn index-tree", you must include at least one column that's a
-"date" field.  That field will be used to figure out which hourly or daily index
-file a given data point should wind up in.
-
 
 ### Querying
 
-"dn query-file" and "dn query-tree" support arguments like "dn scan-file" and
-"dn scan-tree":
+    dn query [--before=START_TIME] [--after=END_TIME] [--filter=FILTER]
+             [--breakdowns=BREAKDOWN[,...]] [--interval=hour|day|all]
+             [--raw] [--points] [--counters]
+             [--dry-run] [--assetroot=ASSET_ROOT]
+             DATASOURCE
 
-    dn query-file  [-b|--breakdowns COLUMN[,COLUMN...]]
-                   [-f|--filter FILTER]
-                   [--before END_TIMESTAMP] [--after START_TIMESTAMP]
-                   [--time-field TIME_FIELD]
-                   [--points] [--counters]
-                   INDEX_FILE
+"dn query" is used just like "dn scan", but fetches data from the indexes built
+by "dn build" rather than scanning the raw data every time.  The options are the
+same as for "dn scan", with the addition of:
 
-    dn query-tree  [-b|--breakdowns COLUMN[,COLUMN...]]
-                   [-f|--filter FILTER]
-                   [--before END_TIMESTAMP] [--after START_TIMESTAMP]
-                   [--time-field TIME_FIELD]
-                   [--points] [--counters]
-                   INDEX_DIRECTORY
+* `--interval all|hour|day`: scan the all-time, hourly, or daily indexes.  By
+  default, scans daily indexes.
 
-    dn query-manta [-b|--breakdowns COLUMN[,COLUMN...]]
-                   [-f|--filter FILTER]
-                   [--before END_TIMESTAMP] [--after START_TIMESTAMP]
-                   [--time-field TIME_FIELD]
-                   [--points] [--counters]
-                   INDEX_DIRECTORY
-
-All of these options work just as documented for "dn scan-file" and "dn
-scan-tree".  "INDEX\_FILE" should be a single index file to be queried.
-INDEX\_DIRECTORY refers to a directory of indexes created with "dn index-tree"
-or "dn index-manta".  "dn" will automatically select the daily indexes if
-available and fall back to hourly indexes if not.
-
-Several scan-related arguments are not supported by when querying because they
-don't apply:
-
-* `--data-format` doesn't apply because the format of indexes is fixed.
-* `--time-format` doesn't apply because the structure of the index directory
-  tree is fixed.
-* `--warnings` doesn't apply because any problems parsing indexes is
-  considered a fatal error.
-
-The fact that --time-field is ever necessary for queries is a bug.
+The `--data-format`, `--time-format`, and `--time-field` properties of the
+datasource are not used when querying.
 
 
 ## Memory usage
@@ -828,13 +695,13 @@ has to keep track of.  You can do this in a few ways:
   seconds, bucket per-minute.  Instead of latency in groups of 10 milliseconds,
   use power-of-two buckets.
 * Select fewer columns.  In the above example with 10 columns, skipping one
-  column reduces the number of unique data points by a factor of 10.
-* Relatedly: instead of using one index with 10 columns, use several indexes
-  with only a couple of columns each.  You rarely need to filter and break down
-  using all possible fields, so create specific indexes for the reports you
-  want.
+  column reduces the number of unique data points by a factor of 10.  You can do
+  this by configuring more metrics with different fields (e.g., replace a single
+  metric that includes timestamp, request method, and user agent with two that
+  include timestamp and request method and (separately) timestamp and user
+  agent.  These aren't exactly equivalent, but it's often sufficient.
 * If you only run into this problem while indexing, try indexing less data at
-  once.  If you're generating daily indexes, restrict each "index" operation to
+  once.  If you're generating daily indexes, restrict each "build" operation to
   a day's worth of input data, and run separate operations for each day.
 
 

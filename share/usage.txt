@@ -1,0 +1,38 @@
+usage: dn SUBCOMMAND [OPTIONS] ARGS
+
+dn datasource-add    [--backend=file|manta] --path=DATA_PATH
+                     [--index-path=INDEX_PATH] [--filter=FILTER]
+                     [--time-field=FIELD] [--time-format=TIME_FORMAT]
+                     [--data-format=json|json-skinner] DATASOURCE
+dn datasource-list   [-v]
+dn datasource-remove DATASOURCE
+
+dn metric-add        --datasource=DATASOURCE [--breakdowns=BREAKDOWN[,...]]
+                     [--filter=FILTER] METRIC
+dn metric-list       [-v]
+dn metric-remove     METRIC
+
+dn build             [--before=START_TIME] [--after=END_TIME]
+                     [--interval=hour|day|all] [--index-config=CONFIG_FILE]
+                     [--dry-run] [--assetroot=ASSET_ROOT]
+                     DATASOURCE
+
+dn query             [--before=START_TIME] [--after=END_TIME] [--filter=FILTER]
+                     [--breakdowns=BREAKDOWN[,...]] [--interval=hour|day|all]
+                     [--raw] [--points] [--counters]
+                     [--dry-run] [--assetroot=ASSET_ROOT]
+                     DATASOURCE
+
+dn scan              [--before=START_TIME] [--after=END_TIME] [--filter=FILTER]
+                     [--breakdowns=BREAKDOWN[,...]]
+                     [--raw] [--points] [--counters] [--warnings] [--dry-run]
+                     [--assetroot=ASSET_ROOT] DATASOURCE
+
+dn index-config      DATASOURCE
+dn index-read        [--index-config=INDEX_CONFIG_FILE]
+                     [--interval=hour|day|all]
+                     DATASOURCE
+dn index-scan        [--index-config=INDEX_CONFIG_FILE]
+                     [--interval=hour|day|all]
+                     [--before=START_TIME] [--after=END_TIME] [--filter=FILTER]
+                     [--breakdowns=BREAKDOWN[,...]] [--counters] DATASOURCE

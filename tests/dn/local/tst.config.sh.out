@@ -1,0 +1,134 @@
+# dn datasource-list
+DATASOURCE           LOCATION                                                   
+
+# dn datasource-list -v
+DATASOURCE           LOCATION                                                   
+
+# dn datasource-add junk3
+dn: "path" option is required
+usage: dn SUBCOMMAND [OPTIONS] ARGS
+# dn datasource-add junk3 --filter={ --path=/junk
+dn: invalid filter: Unexpected end of input
+usage: dn SUBCOMMAND [OPTIONS] ARGS
+# dn datasource-add junk --path=/junk
+
+# dn datasource-add junk2 --path=/junk --filter={ "eq": [ "req.method", "GET" ] }
+
+# dn datasource-list
+DATASOURCE           LOCATION                                                   
+junk                 file://junk                                                
+junk2                file://junk                                                
+
+# dn datasource-list -v
+DATASOURCE           LOCATION                                                   
+junk                 file://junk                                                
+    dataFormat: "json"
+junk2                file://junk                                                
+    filter:     {"eq":["req.method","GET"]}
+    dataFormat: "json"
+
+# dn datasource-add junk --path=/junk
+dn: datasource "junk" already exists
+
+# dn datasource-remove junk2
+
+# dn datasource-list
+DATASOURCE           LOCATION                                                   
+junk                 file://junk                                                
+
+# dn datasource-list -v
+DATASOURCE           LOCATION                                                   
+junk                 file://junk                                                
+    dataFormat: "json"
+
+# dn datasource-remove junk
+
+# dn datasource-list
+DATASOURCE           LOCATION                                                   
+
+# dn datasource-list -v
+DATASOURCE           LOCATION                                                   
+
+# dn datasource-remove junk
+dn: datasource "junk" does not exist
+
+# dn datasource-add manta-based --backend=manta --path=/junk
+
+# dn datasource-add manta-based2 --backend=manta --path=/junk --time-format=%Y/%m/%d/%H --data-format=json-skinner
+
+# dn datasource-list
+DATASOURCE           LOCATION                                                   
+manta-based          manta://us-east.manta.joyent.com/junk                      
+manta-based2         manta://us-east.manta.joyent.com/junk                      
+
+# dn datasource-list -v
+DATASOURCE           LOCATION                                                   
+manta-based          manta://us-east.manta.joyent.com/junk                      
+    dataFormat: "json"
+manta-based2         manta://us-east.manta.joyent.com/junk                      
+    dataFormat: "json-skinner"
+    timeFormat: "%Y/%m/%d/%H"
+
+# dn metric-list
+DATASOURCE           METRIC              
+
+# dn metric-list -v
+DATASOURCE           METRIC              
+
+# dn metric-add --datasource=manta-based --filter={ met1
+dn: invalid filter: Unexpected end of input
+usage: dn SUBCOMMAND [OPTIONS] ARGS
+# dn metric-add met1
+dn: "datasource" option is required
+usage: dn SUBCOMMAND [OPTIONS] ARGS
+# dn metric-add --datasource=manta-based met1
+
+# dn metric-list
+DATASOURCE           METRIC              
+manta-based          met1                
+
+# dn metric-list -v
+DATASOURCE           METRIC              
+manta-based          met1                
+
+# dn metric-add --datasource=manta-based --filter={ "eq": [ "req.method", "GET" ] } met2
+
+# dn metric-add --datasource=manta-based --filter={ "eq": [ "req.method", "GET" ] } --breakdowns=host,req.method,latency[aggr=quantize] met3
+
+# dn metric-list
+DATASOURCE           METRIC              
+manta-based          met1                
+manta-based          met2                
+manta-based          met3                
+
+# dn metric-list -v
+DATASOURCE           METRIC              
+manta-based          met1                
+manta-based          met2                
+    filter:     {"eq":["req.method","GET"]}
+manta-based          met3                
+    filter:     {"eq":["req.method","GET"]}
+    breakdowns: host, req.method, latency
+
+# dn metric-add --datasource=manta-based met1
+dn: metric "met1" already exists
+
+# dn metric-remove met1
+
+# dn metric-remove met2
+
+# dn metric-remove met3
+
+# dn metric-remove met2
+dn: metric "met2" does not exist
+
+# dn datasource-remove manta-based2
+
+# dn datasource-remove manta-based
+
+# dn datasource-list
+DATASOURCE           LOCATION                                                   
+
+# dn datasource-list -v
+DATASOURCE           LOCATION                                                   
+

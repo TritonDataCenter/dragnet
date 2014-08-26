@@ -1,13 +1,10 @@
-# dn scan-file --data-format=json-skinner /dev/stdin
+# dn scan stdin-skinner
 VALUE
   250
-# dn scan-file --data-format=json-skinner /dev/stdin
-VALUE
-  250
-# dn scan-file --data-format=json-skinner /dev/stdin
+# dn scan stdin-skinner
 VALUE
   500
-# dn scan-file --data-format=json-skinner /dev/stdin
+# dn scan stdin-skinner
 VALUE
   750
 REQ.METHOD VALUE
@@ -15,10 +12,10 @@ DELETE        74
 GET           54
 HEAD          61
 PUT           61
-# dn scan-file --data-format=json-skinner /dev/stdin
+# dn scan stdin-skinner
 VALUE
   750
-# dn scan-file -b req.method --data-format=json-skinner /dev/stdin
+# dn scan stdin-skinner -b req.method
 REQ.METHOD VALUE
 DELETE       222
 GET          162

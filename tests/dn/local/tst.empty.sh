@@ -10,38 +10,44 @@ set -o errexit
 tmpfile="/var/tmp/$(basename $0).$$"
 echo "using tmpfile \"$tmpfile\"" >&2
 
-function scan-file
+function scan
 {
-	echo "# dn scan-file" "$@"
-	dn scan-file "$@" /dev/null 2>&1
+	echo "# dn scan" "$@"
+	dn scan "$@" devnull 2>&1
 	echo
 
-	echo "# dn scan-file --points" "$@"
-	dn scan-file --points "$@" /dev/null 2>&1 | sort -d
+	echo "# dn scan --points" "$@"
+	dn scan --points "$@" devnull 2>&1 | sort -d
 	echo
 }
 
 function query
 {
-	echo "# dn query-file" "$@"
-	dn query-file "$@" $tmpfile 2>&1
+	echo "# dn query" "$@"
+	dn query --interval=all "$@" devnull 2>&1
 }
 
-scan-file --counters
-scan-file -b timestamp
-scan-file -b timestamp[aggr=quantize]
-scan-file -b timestamp[aggr=quantize],req.method
-scan-file -f '{ "eq": [ "audit", true ] }' -b timestamp[aggr=quantize],req.method
-scan-file --counters -f '{ "eq": [ "audit", true ] }'
+dn_clear_config
+dn datasource-add devnull --path=/dev/null --index-path=$tmpfile
+scan --counters
+scan -b timestamp
+scan -b timestamp[aggr=quantize]
+scan -b timestamp[aggr=quantize],req.method
+scan -f '{ "eq": [ "audit", true ] }' -b timestamp[aggr=quantize],req.method
+scan --counters -f '{ "eq": [ "audit", true ] }'
 
 echo "creating index" >&2
-dn index-file /dev/null $tmpfile
+dn metric-add --datasource=devnull total
+dn build --interval=all devnull
 query --counters
 
 echo "creating index" >&2
-dn index-file -c req.method,latency[aggr=quantize] /dev/null $tmpfile
+dn metric-add --datasource=devnull -b req.method,latency[aggr=quantize] met
+dn build --interval=all devnull
 query --counters
 query -f '{ "eq": [ "req.method", "GET" ] }'
 query -b req.method
 query -b latency
 query --counters -b latency
+dn_clear_config
+rm -rf $tmpfile

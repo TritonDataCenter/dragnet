@@ -1046,7 +1046,7 @@ wendell, putpublicobject
             2000 |@@@@@                                    31
             2100 |                                         0
 
-# dn query
+# dn query -f { "eq": [ "req.method", "GET" ] }
 VALUE
    54
 

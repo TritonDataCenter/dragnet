@@ -2,224 +2,59 @@
 /* vim: set syn=javascript: */
 
 /*
- * dn: create, query, and destroy indexes on data stored in Manta
+ * dn: dragnet command-line interface
  */
 
 var timeStarted = process.hrtime();
 var mod_assert = require('assert');
 var mod_bunyan = require('bunyan');
 var mod_dashdash = require('dashdash');
-var mod_manta = require('manta');
+var mod_fs = require('fs');
+var mod_jsprim = require('jsprim');
 var mod_path = require('path');
 var mod_tab = require('tab');
 var VError = require('verror');
 var sprintf = require('extsprintf').sprintf;
+var timeRequireDone = process.hrtime(timeStarted);
 
+var mod_config_local = require('../lib/config-local');
 var mod_dragnet = require('../lib/dragnet');
 var mod_dragnet_impl = require('../lib/dragnet-impl'); /* XXX */
-var FileDataSource = require('../lib/source-file');
-var FileSetDataSource = require('../lib/source-fileset');
-var MantaDataSource = require('../lib/source-manta');
 var SkinnerFlattener = require('../lib/skinner-flattener');
 var attrsParse = require('../lib/attr-parser');
-
-var timeRequireDone = process.hrtime(timeStarted);
 
 /*
  * Program name and usage
  */
 var dnArg0 = mod_path.basename(process.argv[1]);
-var dnUsage = [
-    'usage: dn scan-file   [-b|--breakdowns COLUMN[,COLUMN...]]',
-    '                      [-f|--filter FILTER]',
-    '                      [--before END_TIMESTAMP] [--after START_TIMESTAMP]',
-    '                      [--time-field=FIELDNAME]',
-    '                      [--data-format json|json-skinner]',
-    '                      [--counters] [--points] [--warnings]',
-    '                      DATA_FILE',
-    '',
-    '       dn scan-tree   [-b|--breakdowns COLUMN[,COLUMN...]]',
-    '                      [-f|--filter FILTER]',
-    '                      [--before END_TIMESTAMP] [--after START_TIMESTAMP]',
-    '                      [--time-field=FIELDNAME]',
-    '                      [--data-format json|json-skinner]',
-    '                      [--time-format=TIME_FORMAT] ',
-    '                      [--counters] [--points] [--warnings]',
-    '                      DATA_DIRECTORY',
-    '',
-    '       dn scan-manta  [-b|--breakdowns COLUMN[,COLUMN...]]',
-    '                      [-f|--filter FILTER]',
-    '                      [--before END_TIMESTAMP] [--after START_TIMESTAMP]',
-    '                      [--time-field=FIELDNAME]',
-    '                      [--data-format json|json-skinner]',
-    '                      [--time-format=TIME_FORMAT] ',
-    '                      [--assetroot=ASSETROOT]',
-    '                      [--extra-reduce-phases N] ',
-    '                      [--extra-reduce-count C]',
-    '                      [--dry-run] [--counters] [--points] [--warnings]',
-    '                      DATA_DIRECTORY',
-    '',
-    '       dn index-file  [-c|--columns COLUMN[,COLUMN...]]',
-    '                      [-f|--filter FILTER]',
-    '                      [--before END_TIMESTAMP] [--after START_TIMESTAMP]',
-    '                      [--data-format json|json-skinner]',
-    '                      [-i|--interval hour|day]',
-    '                      [--counters] [--warnings]',
-    '                      DATA_FILE INDEX_FILE',
-    '',
-    '       dn index-tree  [-c|--columns COLUMN[,COLUMN...]]',
-    '                      [-f|--filter FILTER]',
-    '                      [--before END_TIMESTAMP] [--after START_TIMESTAMP]',
-    '                      [--time-format=TIME_FORMAT]',
-    '                      [--data-format json|json-skinner]',
-    '                      [-i|--interval hour|day]',
-    '                      [--counters] [--warnings]',
-    '                      DATA_DIRECTORY INDEX_DIRECTORY',
-    '',
-    '       dn index-manta [-c|--columns COLUMN[,COLUMN...]]',
-    '                      [-f|--filter FILTER]',
-    '                      [--before END_TIMESTAMP] [--after START_TIMESTAMP]',
-    '                      [--time-format=TIME_FORMAT]',
-    '                      [--data-format json|json-skinner]',
-    '                      [-i|--interval hour|day]',
-    '                      [--assetroot=ASSETROOT]',
-    '                      [--extra-reduce-phases N] ',
-    '                      [--extra-reduce-count C]',
-    '                      [--dry-run] [--counters] [--warnings]',
-    '                      DATA_DIRECTORY INDEX_DIRECTORY',
-    '',
-    '       dn rollup-tree [-c|--columns COLUMN[,COLUMN...]]',
-    '                      [-f|--filter FILTER]',
-    '                      [--before END_TIMESTAMP] [--after START_TIMESTAMP]',
-    '                      [-i|--interval hour|day]',
-    '                      [-s|--source hour]',
-    '                      [--counters] [--warnings]',
-    '                      INDEX_DIRECTORY',
-    '',
-    '       dn query-file [-b|--breakdowns COLUMN[,COLUMN...]]',
-    '                     [-f|--filter FILTER]',
-    '                     [--before END_TIMESTAMP] [--after START_TIMESTAMP]',
-    '                     [--time-field TIME_FIELD]',
-    '                     [--points] [--counters]',
-    '                     INDEX_FILE',
-    '',
-    '       dn query-tree [-b|--breakdowns COLUMN[,COLUMN...]]',
-    '                     [-f|--filter FILTER]',
-    '                     [--before END_TIMESTAMP] [--after START_TIMESTAMP]',
-    '                     [--time-field TIME_FIELD]',
-    '                     [--points] [--counters]',
-    '                     INDEX_DIRECTORY',
-    '',
-    '       dn query-mjob [-b|--breakdowns COLUMN[,COLUMN...]]',
-    '                     [-f|--filter FILTER]',
-    '                     [--before END_TIMESTAMP] [--after START_TIMESTAMP]',
-    '                     [--time-field TIME_FIELD]',
-    '                     [--assetroot=ASSETROOT]',
-    '                     [--points] [--counters]',
-    '                     INDEX_DIRECTORY',
-    '',
-    '       dn query-mget [-b|--breakdowns COLUMN[,COLUMN...]]',
-    '                     [-f|--filter FILTER]',
-    '                     [--before END_TIMESTAMP] [--after START_TIMESTAMP]',
-    '                     [--time-field TIME_FIELD]',
-    '                     [--assetroot=ASSETROOT]',
-    '                     [--points] [--counters]',
-    '                     INDEX_DIRECTORY CACHE_DIRECTORY'
-].join('\n');
 
 /*
  * Subcommands
  */
 var dnCmds = {
-    'index-file': cmdIndexFile,
-    'index-tree': cmdIndexTree,
-    'index-manta': cmdIndexManta,
-    'query-file': cmdQueryFile,
-    'query-tree': cmdQueryTree,
-    'query-mjob': cmdQueryMjob,
-    'query-mget': cmdQueryMget,
-    'rollup-tree': cmdRollupTree,
-    'scan-file': cmdScanFile,
-    'scan-tree': cmdScanTree,
-    'scan-manta': cmdScanManta
+    'datasource-add': dnCmdDatasourceAdd,
+    'datasource-list': dnCmdDatasourceList,
+    'datasource-remove': dnCmdDatasourceRemove,
+    'metric-add': dnCmdMetricAdd,
+    'metric-list': dnCmdMetricList,
+    'metric-remove': dnCmdMetricRemove,
+    'build': dnCmdBuild,
+    'index-config': dnCmdIndexConfig,
+    'index-read': dnCmdIndexRead,
+    'index-scan': dnCmdIndexScan,
+    'query': dnCmdQuery,
+    'scan': dnCmdScan
 };
-
-/*
- * dashdash command-line option configuration (common to all subcommands)
- */
-var dnOptions = [ {
-    'names': [ 'after', 'A' ],
-    'type': 'date'
-}, {
-    'names': [ 'before', 'B' ],
-    'type': 'date'
-}, {
-    'names': [ 'filter', 'f' ],
-    'type': 'string'
-}, {
-    'names': [ 'time-field' ],
-    'type': 'string'
-}, {
-    'names': [ 'breakdowns', 'b' ],
-    'type': 'arrayOfString',
-    'default': []
-}, {
-    'names': [ 'columns', 'c' ],
-    'type': 'arrayOfString',
-    'default': []
-}, {
-    'names': [ 'interval', 'i' ],
-    'type': 'string',
-    'default': 'hour'
-}, {
-    'names': [ 'indexroot', 'I' ],
-    'type': 'string'
-}, {
-    'names': [ 'source', 's' ],
-    'type': 'string'
-}, {
-    'names': [ 'data-format' ],
-    'type': 'string',
-    'default': 'json'
-}, {
-    'names': [ 'time-format' ],
-    'type': 'string'
-}, {
-    'names': [ 'warnings' ],
-    'type': 'bool'
-}, {
-    'names': [ 'counters' ],
-    'type': 'bool'
-}, {
-    'names': [ 'points' ],
-    'type': 'bool'
-}, {
-    'names': [ 'dry-run', 'n' ],
-    'type': 'bool'
-}, {
-    'names': [ 'raw' ],
-    'type': 'bool'
-}, {
-    'names': [ 'assetroot' ],
-    'type': 'string',
-    'default': '/manta/public/dragnet/assets'
-}, {
-    'names': [ 'extra-reduce-phases' ],
-    'type': 'number',
-    'default': 0
-}, {
-    'names': [ 'extra-reduce-count' ],
-    'type': 'number',
-    'default': 2
-} ];
 
 /*
  * Internal state
  */
-var dnDone = false;		/* went through normal exit path */
 var dnTrackTime = false;	/* option to print program execution time */
+var dnDone = false;		/* see process.on('exit') handler */
 var dnLog;			/* bunyan logger */
-var dnStream;			/* output stream (for debugging) */
+var dnConfigBackend;		/* dragnet configuration backend */
+var dnConfig;			/* dragnet configuration */
+var dnStream;			/* data stream (for debugging) */
 
 /*
  * Main program entry point.
@@ -227,6 +62,17 @@ var dnStream;			/* output stream (for debugging) */
 function main()
 {
 	var optind, cmdname, cmdfunc;
+
+	dnLog = new mod_bunyan({
+	    'name': 'dragnet',
+	    'level': process.env['LOG_LEVEL'] || 'warn'
+	});
+
+	process.stdout.on('error', function (err) {
+		if (err.code == 'EPIPE')
+			process.exit(0);
+		throw (err);
+	});
 
 	optind = 2;
 	if (process.argv[optind] == '-t') {
@@ -241,20 +87,14 @@ function main()
 	if (!dnCmds.hasOwnProperty(cmdname))
 		usage(new VError('no such command: "%s"', cmdname));
 
-	dnLog = new mod_bunyan({
-	    'name': 'dragnet',
-	    'level': process.env['LOG_LEVEL'] || 'warn'
-	});
-
-	process.stdout.on('error', function (err) {
-		if (err.code == 'EPIPE') {
-			dnDone = true;
-			process.exit(0);
-		}
-		throw (err);
-	});
 	cmdfunc = dnCmds[cmdname];
-	cmdfunc(cmdname, process.argv.slice(optind + 1));
+	dnConfigBackend = mod_config_local.createConfigBackend();
+	dnConfigBackend.load(function (err, config) {
+		if (err && err['code'] != 'ENOENT')
+			fatal(err);
+		dnConfig = config;
+		cmdfunc(cmdname, process.argv.slice(optind + 1));
+	});
 }
 
 /*
@@ -263,11 +103,20 @@ function main()
  */
 function usage(err)
 {
+	var usagepath, usagetext;
+
 	if (err)
 		console.error('%s: %s', dnArg0, err.message);
 
-	dnDone = true;
-	console.error(dnUsage);
+	usagepath = mod_path.join(__dirname, '../share/usage.txt');
+
+	try {
+		usagetext = mod_fs.readFileSync(usagepath, 'utf8');
+	} catch (ex) {
+		fatal(new VError(ex, 'failed to read usage'));
+	}
+
+	console.error(usagetext);
 	process.exit(2);
 }
 
@@ -276,7 +125,6 @@ function usage(err)
  */
 function fatal(err)
 {
-	dnDone = true;
 	console.error('%s: %s', dnArg0, err.message);
 	process.exit(1);
 }
@@ -293,6 +141,75 @@ function warn(context, kind, error)
 		console.error('    at ' + context.label());
 }
 
+var dnOptions = [ {
+    'names': [ 'after', 'A' ],
+    'type': 'date'
+}, {
+    'names': [ 'assetroot' ],
+    'type': 'string',
+    'default': '/manta/public/dragnet/assets'
+}, {
+    'names': [ 'backend' ],
+    'type': 'string',
+    'default': 'file'
+}, {
+    'names': [ 'before', 'B' ],
+    'type': 'date'
+}, {
+    'names': [ 'breakdowns', 'b' ],
+    'type': 'arrayOfString',
+    'default': []
+}, {
+    'names': [ 'counters' ],
+    'type': 'bool'
+}, {
+    'names': [ 'data-format' ],
+    'type': 'string',
+    'default': 'json'
+}, {
+    'names': [ 'datasource' ],
+    'type': 'string'
+}, {
+    'names': [ 'dry-run', 'n' ],
+    'type': 'bool',
+    'default': false
+}, {
+    'names': [ 'filter', 'f' ],
+    'type': 'string'
+}, {
+    'names': [ 'interval', 'i' ],
+    'type': 'string',
+    'default': 'day'
+}, {
+    'names': [ 'index-config' ],
+    'type': 'string'
+}, {
+    'names': [ 'index-path' ],
+    'type': 'string'
+}, {
+    'names': [ 'path' ],
+    'type': 'string'
+}, {
+    'names': [ 'points' ],
+    'type': 'bool'
+}, {
+    'names': [ 'raw' ],
+    'type': 'bool'
+}, {
+    'names': [ 'time-field' ],
+    'type': 'string'
+}, {
+    'names': [ 'time-format' ],
+    'type': 'string'
+}, {
+    'names': [ 'verbose', 'v' ],
+    'type': 'bool',
+    'default': false
+}, {
+    'names': [ 'warnings' ],
+    'type': 'bool'
+} ];
+
 /*
  * Given a list of option names, return the corresponding dashdash
  * configuration.
@@ -303,7 +220,7 @@ function dnOptionConfig(useroptions)
 	var options;
 
 	rv = [];
-	options = useroptions.concat([ 'warnings', 'counters' ]);
+	options = useroptions;
 	for (i = 0; i < options.length; i++) {
 		for (j = 0; j < dnOptions.length; j++) {
 			if (dnOptions[j].names.indexOf(options[i]) != -1)
@@ -316,6 +233,37 @@ function dnOptionConfig(useroptions)
 		rv.push(dnOptions[j]);
 	}
 
+	return (rv);
+}
+
+/*
+ * Given "argv" (as trimmed by main()) and a list of user options, parse the
+ * arguments and return the dashdash "options" object.
+ */
+function dnParseArgs(argv, useroptions)
+{
+	var parser, rv;
+
+	parser = mod_dashdash.createParser({
+	    'options': dnOptionConfig(useroptions),
+	    'interspersed': true,
+	    'allowUnknown': false
+	});
+
+	try {
+		rv = parser.parse({ 'argv': argv, 'slice': 0 });
+	} catch (ex) {
+		usage(ex);
+	}
+
+	dnExpandArray(rv, 'breakdowns');
+	if (rv.filter) {
+		try {
+			rv.filter = JSON.parse(rv.filter);
+		} catch (ex) {
+			usage(new VError(ex, 'invalid filter'));
+		}
+	}
 	return (rv);
 }
 
@@ -338,35 +286,22 @@ function dnExpandArray(options, field)
 	tmp.forEach(function (v) {
 		var list = attrsParse(v);
 		if (list instanceof Error)
-			fatal(new VError(list, 'bad value for "%s" ("%s")',
+			usage(new VError(list, 'bad value for "%s" ("%s")',
 			    field, v));
-		list.forEach(function (s) { options[field].push(s); });
+		list.forEach(function (s) {
+			if (!s.field)
+				s.field = s.name;
+
+			if (s.hasOwnProperty('step')) {
+				s.step = parseInt(s.step, 10);
+				if (isNaN(s.step))
+					usage(new VError('field "%s": "step" ' +
+					    'must be a number', s.name));
+			}
+
+			options[field].push(s);
+		});
 	});
-}
-
-/*
- * Given "argv" (as trimmed by main()) and a list of user options, parse the
- * arguments and return the dashdash "options" object.
- */
-function dnParseArgs(argv, useroptions)
-{
-	var parser, rv;
-
-	parser = mod_dashdash.createParser({
-	    'options': dnOptionConfig(useroptions),
-	    'interspersed': false,
-	    'allowUnknown': false
-	});
-
-	try {
-		rv = parser.parse({ 'argv': argv, 'slice': 0 });
-	} catch (ex) {
-		usage(ex);
-	}
-
-	dnExpandArray(rv, 'columns');
-	dnExpandArray(rv, 'breakdowns');
-	return (rv);
 }
 
 /*
@@ -382,446 +317,306 @@ function dnCheckArgCount(options, expected)
 }
 
 /*
- * "dn index-file" implementation
+ * "dn datasource-add ..." implementation
  */
-function cmdIndexFile(cmdname, argv)
+function dnCmdDatasourceAdd(cmdname, argv)
 {
-	var options, filename, indexfilename, source;
+	var options, dsname, dsconfig, newconfig;
 
-	options = dnParseArgs(argv, [
-	    'before', 'after', 'filter', 'time-field',
-	    'columns', 'data-format'
-	]);
-
-	dnCheckArgCount(options, 2);
-	filename = options._args[0];
-	indexfilename = options._args[1];
-	source = new FileDataSource({
-	    'log': dnLog,
-	    'filename': filename
-	});
-
-	dnIndex(source, options, {
-	    'source': 'raw',
-	    'format': options.data_format,
-	    'filename': indexfilename
-	}, function () {
-		console.error('index "%s" created', indexfilename);
-	});
-}
-
-/*
- * "dn index-tree" implementation
- */
-function cmdIndexTree(cmdname, argv)
-{
-	var options, dataroot, indexroot, source;
-
-	options = dnParseArgs(argv, [
-	    'before', 'after', 'filter', 'time-field', 'time-format',
-	    'columns', 'data-format', 'interval'
-	]);
-
-	dnCheckArgCount(options, 2);
-	dataroot = options._args[0];
-	indexroot = options._args[1];
-
-	if (options.time_format === undefined &&
-	    (options.before !== undefined || options.after !== undefined)) {
-		usage(new VError('must specify --time-format with ' +
-		    '--before or --after'));
-	}
-
-	source = new FileSetDataSource({
-	    'log': dnLog,
-	    'dataroot': dataroot,
-	    'indexroot': indexroot
-	});
-
-	dnIndex(source, options, {
-	    'source': 'raw',
-	    'format': options.data_format,
-	    'timeFormat': options.time_format || undefined,
-	    'indexroot': indexroot
-	}, function () {
-		console.error('indexes created');
-	});
-}
-
-/*
- * "dn index-manta" implementation
- */
-function cmdIndexManta(cmdname, argv)
-{
-	var options, dataroot, indexroot, client, source;
-
-	options = dnParseArgs(argv, [
-	    'before', 'after', 'filter', 'time-field', 'time-format',
-	    'columns', 'data-format', 'interval', 'dry-run',
-	    'extra-reduce-phases', 'extra-reduce-count', 'assetroot'
-	]);
-
-	dnCheckArgCount(options, 2);
-	dataroot = options._args[0];
-	indexroot = options._args[1];
-
-	if (options.time_format === undefined &&
-	    (options.before !== undefined || options.after !== undefined)) {
-		usage(new VError('must specify --time-format with ' +
-		    '--before or --after'));
-	}
-
-	client = dnMantaClient(dnLog);
-	source = new MantaDataSource({
-	    'log': dnLog,
-	    'manta': client,
-	    'dataroot': dataroot,
-	    'assetroot': options.assetroot
-	});
-
-	dnIndex(source, options, {
-	    'source': 'raw',
-	    'dryRun': options.dry_run,
-	    'format': options.data_format,
-	    'timeFormat': options.time_format || undefined,
-	    'indexroot': indexroot,
-	    'extraReduceCount': options.extra_reduce_count,
-	    'extraReducePhases': options.extra_reduce_phases
-	}, function () {
-		if (!options.dry_run)
-			console.error('indexes created');
-		client.close();
-	});
-}
-
-/*
- * "dn rollup-tree" implementation
- */
-function cmdRollupTree(cmdname, argv)
-{
-	var options, dataroot, indexroot, source;
-
-	options = dnParseArgs(argv, [
-	    'before', 'after', 'filter', 'time-field',
-	    'columns', 'interval', 'source'
-	]);
+	options = dnParseArgs(argv,
+	    [ 'backend', 'data-format', 'filter', 'path', 'time-field',
+		'time-format', 'index-path' ]);
+	if (!options.path)
+		usage(new Error('"path" option is required'));
 
 	dnCheckArgCount(options, 1);
-	indexroot = options._args[0];
-
-	source = new FileSetDataSource({
-	    'log': dnLog,
-	    'dataroot': dataroot,
-	    'indexroot': indexroot
-	});
-
-	dnIndex(source, options, {
-	    'source': options.source,
-	    'format': options.data_format,
-	    'timeFormat': options.time_format || undefined,
-	    'indexroot': indexroot
-	}, function () {
-		console.error('indexes created');
-	});
-}
-
-/*
- * Common function used by "dn index-file", "dn index-tree", and "dn
- * rollup-tree".
- */
-function dnIndex(source, options, indexargs, callback)
-{
-	var indexconfig, indexoptions, ic, op;
-
-	indexconfig = {};
-	indexoptions = { 'index': indexconfig };
-	indexconfig.columns = options.columns;
-	indexconfig.interval = options.interval || 'hour';
-	if (options.after)
-		indexoptions.timeAfter = options.after;
-	if (options.before)
-		indexoptions.timeBefore = options.before;
-	if (options.filter) {
-		try {
-			indexconfig.filter = JSON.parse(options.filter);
-		} catch (ex) {
-			usage(new VError(ex, 'invalid filter'));
-		}
-	}
-	ic = mod_dragnet.indexLoad(indexoptions);
-	if (ic instanceof Error)
-		fatal(ic);
-
-	mod_assert.ok(indexargs.hasOwnProperty('source'));
-	mod_assert.ok(indexargs.hasOwnProperty('format'));
-	mod_assert.ok(indexargs.hasOwnProperty('filename') ||
-	     indexargs.hasOwnProperty('indexroot'));
-	indexargs.index = ic;
-	op = source.index(indexargs);
-	op.on('error', fatal);
-	dnStream = op;
-
-	if (options.warnings)
-		dnShowWarnings(op);
-
-	op.on('flushed', function () {
-		callback();
-		if (options.counters)
-			dnPrintCounters(op);
+	dsname = options._args[0];
+	dsconfig = {
+	    'name': dsname,
+	    'backend': options.backend,
+	    'backend_config': {
+	        'path': options.path,
+		'indexPath': options.index_path,
+		'timeFormat': options.time_format,
+		'timeField': options.time_field
+	    },
+	    'filter': options.filter || null,
+	    'dataFormat': options.data_format
+	};
+	newconfig = dnConfig.datasourceAdd(dsconfig);
+	if (newconfig instanceof Error)
+		fatal(newconfig);
+	dnConfigBackend.save(newconfig.serialize(), function (err) {
+		if (err)
+			fatal(err);
+		dnConfig = newconfig;
 		dnDone = true;
 	});
 }
 
 /*
- * "dn query-file" implementation
+ * "dn datasource-remove ..." implementation
  */
-function cmdQueryFile(cmdname, argv)
+function dnCmdDatasourceRemove(cmdname, argv)
 {
-	var options, indexfilename, source;
+	var options, dsname, newconfig;
 
-	options = dnParseArgs(argv, [
-	    'before', 'after', 'filter', 'time-field', 'breakdowns', 'raw',
-	    'points'
-	]);
-
+	options = dnParseArgs(argv, []);
 	dnCheckArgCount(options, 1);
-	indexfilename = options._args[0];
-	source = new FileDataSource({ 'log': dnLog });
-	dnQuery(source, options, { 'filename': indexfilename });
-}
-
-/*
- * "dn query-tree" implementation
- */
-function cmdQueryTree(cmdname, argv)
-{
-	var options, indexroot, source;
-
-	options = dnParseArgs(argv, [
-	    'before', 'after', 'filter', 'time-field', 'breakdowns', 'raw',
-	    'points'
-	]);
-
-	dnCheckArgCount(options, 1);
-	indexroot = options._args[0];
-	source = new FileSetDataSource({
-	    'log': dnLog,
-	    'indexroot': indexroot
-	});
-	dnQuery(source, options, { 'indexroot': indexroot });
-}
-
-/*
- * "dn query-mjob" implementation
- */
-function cmdQueryMjob(cmdname, argv)
-{
-	var options, indexroot, client, source;
-
-	options = dnParseArgs(argv, [
-	    'before', 'after', 'filter', 'time-field', 'breakdowns', 'raw',
-	    'points', 'dry-run', 'assetroot'
-	]);
-
-	dnCheckArgCount(options, 1);
-	indexroot = options._args[0];
-	client = dnMantaClient(dnLog);
-	source = new MantaDataSource({
-	    'log': dnLog,
-	    'manta': client,
-	    'assetroot': options.assetroot
-	});
-	dnQuery(source, options, {
-	    'dryRun': options.dry_run,
-	    'indexroot': indexroot
-	}, function () {
-		client.close();
-	});
-}
-
-/*
- * "dn query-mget" implementation
- */
-function cmdQueryMget(cmdname, argv)
-{
-	var options, indexroot, cacheroot, client, mantasource, treesource, qc;
-
-	options = dnParseArgs(argv, [
-	    'before', 'after', 'filter', 'time-field', 'breakdowns', 'raw',
-	    'points'
-	]);
-
-	dnCheckArgCount(options, 2);
-	indexroot = options._args[0];
-	cacheroot = options._args[1];
-
-	client = dnMantaClient(dnLog);
-	mantasource = new MantaDataSource({
-	    'log': dnLog,
-	    'manta': client
-	});
-	treesource = new FileSetDataSource({
-	    'log': dnLog,
-	    'indexroot': cacheroot
-	});
-
-	qc = dnQueryConstructQuery(options);
-	mantasource.queryFetchOnly({
-	    'indexroot': indexroot,
-	    'cacheroot': cacheroot,
-	    'query': qc
-	}, function (err) {
+	dsname = options._args[0];
+	newconfig = dnConfig.datasourceRemove(dsname);
+	if (newconfig instanceof Error)
+		fatal(newconfig);
+	dnConfigBackend.save(newconfig.serialize(), function (err) {
 		if (err)
 			fatal(err);
-
-		dnLog.info('fetched all indexes');
-		client.close();
-		dnQuery(treesource, options, { 'indexroot': cacheroot });
+		dnConfig = newconfig;
+		dnDone = true;
 	});
 }
 
-function dnQueryConstructQuery(options)
+/*
+ * "dn datasource-list ..." implementation
+ */
+function dnCmdDatasourceList(cmdname, argv)
 {
-	var queryconfig;
+	var options, columns, tab;
 
-	queryconfig = {};
-	queryconfig.breakdowns = options.breakdowns;
-	if (options.after)
-		queryconfig.timeAfter = options.after;
-	if (options.before)
-		queryconfig.timeBefore = options.before;
-	if (options.time_field) {
-		/*
-		 * XXX This shouldn't be necessary.  We should record
-		 * the time field into an index configuration file and
-		 * then read that here.
-		 */
-		queryconfig.timeField = options.time_field;
-	}
-	if (options.filter) {
-		try {
-			queryconfig.filter = JSON.parse(options.filter);
-		} catch (ex) {
-			return (new VError(ex, 'invalid filter'));
+	options = dnParseArgs(argv, [ 'verbose' ]);
+	dnCheckArgCount(options, 0);
+
+	columns = [ {
+	    'label': 'DATASOURCE',
+	    'width': 20
+	}, {
+	    'label': 'LOCATION',
+	    'width': 59
+	} ];
+	tab = new mod_tab.TableOutputStream({
+	    'omitHeader': true,
+	    'columns': columns
+	});
+	tab.writeHeader();
+	dnConfig.datasourceList(function (dsname, ds) {
+		var location;
+
+		if (ds.ds_backend == 'manta')
+			location = sprintf('manta://us-east.manta.joyent.com%s',
+			    ds.ds_backend_config.path);
+		else
+			location = sprintf('file:/%s',
+			    ds.ds_backend_config.path);
+
+		tab.writeRow({
+		    'DATASOURCE': dsname,
+		    'LOCATION': location
+		});
+
+		if (!options.verbose)
+			return;
+
+		if (ds.ds_filter !== null) {
+			console.log(sprintf('%4s%-11s %s', '', 'filter:',
+			    JSON.stringify(ds.ds_filter)));
 		}
-	}
 
-	return (mod_dragnet.queryLoad({ 'query': queryconfig }));
+		console.log(sprintf('%4s%-11s %s', '', 'dataFormat:',
+		    JSON.stringify(ds.ds_format)));
+
+		mod_jsprim.forEachKey(ds.ds_backend_config, function (k, v) {
+			if (k == 'path')
+				return;
+
+			console.log(sprintf('%4s%-11s %s', '', k + ':',
+			    JSON.stringify(v)));
+		});
+	});
+
+	dnDone = true;
 }
 
 /*
- * Common function used by "dn query-file" and "dn query-tree".
+ * "dn metric-add ..." implementation
  */
-function dnQuery(source, options, queryargs, callback)
+function dnCmdMetricAdd(cmdname, argv)
 {
-	var qc, op;
+	var options, metname, mconfig, newconfig;
 
-	qc = dnQueryConstructQuery(options);
-	if (qc instanceof Error)
-		fatal(qc);
-
-	mod_assert.ok(queryargs.hasOwnProperty('filename') ||
-	    queryargs.hasOwnProperty('indexroot'));
-	queryargs.query = qc;
-
-	op = source.query(queryargs);
-	dnShowWarnings(op);
-	dnOutput(qc, options, op, callback);
-}
-
-/*
- * "dn scan-file" implementation.
- */
-function cmdScanFile(cmdname, argv)
-{
-	var options, filename, source;
-
-	options = dnParseArgs(argv, [
-	    'before', 'after', 'filter', 'time-field', 'breakdowns', 'raw',
-	    'points', 'data-format'
-	]);
+	options = dnParseArgs(argv, [ 'breakdowns', 'datasource', 'filter' ]);
+	if (!options.datasource)
+		usage(new VError('"datasource" option is required'));
 
 	dnCheckArgCount(options, 1);
-	filename = options._args[0];
-	source = new FileDataSource({ 'log': dnLog, 'filename': filename });
-	dnScan(source, options, {});
+	metname = options._args[0];
+	mconfig = {
+	    'name': metname,
+	    'datasource': options.datasource,
+	    'filter': options.filter || null,
+	    'breakdowns': options.breakdowns
+	};
+
+	newconfig = dnConfig.metricAdd(mconfig);
+	if (newconfig instanceof Error)
+		fatal(newconfig);
+
+	dnConfigBackend.save(newconfig.serialize(), function (err) {
+		if (err)
+			fatal(err);
+		dnConfig = newconfig;
+		dnDone = true;
+	});
 }
 
 /*
- * "dn scan-tree" implementation.
+ * "dn metric-remove ..." implementation
  */
-function cmdScanTree(cmdname, argv)
+function dnCmdMetricRemove(cmdname, argv)
 {
-	var options, dataroot, source;
+	var options, metname, newconfig;
+
+	options = dnParseArgs(argv, []);
+	dnCheckArgCount(options, 1);
+	metname = options._args[0];
+	newconfig = dnConfig.metricRemove(metname);
+	if (newconfig instanceof Error)
+		fatal(newconfig);
+	dnConfigBackend.save(newconfig.serialize(), function (err) {
+		if (err)
+			fatal(err);
+		dnConfig = newconfig;
+		dnDone = true;
+	});
+}
+
+/*
+ * "dn metric-list ..." implementation
+ */
+function dnCmdMetricList(cmdname, argv)
+{
+	var options, columns, tab;
+
+	options = dnParseArgs(argv, [ 'verbose' ]);
+	dnCheckArgCount(options, 0);
+
+	columns = [ {
+	    'label': 'DATASOURCE',
+	    'width': 20
+	}, {
+	    'label': 'METRIC',
+	    'width': 20
+	} ];
+	tab = new mod_tab.TableOutputStream({
+	    'omitHeader': true,
+	    'columns': columns
+	});
+	tab.writeHeader();
+	dnConfig.metricList(function (metname, mconfig) {
+		tab.writeRow({
+		    'DATASOURCE': mconfig.m_datasource,
+		    'METRIC': metname
+		});
+
+		if (!options.verbose)
+			return;
+
+		if (mconfig.m_filter !== null) {
+			console.log(sprintf('%4s%-11s %s', '', 'filter:',
+			    JSON.stringify(mconfig.m_filter)));
+		}
+
+		if (mconfig.m_breakdowns.length === 0)
+			return;
+
+		console.log(sprintf('%4s%-11s %s', '', 'breakdowns:',
+		    mconfig.m_breakdowns.map(
+		        function (b) { return (b.b_name); }).join(', ')));
+	});
+
+	dnDone = true;
+}
+
+function dnReadIndexConfig(filename, callback)
+{
+	mod_fs.readFile(filename, function (err, contents) {
+		var parsed;
+		if (err) {
+			callback(new VError(err, 'read "%s"', filename));
+			return;
+		}
+
+		try {
+			parsed = JSON.parse(contents);
+		} catch (ex) {
+			callback(new VError(ex, 'parse "%s"', filename));
+			return;
+		}
+
+		callback(null, parsed);
+	});
+}
+
+/*
+ * "dn build ..." implementation
+ */
+function dnCmdBuild(cmdname, argv)
+{
+	var options, dsname, buildargs;
 
 	options = dnParseArgs(argv, [
-	    'before', 'after', 'filter', 'time-field', 'breakdowns', 'raw',
-	    'points', 'data-format', 'time-format'
-	]);
+	    /* general options */
+	    'after', 'before', 'counters', 'dry-run', 'index-config',
+	    'interval', 'warnings',
 
+	    /* manta-specific options */
+	    'assetroot'
+	]);
 	dnCheckArgCount(options, 1);
-	dataroot = options._args[0];
-	source = new FileSetDataSource({
+	dsname = options._args[0];
+
+	buildargs = {
 	    'log': dnLog,
-	    'dataroot': dataroot
-	});
-	dnScan(source, options, { 'timeFormat': options.time_format });
-}
-
-function dnMantaClient(log)
-{
-	var client;
-
-	client = mod_manta.createBinClient({
-	    'log': log.child({ 'component': 'manta' })
-	});
-
-	/* Bad, manta client! */
-	process.removeAllListeners('uncaughtException');
-
-	return (client);
-}
-
-/*
- * "dn scan-manta" implementation.
- */
-function cmdScanManta(cmdname, argv)
-{
-	var options, dataroot, client, source;
-
-	options = dnParseArgs(argv, [
-	    'before', 'after', 'filter', 'time-field', 'breakdowns', 'raw',
-	    'points', 'data-format', 'time-format', 'dry-run',
-	    'extra-reduce-phases', 'extra-reduce-count', 'assetroot'
-	]);
-
-	dnCheckArgCount(options, 1);
-	dataroot = options._args[0];
-
-	client = dnMantaClient(dnLog);
-	source = new MantaDataSource({
-	    'log': dnLog,
-	    'manta': client,
-	    'dataroot': dataroot,
-	    'assetroot': options.assetroot
-	});
-
-	dnScan(source, options, {
+	    'config': dnConfig,
+	    'dsname': dsname,
 	    'dryRun': options.dry_run,
-	    'timeFormat': options.time_format,
-	    'extraReduceCount': options.extra_reduce_count,
-	    'extraReducePhases': options.extra_reduce_phases
-	}, function () {
-		client.close();
+	    'interval': options.interval,
+	    'timeBefore': options.before || null,
+	    'timeAfter': options.after || null,
+	    'assetroot': options.assetroot
+	};
+
+	if (options.index_config) {
+		dnReadIndexConfig(options.index_config, function (err, config) {
+			if (err)
+				fatal(err);
+
+			buildargs['indexConfig'] = config;
+			dnBuild(dsname, buildargs, options);
+		});
+	} else {
+		dnBuild(dsname, buildargs, options);
+	}
+}
+
+function dnBuild(dsname, buildargs, options)
+{
+	dnStream = mod_dragnet.build(buildargs, function (err, ds) {
+		if (err)
+			fatal(err);
+		if (!buildargs.dryRun) {
+			console.error('indexes for "%s" built', dsname);
+			if (options.counters)
+				dnPrintCounters(dnStream);
+			if (options.warnings)
+				dnShowWarnings(dnStream);
+		}
+		dnDone = true;
+		ds.close();
 	});
 }
 
-/*
- * Common function used by "dn scan-file" and "dn scan-tree".
- */
-function dnScan(source, options, scanargs, callback)
+function dnQueryConfig(options)
 {
-	var queryconfig, qc, op;
+	var queryconfig, qc;
 
 	queryconfig = {};
 	queryconfig.breakdowns = options.breakdowns;
@@ -829,25 +624,191 @@ function dnScan(source, options, scanargs, callback)
 		queryconfig.timeAfter = options.after;
 	if (options.before)
 		queryconfig.timeBefore = options.before;
-	if (options.time_field)
-		queryconfig.timeField = options.time_field;
-	if (options.filter) {
-		try {
-			queryconfig.filter = JSON.parse(options.filter);
-		} catch (ex) {
-			fatal(new VError(ex, 'invalid filter'));
-		}
-	}
+	if (options.filter)
+		queryconfig.filter = options.filter;
+
 	qc = mod_dragnet.queryLoad({ 'query': queryconfig });
 	if (qc instanceof Error)
 		fatal(qc);
 
-	scanargs.query = qc;
-	scanargs.format = options.data_format;
-	op = source.scan(scanargs);
-	if (options.warnings)
-		dnShowWarnings(op);
-	dnOutput(qc, options, op, callback);
+	return ({
+	    'query': qc,
+	    'dryRun': options.dry_run,
+	    'interval': options.interval,
+	    'assetroot': options.assetroot
+	});
+}
+
+/*
+ * "dn index-config" implementation
+ */
+function dnCmdIndexConfig(cmdname, argv)
+{
+	var options, dsname, cfg;
+
+	options = dnParseArgs(argv, []);
+	dnCheckArgCount(options, 1);
+	dsname = options._args[0];
+
+	cfg = mod_dragnet.indexConfig({
+	    'config': dnConfig,
+	    'dsname': dsname
+	});
+	if (cfg instanceof Error)
+		fatal(cfg);
+
+	console.log(JSON.stringify(cfg));
+	dnDone = true;
+}
+
+/*
+ * "dn index-read ..." implementation
+ */
+function dnCmdIndexRead(cmdname, argv)
+{
+	var options, dsname, opargs;
+
+	options = dnParseArgs(argv, [ 'index-config', 'interval' ]);
+	dnCheckArgCount(options, 1);
+	dsname = options._args[0];
+
+	opargs = {
+	    'log': dnLog,
+	    'config': dnConfig,
+	    'dsname': dsname,
+	    'interval': options.interval
+	};
+	if (options.index_config) {
+		dnReadIndexConfig(options.index_config,
+		    function (err, indexConfig) {
+			if (err)
+				fatal(err);
+
+			opargs.indexConfig = indexConfig;
+			dnIndexRead(opargs);
+		    });
+	} else {
+		dnIndexRead(opargs);
+	}
+}
+
+function dnIndexRead(opargs)
+{
+	mod_dragnet.indexRead(opargs, function (err) {
+		if (err)
+			fatal(err);
+		dnDone = true;
+	});
+}
+
+/*
+ * "dn index-scan ..." implementation
+ */
+function dnCmdIndexScan(cmdname, argv)
+{
+	var options, dsname, opargs;
+
+	options = dnParseArgs(argv, [
+	    /* general scan/query arguments */
+	    'before', 'after', 'filter', 'breakdowns',
+	    'counters', 'index-config', 'interval'
+	]);
+
+	options.points = true;
+	dnCheckArgCount(options, 1);
+	dsname = options._args[0];
+
+	opargs = {
+	    'log': dnLog,
+	    'config': dnConfig,
+	    'dsname': dsname,
+	    'interval': options.interval,
+	    'timeBefore': options.before || null,
+	    'timeAfter': options.after || null
+	};
+	if (options.index_config) {
+		dnReadIndexConfig(options.index_config,
+		    function (err, indexConfig) {
+			if (err)
+				fatal(err);
+
+			opargs.indexConfig = indexConfig;
+			dnIndexScan(opargs, options);
+		    });
+	} else {
+		dnIndexScan(opargs, options);
+	}
+}
+
+function dnIndexScan(opargs, options)
+{
+	var op;
+	dnStream = op = mod_dragnet.indexScan(opargs);
+	dnOutput(null, options, op);
+}
+
+/*
+ * "dn query ..." implementation
+ */
+function dnCmdQuery(cmdname, argv)
+{
+	var options, dsname, ds;
+	var queryargs, op;
+
+	options = dnParseArgs(argv, [
+	    /* general scan/query arguments */
+	    'before', 'after', 'filter', 'breakdowns', 'raw', 'points',
+	    'counters', 'interval',
+
+	    /* manta-specific arguments */
+	    'assetroot', 'dry-run'
+	]);
+
+	dnCheckArgCount(options, 1);
+	dsname = options._args[0];
+	ds = mod_dragnet.datasourceForName({
+	    'log': dnLog,
+	    'config': dnConfig,
+	    'dsname': dsname
+	});
+	if (ds instanceof Error)
+		fatal(ds);
+
+	queryargs = dnQueryConfig(options);
+	op = ds.query(queryargs);
+	dnOutput(queryargs.query, options, op, function () { ds.close(); });
+}
+
+/*
+ * "dn scan ..." implementation
+ */
+function dnCmdScan(cmdname, argv)
+{
+	var options, dsname, ds;
+	var scanargs, op;
+
+	options = dnParseArgs(argv, [
+	    /* general scan/query arguments */
+	    'before', 'after', 'filter', 'breakdowns', 'raw', 'points',
+	    'counters', 'warnings',
+
+	    /* manta-specific arguments */
+	    'assetroot', 'dry-run'
+	]);
+
+	dnCheckArgCount(options, 1);
+	dsname = options._args[0];
+	ds = mod_dragnet.datasourceForName({
+	    'log': dnLog,
+	    'config': dnConfig,
+	    'dsname': dsname
+	});
+	if (ds instanceof Error)
+		fatal(ds);
+
+	scanargs = dnQueryConfig(options);
+	op = ds.scan(scanargs);
+	dnOutput(scanargs.query, options, op, function () { ds.close(); });
 }
 
 /*
@@ -892,14 +853,23 @@ function dnOutput(query, options, op, callback)
 		op.pipe(stream);
 	}
 
-	dnStream = stream;
-	output = options.raw || options.points ? dnOutputRaw : dnOutputPretty;
-	stream.on('data', function (rows) {
-		output({ 'query': query, 'rows': rows });
-	});
+	if (!options.dry_run) {
+		dnStream = stream;
+		output = options.raw || options.points ?
+		    dnOutputRaw : dnOutputPretty;
+
+		stream.on('data', function (rows) {
+			output({ 'query': query, 'rows': rows });
+		});
+
+		if (options.warnings)
+			dnShowWarnings(op);
+	} else {
+		stream.on('data', function () {});
+	}
 
 	stream.on('end', function () {
-		if (options.counters)
+		if (!options.dry_run && options.counters)
 			dnPrintCounters(stream);
 		dnDone = true;
 		if (callback)

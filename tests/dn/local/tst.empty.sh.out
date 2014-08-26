@@ -1,63 +1,126 @@
-# dn scan-file --counters
+# dn scan --counters
 VALUE
     0
+FindStart          ninputs:            1
+FindStart          noutputs:           1
+FindStatter        ninputs:            2
+FindStatter        noutputs:           2
+FindTraverser      ninputs:            2
+FindTraverser      noutputs:           2
+FindFeedback       nchrdevs:           1
+FindFeedback       ninputs:            2
+FindFeedback       noutputs:           1
 Aggregator         noutputs:           1
 Flattener          ninputs:            1
 Flattener          noutputs:           1
 
-# dn scan-file --points --counters
-Aggregator         noutputs:           1
-{"fields":{},"value":0}
-
-# dn scan-file -b timestamp
-
-# dn scan-file --points -b timestamp
-
-# dn scan-file -b timestamp[aggr=quantize]
-
-# dn scan-file --points -b timestamp[aggr=quantize]
-
-# dn scan-file -b timestamp[aggr=quantize],req.method
-
-# dn scan-file --points -b timestamp[aggr=quantize],req.method
-
-# dn scan-file -f { "eq": [ "audit", true ] } -b timestamp[aggr=quantize],req.method
-
-# dn scan-file --points -f { "eq": [ "audit", true ] } -b timestamp[aggr=quantize],req.method
-
-# dn scan-file --counters -f { "eq": [ "audit", true ] }
-VALUE
-    0
-Aggregator         noutputs:           1
-Flattener          ninputs:            1
-Flattener          noutputs:           1
-
-# dn scan-file --points --counters -f { "eq": [ "audit", true ] }
+# dn scan --points --counters
 Aggregator         noutputs:           1
 {"fields":{},"value":0}
+FindFeedback       nchrdevs:           1
+FindFeedback       ninputs:            2
+FindFeedback       noutputs:           1
+FindStart          ninputs:            1
+FindStart          noutputs:           1
+FindStatter        ninputs:            2
+FindStatter        noutputs:           2
+FindTraverser      ninputs:            2
+FindTraverser      noutputs:           2
 
-# dn query-file --counters
+# dn scan -b timestamp
+
+# dn scan --points -b timestamp
+
+# dn scan -b timestamp[aggr=quantize]
+
+# dn scan --points -b timestamp[aggr=quantize]
+
+# dn scan -b timestamp[aggr=quantize],req.method
+
+# dn scan --points -b timestamp[aggr=quantize],req.method
+
+# dn scan -f { "eq": [ "audit", true ] } -b timestamp[aggr=quantize],req.method
+
+# dn scan --points -f { "eq": [ "audit", true ] } -b timestamp[aggr=quantize],req.method
+
+# dn scan --counters -f { "eq": [ "audit", true ] }
 VALUE
     0
-Index Aggregator   ninputs:            1
-Index Aggregator   noutputs:           1
-Query Passthrough  ninputs:            1
-Query Passthrough  noutputs:           1
+FindStart          ninputs:            1
+FindStart          noutputs:           1
+FindStatter        ninputs:            2
+FindStatter        noutputs:           2
+FindTraverser      ninputs:            2
+FindTraverser      noutputs:           2
+FindFeedback       nchrdevs:           1
+FindFeedback       ninputs:            2
+FindFeedback       noutputs:           1
+Aggregator         noutputs:           1
 Flattener          ninputs:            1
 Flattener          noutputs:           1
-# dn query-file --counters
+
+# dn scan --points --counters -f { "eq": [ "audit", true ] }
+Aggregator         noutputs:           1
+{"fields":{},"value":0}
+FindFeedback       nchrdevs:           1
+FindFeedback       ninputs:            2
+FindFeedback       noutputs:           1
+FindStart          ninputs:            1
+FindStart          noutputs:           1
+FindStatter        ninputs:            2
+FindStatter        noutputs:           2
+FindTraverser      ninputs:            2
+FindTraverser      noutputs:           2
+
+# dn query --counters
 VALUE
     0
-Index Aggregator   ninputs:            1
-Index Aggregator   noutputs:           1
-Query Passthrough  ninputs:            1
-Query Passthrough  noutputs:           1
+FindStart          ninputs:            1
+FindStart          noutputs:           1
+FindStatter        ninputs:            2
+FindStatter        noutputs:           2
+FindTraverser      ninputs:            2
+FindTraverser      noutputs:           2
+FindFeedback       ninputs:            2
+FindFeedback       noutputs:           1
+FindFeedback       nregfiles:          1
+Index List         ninputs:            1
+Index List         noutputs:           1
+Index Result Aggregator ninputs:            1
+Index Result Aggregator noutputs:           1
 Flattener          ninputs:            1
 Flattener          noutputs:           1
-# dn query-file -f { "eq": [ "req.method", "GET" ] }
+# dn query --counters
 VALUE
     0
-# dn query-file -b req.method
-# dn query-file -b latency
-# dn query-file --counters -b latency
+FindStart          ninputs:            1
+FindStart          noutputs:           1
+FindStatter        ninputs:            2
+FindStatter        noutputs:           2
+FindTraverser      ninputs:            2
+FindTraverser      noutputs:           2
+FindFeedback       ninputs:            2
+FindFeedback       noutputs:           1
+FindFeedback       nregfiles:          1
+Index List         ninputs:            1
+Index List         noutputs:           1
+Index Result Aggregator ninputs:            1
+Index Result Aggregator noutputs:           1
+Flattener          ninputs:            1
+Flattener          noutputs:           1
+# dn query -f { "eq": [ "req.method", "GET" ] }
+VALUE
+    0
+# dn query -b req.method
+# dn query -b latency
+# dn query --counters -b latency
+FindStart          ninputs:            1
+FindStart          noutputs:           1
+FindStatter        ninputs:            2
+FindStatter        noutputs:           2
+FindTraverser      ninputs:            2
+FindTraverser      noutputs:           2
+FindFeedback       ninputs:            2
+FindFeedback       noutputs:           1
+FindFeedback       nregfiles:          1
 Flattener          noutputs:           1

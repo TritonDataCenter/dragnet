@@ -18,28 +18,33 @@ tmpfile="/var/tmp/$(basename $0).$$"
 tmpfile2="$tmpfile.2"
 echo "using tmpfiles \"$tmpfile\" and \"$tmpfile2\"" >&2
 
+dn_clear_config
+dn datasource-add stdin --path=/dev/stdin
+dn datasource-add stdin-skinner --path=/dev/stdin --data-format=json-skinner
+
 # Test points with no fields
-dn scan-file --points $DN_DATADIR/2014/05-01/one.log > $tmpfile
-cat $tmpfile | trace dn scan-file --data-format=json-skinner /dev/stdin
-cat $tmpfile | trace dn scan-file --data-format=json-skinner /dev/stdin
-cat $tmpfile $tmpfile | trace dn scan-file --data-format=json-skinner /dev/stdin
-cat $tmpfile $tmpfile $tmpfile | \
-    trace dn scan-file --data-format=json-skinner /dev/stdin
+dn scan --points stdin < $DN_DATADIR/2014/05-01/one.log > $tmpfile
+
+cat $tmpfile | trace dn scan stdin-skinner
+cat $tmpfile $tmpfile | trace dn scan stdin-skinner
+cat $tmpfile $tmpfile $tmpfile | trace dn scan stdin-skinner
 
 # Test points with a couple of fields
-dn scan-file --points -b req.method,res.statusCode \
-    $DN_DATADIR/2014/05-01/one.log > $tmpfile
-dn scan-file -b req.method $DN_DATADIR/2014/05-01/one.log
-cat $tmpfile $tmpfile $tmpfile | \
-    trace dn scan-file --data-format=json-skinner /dev/stdin
-cat $tmpfile $tmpfile $tmpfile | \
-    trace dn scan-file -b req.method --data-format=json-skinner /dev/stdin
+dn scan --points -b req.method,res.statusCode stdin \
+    < $DN_DATADIR/2014/05-01/one.log > $tmpfile
+dn scan -b req.method stdin < $DN_DATADIR/2014/05-01/one.log
+cat $tmpfile $tmpfile $tmpfile | trace dn scan stdin-skinner
+cat $tmpfile $tmpfile $tmpfile | trace dn scan stdin-skinner -b req.method 
 
 # Test indexes
 echo "building index"
-cat $tmpfile $tmpfile $tmpfile | \
-    dn index-file -c req.method --data-format=json-skinner /dev/stdin $tmpfile2
-dn query-file $tmpfile2
-dn query-file -b req.method $tmpfile2
-
-rm -f $tmpfile $tmpfile2
+cat $tmpfile $tmpfile $tmpfile > $tmpfile2
+mv $tmpfile2 $tmpfile
+dn datasource-add test_input --path=$tmpfile --data-format=json-skinner \
+    --index-path=$tmpfile2 
+dn metric-add --datasource=test_input total
+dn metric-add --datasource=test_input -b req.method by_method
+dn build --interval=all test_input
+dn query --interval=all test_input
+dn query --interval=all test_input -b req.method
+rm -rf $tmpfile $tmpfile2
