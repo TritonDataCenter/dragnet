@@ -5,11 +5,6 @@ input                file://home/dap/dragnet/dragnet/tests/data/2014/05-01/one.l
 DATASOURCE           LOCATION                                                   
 input                file://home/dap/dragnet/dragnet/tests/data/2014/05-01/one.log
     dataFormat: "json"
-DATASOURCE           LOCATION                                                   
-input                file://home/dap/dragnet/dragnet/tests/data/2014/05-01/one.log
-DATASOURCE           LOCATION                                                   
-input                file://home/dap/dragnet/dragnet/tests/data/2014/05-01/one.log
-    dataFormat: "json"
 dn: bad value for "breakdowns" ("req.method,x[=bar]"): missing attribute name
 usage: dn SUBCOMMAND [OPTIONS] ARGS
 dn: bad value for "breakdowns" ("req.method,[]"): missing field name

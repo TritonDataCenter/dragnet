@@ -30,6 +30,8 @@ change incompatibly at any time!
 dragnet only supports newline-separated JSON.  Try it on the sample data in
 ./tests/data.  Start by defining a new **datasource**:
 
+    $ dn datasource-add my_logs --path=$PWD/tests/data
+
     $ dn datasource-list -v
     DATASOURCE           LOCATION                                                   
     my_logs              file://home/dap/dragnet/dragnet/tests/data                 
@@ -349,12 +351,10 @@ model.  The point of Dragnet is to create indexes that can answer these same
 queries much faster.
 
 To build indexes, the datasource must have an index-path property, which tells
-Dragnet where the index should be stored.  So let's remove the datasource we
-added previously and re-add it with an index path.  We'll also specify a time
+Dragnet where the index should be stored.  We'll also need to specify a time
 field, which Dragnet will use to build per-day indexes by default:
 
-    $ dn datasource-remove my_logs
-    $ dn datasource-add my_logs --path=$PWD/tests/data/ \
+    $ dn datasource-update my_logs \
         --index-path=$PWD/my_index --time-field=time
     $ dn datasource-list -v
     DATASOURCE           LOCATION                                                   
@@ -481,10 +481,7 @@ Similarly, you can define metrics, build an index, and query it.  To do that, we
 have to specify an index path, which must be somewhere in Manta you have access
 to write:
 
-    $ dn datasource-remove dragnet_test_manta
-
-    $ dn datasource-add dragnet_test_manta --backend=manta --time-field=time \
-        --path=/dap/public/dragnet/testdata \
+    $ dn datasource-update dragnet_test_manta \
         --index-path=/$MANTA_USER/stor/myindex
 
     $ dn metric-add --datasource=dragnet_test_manta \

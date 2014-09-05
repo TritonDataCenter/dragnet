@@ -61,9 +61,20 @@ rundn datasource-add junk2 --path=/junk \
 # Dump state
 rundn datasource-list
 rundn datasource-list -v
+rundn datasource-show junk
+rundn datasource-show -v junk
 
 # Fail: duplicate name
 shouldfail rundn datasource-add junk --path=/junk
+
+# Update
+rundn datasource-update junk2 --backend=manta --path=/foo/bar \
+    --index-path=/bar/foo --filter={} --data-format=json-skinner \
+    --time-format=%Y --time-field=foo
+rundn datasource-show junk2
+rundn datasource-show -v junk2
+shouldfail rundn datasource-update
+shouldfail rundn datasource-update nonexistent
 
 # Clean up and dump state
 rundn datasource-remove junk2

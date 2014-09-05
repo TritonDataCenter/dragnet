@@ -4,6 +4,10 @@ dn datasource-add    [--backend=file|manta] --path=DATA_PATH
                      [--index-path=INDEX_PATH] [--filter=FILTER]
                      [--time-field=FIELD] [--time-format=TIME_FORMAT]
                      [--data-format=json|json-skinner] DATASOURCE
+dn datasource-update [--backend=file|manta] [--path=DATA_PATH]
+                     [--index-path=INDEX_PATH] [--filter=FILTER]
+                     [--time-field=FIELD] [--time-format=TIME_FORMAT]
+                     [--data-format=json|json-skinner] DATASOURCE
 dn datasource-list   [-v]
 dn datasource-remove DATASOURCE
 dn datasource-show   [-v] DATASOURCE

@@ -15,13 +15,13 @@ var mod_path = require('path');
 var mod_tab = require('tab');
 var VError = require('verror');
 var sprintf = require('extsprintf').sprintf;
-var timeRequireDone = process.hrtime(timeStarted);
 
 var mod_config_local = require('../lib/config-local');
 var mod_dragnet = require('../lib/dragnet');
 var mod_dragnet_impl = require('../lib/dragnet-impl'); /* XXX */
 var SkinnerFlattener = require('../lib/skinner-flattener');
 var attrsParse = require('../lib/attr-parser');
+var timeRequireDone = process.hrtime(timeStarted);
 
 /*
  * Program name and usage
@@ -35,6 +35,7 @@ var dnCmds = {
     'datasource-add': dnCmdDatasourceAdd,
     'datasource-list': dnCmdDatasourceList,
     'datasource-remove': dnCmdDatasourceRemove,
+    'datasource-update': dnCmdDatasourceUpdate,
     'datasource-show': dnCmdDatasourceShow,
     'metric-add': dnCmdMetricAdd,
     'metric-list': dnCmdMetricList,
@@ -354,6 +355,42 @@ function dnCmdDatasourceAdd(cmdname, argv)
 		dnDone = true;
 	});
 }
+
+/*
+ * "dn datasource-update ..." implementation
+ */
+function dnCmdDatasourceUpdate(cmdname, argv)
+{
+	var options, dsname, dsupdate, newconfig;
+
+	options = dnParseArgs(argv,
+	    [ 'backend', 'data-format', 'filter', 'path', 'time-field',
+		'time-format', 'index-path' ]);
+
+	dnCheckArgCount(options, 1);
+	dsname = options._args[0];
+	dsupdate = {
+	    'backend': options.backend,
+	    'backend_config': {
+	        'path': options.path,
+		'indexPath': options.index_path,
+		'timeFormat': options.time_format,
+		'timeField': options.time_field
+	    },
+	    'filter': options.filter || null,
+	    'dataFormat': options.data_format
+	};
+	newconfig = dnConfig.datasourceUpdate(dsname, dsupdate);
+	if (newconfig instanceof Error)
+		fatal(newconfig);
+	dnConfigBackend.save(newconfig.serialize(), function (err) {
+		if (err)
+			fatal(err);
+		dnConfig = newconfig;
+		dnDone = true;
+	});
+}
+
 
 /*
  * "dn datasource-remove ..." implementation

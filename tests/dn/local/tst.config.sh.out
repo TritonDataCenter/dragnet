@@ -27,8 +27,38 @@ junk2                file://junk
     filter:     {"eq":["req.method","GET"]}
     dataFormat: "json"
 
+# dn datasource-show junk
+DATASOURCE           LOCATION                                                   
+junk                 file://junk                                                
+
+# dn datasource-show -v junk
+DATASOURCE           LOCATION                                                   
+junk                 file://junk                                                
+    dataFormat: "json"
+
 # dn datasource-add junk --path=/junk
 dn: datasource "junk" already exists
+
+# dn datasource-update junk2 --backend=manta --path=/foo/bar --index-path=/bar/foo --filter={} --data-format=json-skinner --time-format=%Y --time-field=foo
+
+# dn datasource-show junk2
+DATASOURCE           LOCATION                                                   
+junk2                manta://us-east.manta.joyent.com/foo/bar                   
+
+# dn datasource-show -v junk2
+DATASOURCE           LOCATION                                                   
+junk2                manta://us-east.manta.joyent.com/foo/bar                   
+    filter:     {}
+    dataFormat: "json-skinner"
+    indexPath:  "/bar/foo"
+    timeFormat: "%Y"
+    timeField:  "foo"
+
+# dn datasource-update
+dn: missing arguments
+usage: dn SUBCOMMAND [OPTIONS] ARGS
+# dn datasource-update nonexistent
+dn: datasource "nonexistent" does not exist
 
 # dn datasource-remove junk2
 
