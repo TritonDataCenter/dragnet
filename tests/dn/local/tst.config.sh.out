@@ -99,39 +99,45 @@ manta-based2         manta://us-east.manta.joyent.com/junk
     dataFormat: "json-skinner"
     timeFormat: "%Y/%m/%d/%H"
 
-# dn metric-list
+# dn metric-list manta-based
 DATASOURCE           METRIC              
 
-# dn metric-list -v
+# dn metric-list manta-based2
 DATASOURCE           METRIC              
 
-# dn metric-add --datasource=manta-based --filter={ met1
+# dn metric-list -v manta-based
+DATASOURCE           METRIC              
+
+# dn metric-list -v manta-based2
+DATASOURCE           METRIC              
+
+# dn metric-add --filter={ manta-based met1
 dn: invalid filter: Unexpected end of input
 usage: dn SUBCOMMAND [OPTIONS] ARGS
 # dn metric-add met1
-dn: "datasource" option is required
+dn: missing arguments
 usage: dn SUBCOMMAND [OPTIONS] ARGS
-# dn metric-add --datasource=manta-based met1
+# dn metric-add manta-based met1
 
-# dn metric-list
+# dn metric-list manta-based
 DATASOURCE           METRIC              
 manta-based          met1                
 
-# dn metric-list -v
+# dn metric-list -v manta-based
 DATASOURCE           METRIC              
 manta-based          met1                
 
-# dn metric-add --datasource=manta-based --filter={ "eq": [ "req.method", "GET" ] } met2
+# dn metric-add --filter={ "eq": [ "req.method", "GET" ] } manta-based met2
 
-# dn metric-add --datasource=manta-based --filter={ "eq": [ "req.method", "GET" ] } --breakdowns=host,req.method,latency[aggr=quantize] met3
+# dn metric-add --filter={ "eq": [ "req.method", "GET" ] } --breakdowns=host,req.method,latency[aggr=quantize] manta-based met3
 
-# dn metric-list
+# dn metric-list manta-based
 DATASOURCE           METRIC              
 manta-based          met1                
 manta-based          met2                
 manta-based          met3                
 
-# dn metric-list -v
+# dn metric-list -v manta-based
 DATASOURCE           METRIC              
 manta-based          met1                
 manta-based          met2                
@@ -140,17 +146,17 @@ manta-based          met3
     filter:     {"eq":["req.method","GET"]}
     breakdowns: host, req.method, latency
 
-# dn metric-add --datasource=manta-based met1
+# dn metric-add manta-based met1
 dn: metric "met1" already exists
 
-# dn metric-remove met1
+# dn metric-remove manta-based met1
 
-# dn metric-remove met2
+# dn metric-remove manta-based met2
 
-# dn metric-remove met3
+# dn metric-remove manta-based met3
 
-# dn metric-remove met2
-dn: metric "met2" does not exist
+# dn metric-remove manta-based met2
+dn: datasource "manta-based" metric "met2" does not exist
 
 # dn datasource-remove manta-based2
 

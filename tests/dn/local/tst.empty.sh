@@ -37,12 +37,12 @@ scan -f '{ "eq": [ "audit", true ] }' -b timestamp[aggr=quantize],req.method
 scan --counters -f '{ "eq": [ "audit", true ] }'
 
 echo "creating index" >&2
-dn metric-add --datasource=devnull total
+dn metric-add devnull total
 dn build --interval=all devnull
 query --counters
 
 echo "creating index" >&2
-dn metric-add --datasource=devnull -b req.method,latency[aggr=quantize] met
+dn metric-add devnull met -b req.method,latency[aggr=quantize]
 dn build --interval=all devnull
 query --counters
 query -f '{ "eq": [ "req.method", "GET" ] }'

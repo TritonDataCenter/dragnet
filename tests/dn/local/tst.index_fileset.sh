@@ -24,7 +24,7 @@ function scan
 dn_clear_config
 dn datasource-add input --path=$DN_DATADIR --index-path=$tmpdir \
     --time-field=time
-dn metric-add --datasource=input  myindex \
+dn metric-add input myindex \
     -b timestamp[date,field=time,aggr=lquantize,step=86400],host,operation \
     -b req.caller,req.method,latency[aggr=quantize]
 dn build --interval=hour input
@@ -35,8 +35,8 @@ rm -rf "$tmpdir"
 #
 # That should have been pretty exhaustive, but try an index with a filter on it.
 #
-dn metric-remove myindex
-dn metric-add --datasource=input --filter='{ "eq": [ "req.method", "GET" ] }' \
+dn metric-remove input myindex
+dn metric-add input --filter='{ "eq": [ "req.method", "GET" ] }' \
     -b timestamp[date,field=time,aggr=lquantize,step=86400] myindex
 dn build --interval=hour input
 scan -f '{ "eq": [ "req.method", "GET" ] }'
@@ -47,8 +47,8 @@ rm -rf "$tmpdir"
 # When comparing output, it's important to verify the correct number of records
 # returned as well as the expected number of files scanned.
 #
-dn metric-remove myindex
-dn metric-add --datasource=input myindex \
+dn metric-remove input myindex
+dn metric-add input myindex \
     -b timestamp[date,field=time,aggr=lquantize,step=60]
 dn build --interval=hour input
 
@@ -60,7 +60,7 @@ rm -rf "$tmpdir"
 
 dn_clear_config
 dn datasource-add input --path=/dev/null --index-path=$tmpdir --time-field=time
-dn metric-add --datasource=input -b timestamp[date,field=time] myindex
+dn metric-add input -b timestamp[date,field=time] myindex
 dn build input
 if [[ -d "$tmpdir" ]]; then
 	echo "FAIL: unexpectedly created $tmpdir" >&2

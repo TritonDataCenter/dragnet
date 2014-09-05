@@ -42,8 +42,8 @@ cat $tmpfile $tmpfile $tmpfile > $tmpfile2
 mv $tmpfile2 $tmpfile
 dn datasource-add test_input --path=$tmpfile --data-format=json-skinner \
     --index-path=$tmpfile2 
-dn metric-add --datasource=test_input total
-dn metric-add --datasource=test_input -b req.method by_method
+dn metric-add test_input total
+dn metric-add test_input -b req.method by_method
 dn build --interval=all test_input
 dn query --interval=all test_input
 dn query --interval=all test_input -b req.method

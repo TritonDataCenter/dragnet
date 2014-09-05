@@ -100,35 +100,35 @@ rundn datasource-list -v
 #
 
 # Dump initial state
-rundn metric-list
-rundn metric-list -v
+rundn metric-list manta-based
+rundn metric-list manta-based2
+rundn metric-list -v manta-based
+rundn metric-list -v manta-based2
 
 # Fail: bad filter
-shouldfail rundn metric-add --datasource=manta-based --filter={ met1
+shouldfail rundn metric-add --filter={ manta-based met1
 # Fail: no datasource
 shouldfail rundn metric-add met1
 
 # Basic add
-rundn metric-add --datasource=manta-based met1
-rundn metric-list
-rundn metric-list -v
+rundn metric-add manta-based met1
+rundn metric-list manta-based
+rundn metric-list -v manta-based
 
 # Add with filter and breakdowns
-rundn metric-add --datasource=manta-based \
-    --filter='{ "eq": [ "req.method", "GET" ] }' met2
-rundn metric-add --datasource=manta-based \
-    --filter='{ "eq": [ "req.method", "GET" ] }' \
-    --breakdowns=host,req.method,latency[aggr=quantize] met3
-rundn metric-list
-rundn metric-list -v
+rundn metric-add --filter='{ "eq": [ "req.method", "GET" ] }' manta-based met2
+rundn metric-add --filter='{ "eq": [ "req.method", "GET" ] }' \
+    --breakdowns=host,req.method,latency[aggr=quantize] manta-based met3
+rundn metric-list manta-based
+rundn metric-list -v manta-based
 
 # Fail: duplicate name
-shouldfail rundn metric-add --datasource=manta-based met1
+shouldfail rundn metric-add manta-based met1
 
-rundn metric-remove met1
-rundn metric-remove met2
-rundn metric-remove met3
-shouldfail rundn metric-remove met2
+rundn metric-remove manta-based met1
+rundn metric-remove manta-based met2
+rundn metric-remove manta-based met3
+shouldfail rundn metric-remove manta-based met2
 
 # Clean up and dump state.
 rundn datasource-remove manta-based2

@@ -367,9 +367,9 @@ Now we can start adding metrics for the datasource.  Let's say we want to be
 able to quickly get the count of requests per minute, possibly broken out by
 status code.  Let's add this metric:
 
-    $ dn metric-add --datasource=my_logs \
+    $ dn metric-add \
         -b timestamp[field=time,date,aggr=lquantize,step=60] \
-        -b res.statusCode requests_bystatus
+        -b res.statusCode my_logs requests_bystatus
 
 Now build the index:
 
@@ -426,7 +426,7 @@ you'll get an error:
 
 But it will work if you add the metric and rebuild the index:
 
-    $ dn metric-add --datasource=my_logs -b req.method my_logs
+    $ dn metric-add -b req.method my_logs my_logs
 
     $ dn build my_logs
     indexes for "my_logs" built
@@ -484,9 +484,9 @@ to write:
     $ dn datasource-update dragnet_test_manta \
         --index-path=/$MANTA_USER/stor/myindex
 
-    $ dn metric-add --datasource=dragnet_test_manta \
+    $ dn metric-add \
         -b timestamp[date,field=time,aggr=lquantize,step=86400],req.method \
-        by_method
+        dragnet_test_manta by_method
 
 Now we can build the index:
 

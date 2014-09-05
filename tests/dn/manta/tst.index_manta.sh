@@ -26,7 +26,7 @@ function scan
 dn_clear_config
 dn datasource-add input --backend=manta --path=$DN_MANTADIR \
     --time-field=time --index-path="$tmpdir"
-dn metric-add --datasource=input mymet \
+dn metric-add input mymet \
     -b timestamp[date,field=time,aggr=lquantize,step=86400] \
     -b host,operation,req.caller,req.method,latency[aggr=quantize]
 dn build input
@@ -37,8 +37,8 @@ mfind -n '.*.sqlite' -t o "$tmpdir" | cut -d/ -f5-
 # That should have been pretty exhaustive, but try an index with a filter on it.
 #
 echo "creating filtered index" >&2
-dn metric-remove mymet
-dn metric-add --datasource=input -f '{ "eq": [ "req.method", "GET" ] }' \
+dn metric-remove input mymet
+dn metric-add input -f '{ "eq": [ "req.method", "GET" ] }' \
     -b timestamp[date,field=time,aggr=lquantize,step=86400] mymet
 dn build input
 scan -f '{ "eq": [ "req.method", "GET" ] }'

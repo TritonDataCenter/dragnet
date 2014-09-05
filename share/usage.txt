@@ -12,10 +12,10 @@ dn datasource-list   [-v]
 dn datasource-remove DATASOURCE
 dn datasource-show   [-v] DATASOURCE
 
-dn metric-add        --datasource=DATASOURCE [--breakdowns=BREAKDOWN[,...]]
-                     [--filter=FILTER] METRIC
-dn metric-list       [-v]
-dn metric-remove     METRIC
+dn metric-add        [--breakdowns=BREAKDOWN[,...]] [--filter=FILTER]
+		     DATASOURCE METRIC
+dn metric-list       [-v] DATASOURCE
+dn metric-remove     DATASOURCE METRIC
 
 dn build             [--before=START_TIME] [--after=END_TIME]
                      [--interval=hour|day|all] [--index-config=CONFIG_FILE]

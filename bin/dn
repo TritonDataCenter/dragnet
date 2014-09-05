@@ -517,17 +517,15 @@ function dnCmdDatasourceShow(cmdname, argv)
  */
 function dnCmdMetricAdd(cmdname, argv)
 {
-	var options, metname, mconfig, newconfig;
+	var options, dsname, metname, mconfig, newconfig;
 
-	options = dnParseArgs(argv, [ 'breakdowns', 'datasource', 'filter' ]);
-	if (!options.datasource)
-		usage(new VError('"datasource" option is required'));
-
-	dnCheckArgCount(options, 1);
-	metname = options._args[0];
+	options = dnParseArgs(argv, [ 'breakdowns', 'filter' ]);
+	dnCheckArgCount(options, 2);
+	dsname = options._args[0];
+	metname = options._args[1];
 	mconfig = {
 	    'name': metname,
-	    'datasource': options.datasource,
+	    'datasource': dsname,
 	    'filter': options.filter || null,
 	    'breakdowns': options.breakdowns
 	};
@@ -549,12 +547,13 @@ function dnCmdMetricAdd(cmdname, argv)
  */
 function dnCmdMetricRemove(cmdname, argv)
 {
-	var options, metname, newconfig;
+	var options, dsname, metname, newconfig;
 
 	options = dnParseArgs(argv, []);
-	dnCheckArgCount(options, 1);
-	metname = options._args[0];
-	newconfig = dnConfig.metricRemove(metname);
+	dnCheckArgCount(options, 2);
+	dsname = options._args[0];
+	metname = options._args[1];
+	newconfig = dnConfig.metricRemove(dsname, metname);
 	if (newconfig instanceof Error)
 		fatal(newconfig);
 	dnConfigBackend.save(newconfig.serialize(), function (err) {
@@ -570,10 +569,11 @@ function dnCmdMetricRemove(cmdname, argv)
  */
 function dnCmdMetricList(cmdname, argv)
 {
-	var options, columns, tab;
+	var options, dsname, columns, tab;
 
 	options = dnParseArgs(argv, [ 'verbose' ]);
-	dnCheckArgCount(options, 0);
+	dnCheckArgCount(options, 1);
+	dsname = options._args[0];
 
 	columns = [ {
 	    'label': 'DATASOURCE',
@@ -587,7 +587,7 @@ function dnCmdMetricList(cmdname, argv)
 	    'columns': columns
 	});
 	tab.writeHeader();
-	dnConfig.metricList(function (metname, mconfig) {
+	dnConfig.datasourceListMetrics(dsname, function (metname, mconfig) {
 		tab.writeRow({
 		    'DATASOURCE': mconfig.m_datasource,
 		    'METRIC': metname

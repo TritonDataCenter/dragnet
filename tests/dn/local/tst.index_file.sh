@@ -24,14 +24,14 @@ function scan
 dn_clear_config
 dn datasource-add input --path=$DN_DATADIR/2014/05-01/one.log \
     --index-path=$tmpfile --time-field=time
-dn metric-add --datasource=input big_metric \
+dn metric-add input big_metric \
     -b host,operation,req.caller,req.method,latency[aggr=quantize]
 dn build input
 . $(dirname $0)/../scan_testcases.sh
 
 # That should have been pretty exhaustive, but try an index with a filter on it.
-dn metric-remove big_metric
-dn metric-add --datasource=input filtered_metric \
+dn metric-remove input big_metric
+dn metric-add input filtered_metric \
     -f '{ "eq": [ "req.method", "GET" ] }'
 dn build input
 scan -f '{ "eq": [ "req.method", "GET" ] }'
