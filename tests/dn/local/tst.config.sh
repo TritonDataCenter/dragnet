@@ -4,6 +4,8 @@
 # tst.config.sh: tests data source configuration
 #
 
+. $(dirname $0)/../common.sh
+
 tmpfile=/var/tmp/$(basename $0).$$
 echo "using tmpfile $tmpfile" >&2
 

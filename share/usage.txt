@@ -6,6 +6,7 @@ dn datasource-add    [--backend=file|manta] --path=DATA_PATH
                      [--data-format=json|json-skinner] DATASOURCE
 dn datasource-list   [-v]
 dn datasource-remove DATASOURCE
+dn datasource-show   [-v] DATASOURCE
 
 dn metric-add        --datasource=DATASOURCE [--breakdowns=BREAKDOWN[,...]]
                      [--filter=FILTER] METRIC

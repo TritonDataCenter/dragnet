@@ -35,6 +35,7 @@ var dnCmds = {
     'datasource-add': dnCmdDatasourceAdd,
     'datasource-list': dnCmdDatasourceList,
     'datasource-remove': dnCmdDatasourceRemove,
+    'datasource-show': dnCmdDatasourceShow,
     'metric-add': dnCmdMetricAdd,
     'metric-list': dnCmdMetricList,
     'metric-remove': dnCmdMetricRemove,
@@ -398,40 +399,79 @@ function dnCmdDatasourceList(cmdname, argv)
 	});
 	tab.writeHeader();
 	dnConfig.datasourceList(function (dsname, ds) {
-		var location;
-
-		if (ds.ds_backend == 'manta')
-			location = sprintf('manta://us-east.manta.joyent.com%s',
-			    ds.ds_backend_config.path);
-		else
-			location = sprintf('file:/%s',
-			    ds.ds_backend_config.path);
-
-		tab.writeRow({
-		    'DATASOURCE': dsname,
-		    'LOCATION': location
-		});
-
-		if (!options.verbose)
-			return;
-
-		if (ds.ds_filter !== null) {
-			console.log(sprintf('%4s%-11s %s', '', 'filter:',
-			    JSON.stringify(ds.ds_filter)));
-		}
-
-		console.log(sprintf('%4s%-11s %s', '', 'dataFormat:',
-		    JSON.stringify(ds.ds_format)));
-
-		mod_jsprim.forEachKey(ds.ds_backend_config, function (k, v) {
-			if (k == 'path')
-				return;
-
-			console.log(sprintf('%4s%-11s %s', '', k + ':',
-			    JSON.stringify(v)));
-		});
+		dnDatasourcePrint(tab, dsname, ds, options);
 	});
 
+	dnDone = true;
+}
+
+/*
+ * Common code for printing a single datasource to the given node-tab table,
+ * optionally in verbose mode.
+ */
+function dnDatasourcePrint(tab, dsname, ds, options)
+{
+	var location;
+
+	if (ds.ds_backend == 'manta')
+		location = sprintf('manta://us-east.manta.joyent.com%s',
+		    ds.ds_backend_config.path);
+	else
+		location = sprintf('file:/%s',
+		    ds.ds_backend_config.path);
+
+	tab.writeRow({
+	    'DATASOURCE': dsname,
+	    'LOCATION': location
+	});
+
+	if (!options.verbose)
+		return;
+
+	if (ds.ds_filter !== null) {
+		console.log(sprintf('%4s%-11s %s', '', 'filter:',
+		    JSON.stringify(ds.ds_filter)));
+	}
+
+	console.log(sprintf('%4s%-11s %s', '', 'dataFormat:',
+	    JSON.stringify(ds.ds_format)));
+
+	mod_jsprim.forEachKey(ds.ds_backend_config, function (k, v) {
+		if (k == 'path')
+			return;
+
+		console.log(sprintf('%4s%-11s %s', '', k + ':',
+		    JSON.stringify(v)));
+	});
+}
+
+/*
+ * "dn datasource-show ..." implementation
+ */
+function dnCmdDatasourceShow(cmdname, argv)
+{
+	var options, columns, tab, dsname, ds;
+
+	options = dnParseArgs(argv, [ 'verbose' ]);
+	dnCheckArgCount(options, 1);
+	dsname = options._args[0];
+	ds = dnConfig.datasourceGet(dsname);
+	if (ds === null)
+		fatal(new Error('unknown datasource: "%s"'));
+
+	columns = [ {
+	    'label': 'DATASOURCE',
+	    'width': 20
+	}, {
+	    'label': 'LOCATION',
+	    'width': 59
+	} ];
+	tab = new mod_tab.TableOutputStream({
+	    'omitHeader': true,
+	    'columns': columns
+	});
+	tab.writeHeader();
+	dnDatasourcePrint(tab, dsname, ds, options);
 	dnDone = true;
 }
 
