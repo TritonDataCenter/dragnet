@@ -152,8 +152,7 @@ var dnOptions = [ {
     'default': '/manta/public/dragnet/assets'
 }, {
     'names': [ 'backend' ],
-    'type': 'string',
-    'default': 'file'
+    'type': 'string'
 }, {
     'names': [ 'before', 'B' ],
     'type': 'date'
@@ -335,7 +334,7 @@ function dnCmdDatasourceAdd(cmdname, argv)
 	dsname = options._args[0];
 	dsconfig = {
 	    'name': dsname,
-	    'backend': options.backend,
+	    'backend': options.backend || 'file',
 	    'backend_config': {
 	        'path': options.path,
 		'indexPath': options.index_path,
