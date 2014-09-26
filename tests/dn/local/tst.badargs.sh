@@ -19,11 +19,7 @@ function try
 }
 
 dn_clear_config
-dn datasource-list
-dn datasource-list -v
 dn datasource-add --path=$file input
-dn datasource-list
-dn datasource-list -v
 
 try -b host -b req.method,x[=bar]
 try -b host -b req.method,[]

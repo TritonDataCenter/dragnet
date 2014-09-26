@@ -49,3 +49,12 @@ scan --counters -b 'timestamp[date,field=time,aggr=lquantize,step=60]' \
     --after "2014-05-02T04:05:06.123" --before "2014-05-02T04:15:10" \
     2>$tmpfile ; grep -w inputs $tmpfile; cat $tmpfile >&2
 rm -f $tmpfile
+
+#
+# Check that the datasource filter is applied when scanning, and combined with
+# the optional scan filter.
+#
+dn datasource-update testdata --filter '{ "eq": [ "req.method", "GET" ] }'
+scan
+scan --filter '{ "eq": [ "res.statusCode", "200" ] }'
+dn_clear_config

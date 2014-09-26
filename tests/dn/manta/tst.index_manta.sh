@@ -43,4 +43,13 @@ dn metric-add input -f '{ "eq": [ "req.method", "GET" ] }' \
 dn build input
 scan -f '{ "eq": [ "req.method", "GET" ] }'
 mrm -r "$tmpdir"
+
+#
+# Finally, test that a datasource filter is always applied.
+#
+dn datasource-update input --filter='{ "eq": [ "req.method", "GET" ] }'
+dn metric-add input bycode -b res.statusCode
+dn build input
+scan
+scan -f '{ "eq": [ "res.statusCode", 200 ] }'
 dn_clear_config

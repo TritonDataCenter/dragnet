@@ -1568,3 +1568,17 @@ wendell, putpublicobject
 {"fields":{"latency":3800},"value":1}
 {"fields":{"latency":3900},"value":3}
 
+# dn scan
+VALUE
+   54
+
+# dn scan --points
+{"fields":{},"value":54}
+
+# dn scan --filter { "eq": [ "res.statusCode", "200" ] }
+VALUE
+    7
+
+# dn scan --points --filter { "eq": [ "res.statusCode", "200" ] }
+{"fields":{},"value":7}
+

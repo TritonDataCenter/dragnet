@@ -1430,3 +1430,11 @@ wendell, putpublicobject
 VALUE
   556
 
+# dn query
+VALUE
+  556
+
+# dn query -f { "eq": [ "res.statusCode", 200 ] }
+VALUE
+   77
+

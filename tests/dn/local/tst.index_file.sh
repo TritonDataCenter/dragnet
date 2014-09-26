@@ -35,6 +35,18 @@ dn metric-add input filtered_metric \
     -f '{ "eq": [ "req.method", "GET" ] }'
 dn build input
 scan -f '{ "eq": [ "req.method", "GET" ] }'
+dn_clear_config
+
+#
+# Finally, test that a datasource filter is always applied.
+#
+dn datasource-add input --path=$DN_DATADIR/2014/05-01/one.log \
+    --index-path=$tmpfile --time-field=time \
+    --filter='{ "eq": [ "req.method", "GET" ] }'
+dn metric-add input bycode -b res.statusCode
+dn build input
+scan
+scan -f '{ "eq": [ "res.statusCode", 200 ] }'
 
 dn_clear_config
 rm -rf $tmpfile

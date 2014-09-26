@@ -2609,3 +2609,17 @@ Inputs:
 
 submitted 2 inputs
 submitted 2 inputs
+# dn scan
+VALUE
+  556
+
+# dn scan --points
+{"fields":{},"value":556}
+
+# dn scan --filter { "eq": [ "res.statusCode", "200" ] }
+VALUE
+   77
+
+# dn scan --points --filter { "eq": [ "res.statusCode", "200" ] }
+{"fields":{},"value":77}
+
