@@ -2388,18 +2388,18 @@ wendell, putpublicobject
         {
             "type": "map",
             "assets": [
-                "/manta/public/dragnet/assets/dragnet-0.0.2.tgz"
+                "/manta/public/dragnet/assets/dragnet-0.0.3.tgz"
             ],
-            "init": "tar xzf \"/assets/manta/public/dragnet/assets/dragnet-0.0.2.tgz\"",
+            "init": "tar xzf \"/assets/manta/public/dragnet/assets/dragnet-0.0.3.tgz\"",
             "exec": "export DRAGNET_CONFIG=/dragnetrc\nexport PATH=$PATH:/dragnet/bin\nset -o pipefail\nset -o errexit\nrm -f $DRAGNET_CONFIG\ndn datasource-add input --path=/dev/stdin --data-format=json \ndn scan --points input --breakdowns=timestamp[date,field=time,aggr=lquantize,step=86400]"
         },
         {
             "type": "reduce",
             "memory": 2048,
             "assets": [
-                "/manta/public/dragnet/assets/dragnet-0.0.2.tgz"
+                "/manta/public/dragnet/assets/dragnet-0.0.3.tgz"
             ],
-            "init": "tar xzf \"/assets/manta/public/dragnet/assets/dragnet-0.0.2.tgz\"",
+            "init": "tar xzf \"/assets/manta/public/dragnet/assets/dragnet-0.0.3.tgz\"",
             "exec": "export DRAGNET_CONFIG=/dragnetrc\nexport PATH=$PATH:/dragnet/bin\nset -o pipefail\nset -o errexit\nrm -f $DRAGNET_CONFIG\ndn datasource-add input --path=/dev/stdin --data-format=json-skinner \ndn scan --points input --breakdowns=timestamp[date,field=timestamp,aggr=lquantize,step=86400]"
         }
     ]
@@ -2423,18 +2423,18 @@ Inputs:
         {
             "type": "map",
             "assets": [
-                "/manta/public/dragnet/assets/dragnet-0.0.2.tgz"
+                "/manta/public/dragnet/assets/dragnet-0.0.3.tgz"
             ],
-            "init": "tar xzf \"/assets/manta/public/dragnet/assets/dragnet-0.0.2.tgz\"",
+            "init": "tar xzf \"/assets/manta/public/dragnet/assets/dragnet-0.0.3.tgz\"",
             "exec": "export DRAGNET_CONFIG=/dragnetrc\nexport PATH=$PATH:/dragnet/bin\nset -o pipefail\nset -o errexit\nrm -f $DRAGNET_CONFIG\ndn datasource-add input --path=/dev/stdin --data-format=json \ndn scan --points input --breakdowns=timestamp[date,field=time,aggr=lquantize,step=86400]"
         },
         {
             "type": "reduce",
             "memory": 2048,
             "assets": [
-                "/manta/public/dragnet/assets/dragnet-0.0.2.tgz"
+                "/manta/public/dragnet/assets/dragnet-0.0.3.tgz"
             ],
-            "init": "tar xzf \"/assets/manta/public/dragnet/assets/dragnet-0.0.2.tgz\"",
+            "init": "tar xzf \"/assets/manta/public/dragnet/assets/dragnet-0.0.3.tgz\"",
             "exec": "export DRAGNET_CONFIG=/dragnetrc\nexport PATH=$PATH:/dragnet/bin\nset -o pipefail\nset -o errexit\nrm -f $DRAGNET_CONFIG\ndn datasource-add input --path=/dev/stdin --data-format=json-skinner \ndn scan --points input --breakdowns=timestamp[date,field=timestamp,aggr=lquantize,step=86400]"
         }
     ]
@@ -2477,18 +2477,18 @@ submitted 9 inputs
         {
             "type": "map",
             "assets": [
-                "/manta/public/dragnet/assets/dragnet-0.0.2.tgz"
+                "/manta/public/dragnet/assets/dragnet-0.0.3.tgz"
             ],
-            "init": "tar xzf \"/assets/manta/public/dragnet/assets/dragnet-0.0.2.tgz\"",
+            "init": "tar xzf \"/assets/manta/public/dragnet/assets/dragnet-0.0.3.tgz\"",
             "exec": "export DRAGNET_CONFIG=/dragnetrc\nexport PATH=$PATH:/dragnet/bin\nset -o pipefail\nset -o errexit\nrm -f $DRAGNET_CONFIG\ndn datasource-add input --path=/dev/stdin --data-format=json  --time-field=time\ndn scan --points input --before \"2014-05-03T00:00:00.000Z\" --after \"2014-05-02T00:00:00.000Z\""
         },
         {
             "type": "reduce",
             "memory": 2048,
             "assets": [
-                "/manta/public/dragnet/assets/dragnet-0.0.2.tgz"
+                "/manta/public/dragnet/assets/dragnet-0.0.3.tgz"
             ],
-            "init": "tar xzf \"/assets/manta/public/dragnet/assets/dragnet-0.0.2.tgz\"",
+            "init": "tar xzf \"/assets/manta/public/dragnet/assets/dragnet-0.0.3.tgz\"",
             "exec": "export DRAGNET_CONFIG=/dragnetrc\nexport PATH=$PATH:/dragnet/bin\nset -o pipefail\nset -o errexit\nrm -f $DRAGNET_CONFIG\ndn datasource-add input --path=/dev/stdin --data-format=json-skinner \ndn scan --points input "
         }
     ]
@@ -2505,18 +2505,18 @@ Inputs:
         {
             "type": "map",
             "assets": [
-                "/manta/public/dragnet/assets/dragnet-0.0.2.tgz"
+                "/manta/public/dragnet/assets/dragnet-0.0.3.tgz"
             ],
-            "init": "tar xzf \"/assets/manta/public/dragnet/assets/dragnet-0.0.2.tgz\"",
+            "init": "tar xzf \"/assets/manta/public/dragnet/assets/dragnet-0.0.3.tgz\"",
             "exec": "export DRAGNET_CONFIG=/dragnetrc\nexport PATH=$PATH:/dragnet/bin\nset -o pipefail\nset -o errexit\nrm -f $DRAGNET_CONFIG\ndn datasource-add input --path=/dev/stdin --data-format=json  --time-field=time\ndn scan --points input --before \"2014-05-03T00:00:00.000Z\" --after \"2014-05-02T00:00:00.000Z\""
         },
         {
             "type": "reduce",
             "memory": 2048,
             "assets": [
-                "/manta/public/dragnet/assets/dragnet-0.0.2.tgz"
+                "/manta/public/dragnet/assets/dragnet-0.0.3.tgz"
             ],
-            "init": "tar xzf \"/assets/manta/public/dragnet/assets/dragnet-0.0.2.tgz\"",
+            "init": "tar xzf \"/assets/manta/public/dragnet/assets/dragnet-0.0.3.tgz\"",
             "exec": "export DRAGNET_CONFIG=/dragnetrc\nexport PATH=$PATH:/dragnet/bin\nset -o pipefail\nset -o errexit\nrm -f $DRAGNET_CONFIG\ndn datasource-add input --path=/dev/stdin --data-format=json-skinner \ndn scan --points input "
         }
     ]
@@ -2542,18 +2542,18 @@ submitted 2 inputs
         {
             "type": "map",
             "assets": [
-                "/manta/public/dragnet/assets/dragnet-0.0.2.tgz"
+                "/manta/public/dragnet/assets/dragnet-0.0.3.tgz"
             ],
-            "init": "tar xzf \"/assets/manta/public/dragnet/assets/dragnet-0.0.2.tgz\"",
+            "init": "tar xzf \"/assets/manta/public/dragnet/assets/dragnet-0.0.3.tgz\"",
             "exec": "export DRAGNET_CONFIG=/dragnetrc\nexport PATH=$PATH:/dragnet/bin\nset -o pipefail\nset -o errexit\nrm -f $DRAGNET_CONFIG\ndn datasource-add input --path=/dev/stdin --data-format=json  --time-field=time\ndn scan --points input --before \"2014-05-02T04:15:10.000Z\" --after \"2014-05-02T04:05:06.123Z\" --breakdowns=timestamp[date,field=time,aggr=lquantize,step=60]"
         },
         {
             "type": "reduce",
             "memory": 2048,
             "assets": [
-                "/manta/public/dragnet/assets/dragnet-0.0.2.tgz"
+                "/manta/public/dragnet/assets/dragnet-0.0.3.tgz"
             ],
-            "init": "tar xzf \"/assets/manta/public/dragnet/assets/dragnet-0.0.2.tgz\"",
+            "init": "tar xzf \"/assets/manta/public/dragnet/assets/dragnet-0.0.3.tgz\"",
             "exec": "export DRAGNET_CONFIG=/dragnetrc\nexport PATH=$PATH:/dragnet/bin\nset -o pipefail\nset -o errexit\nrm -f $DRAGNET_CONFIG\ndn datasource-add input --path=/dev/stdin --data-format=json-skinner \ndn scan --points input --breakdowns=timestamp[date,field=timestamp,aggr=lquantize,step=60]"
         }
     ]
@@ -2570,18 +2570,18 @@ Inputs:
         {
             "type": "map",
             "assets": [
-                "/manta/public/dragnet/assets/dragnet-0.0.2.tgz"
+                "/manta/public/dragnet/assets/dragnet-0.0.3.tgz"
             ],
-            "init": "tar xzf \"/assets/manta/public/dragnet/assets/dragnet-0.0.2.tgz\"",
+            "init": "tar xzf \"/assets/manta/public/dragnet/assets/dragnet-0.0.3.tgz\"",
             "exec": "export DRAGNET_CONFIG=/dragnetrc\nexport PATH=$PATH:/dragnet/bin\nset -o pipefail\nset -o errexit\nrm -f $DRAGNET_CONFIG\ndn datasource-add input --path=/dev/stdin --data-format=json  --time-field=time\ndn scan --points input --before \"2014-05-02T04:15:10.000Z\" --after \"2014-05-02T04:05:06.123Z\" --breakdowns=timestamp[date,field=time,aggr=lquantize,step=60]"
         },
         {
             "type": "reduce",
             "memory": 2048,
             "assets": [
-                "/manta/public/dragnet/assets/dragnet-0.0.2.tgz"
+                "/manta/public/dragnet/assets/dragnet-0.0.3.tgz"
             ],
-            "init": "tar xzf \"/assets/manta/public/dragnet/assets/dragnet-0.0.2.tgz\"",
+            "init": "tar xzf \"/assets/manta/public/dragnet/assets/dragnet-0.0.3.tgz\"",
             "exec": "export DRAGNET_CONFIG=/dragnetrc\nexport PATH=$PATH:/dragnet/bin\nset -o pipefail\nset -o errexit\nrm -f $DRAGNET_CONFIG\ndn datasource-add input --path=/dev/stdin --data-format=json-skinner \ndn scan --points input --breakdowns=timestamp[date,field=timestamp,aggr=lquantize,step=60]"
         }
     ]
