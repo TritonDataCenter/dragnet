@@ -26,6 +26,8 @@ try -b host -b req.method,[]
 try -b host -b req.method,foo[
 try -f '{'
 try -f '{ "junk": [ "foo", "bar" ] }'
+try --gnuplot
+try -b req.method,res.statusCode --gnuplot
 
 dn datasource-remove input
 dn datasource-add --path=$file --data-format=junk input

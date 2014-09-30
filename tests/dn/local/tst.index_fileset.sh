@@ -30,6 +30,12 @@ dn metric-add input myindex \
 dn build --interval=hour input
 (cd "$tmpdir" && find . -type f | sort -n)
 . $(dirname $0)/../scan_testcases.sh
+
+#
+# Check GNUplot output.
+#
+scan -b timestamp[date,aggr=lquantize,step=3600] --gnuplot
+scan -b req.method --gnuplot
 rm -rf "$tmpdir"
 
 #

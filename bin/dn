@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* vim: set syn=javascript: */
+/* vim: set ft=javascript: */
 
 /*
  * dn: dragnet command-line interface
@@ -177,6 +177,9 @@ var dnOptions = [ {
 }, {
     'names': [ 'filter', 'f' ],
     'type': 'string'
+}, {
+    'names': [ 'gnuplot' ],
+    'type': 'bool'
 }, {
     'names': [ 'interval', 'i' ],
     'type': 'string',
@@ -707,6 +710,11 @@ function dnQueryConfig(options)
 	if (qc instanceof Error)
 		fatal(qc);
 
+	if (options.gnuplot && qc.qc_breakdowns.length != 1) {
+		fatal(new VError(
+		    '--gnuplot can only be used with exactly one breakdown'));
+	}
+
 	return ({
 	    'query': qc,
 	    'dryRun': options.dry_run,
@@ -834,7 +842,7 @@ function dnCmdQuery(cmdname, argv)
 	options = dnParseArgs(argv, [
 	    /* general scan/query arguments */
 	    'before', 'after', 'filter', 'breakdowns', 'raw', 'points',
-	    'counters', 'interval',
+	    'counters', 'interval', 'gnuplot',
 
 	    /* manta-specific arguments */
 	    'assetroot', 'dry-run'
@@ -866,7 +874,7 @@ function dnCmdScan(cmdname, argv)
 	options = dnParseArgs(argv, [
 	    /* general scan/query arguments */
 	    'before', 'after', 'filter', 'breakdowns', 'raw', 'points',
-	    'counters', 'warnings',
+	    'counters', 'warnings', 'gnuplot',
 
 	    /* manta-specific arguments */
 	    'assetroot', 'dry-run'
@@ -932,10 +940,15 @@ function dnOutput(query, options, op, callback)
 	if (!options.dry_run) {
 		dnStream = stream;
 		output = options.raw || options.points ?
-		    dnOutputRaw : dnOutputPretty;
+		    dnOutputRaw :
+		    options.gnuplot ? dnOutputGnuplot : dnOutputPretty;
 
 		stream.on('data', function (rows) {
-			output({ 'query': query, 'rows': rows });
+			output({
+			    'options': options,
+			    'query': query,
+			    'rows': rows
+			});
 		});
 
 		if (options.warnings)
@@ -962,19 +975,39 @@ function dnOutputRaw(results)
 }
 
 /*
- * Outputter that pretty-prints data.
+ * Sort the rows in the results table for pretty-printing.
  */
-function dnOutputPretty(results)
+function dnOutputSortRows(results)
 {
-	var coldefs, tablefields, quantized;
+	return (results.rows.slice(0).sort(function (a, b) {
+		var j, d;
+
+		mod_assert.ok(Array.isArray(a) && Array.isArray(b));
+		mod_assert.equal(a.length, b.length);
+		for (j = 0; j < a.length; j++) {
+			if (typeof (a[j]) == 'string')
+				d = a[j].localeCompare(b[j]);
+			else
+				d = a[j] - b[j];
+
+			if (d !== 0)
+				return (d);
+		}
+
+		return (0);
+	}));
+}
+
+/*
+ * Take a pass over the results and replace quantized values with the real
+ * values.  Do the same to replace timestamps.
+ */
+function dnOutputExpandValues(results)
+{
+	var coldefs, quantized;
 
 	coldefs = results.query.qc_breakdowns;
 	quantized = coldefs.length > 0 && coldefs[coldefs.length - 1].aggr;
-
-	/*
-	 * Take a pass over the results and replace quantized values with the
-	 * real values.  Do the same to replace timestamps.
-	 */
 	coldefs.forEach(function (c, j) {
 		var bucketizer;
 
@@ -994,7 +1027,19 @@ function dnOutputPretty(results)
 			});
 		}
 	});
+}
 
+/*
+ * Outputter that pretty-prints data.
+ */
+function dnOutputPretty(results)
+{
+	var coldefs, tablefields, quantized;
+
+	dnOutputExpandValues(results);
+
+	coldefs = results.query.qc_breakdowns;
+	quantized = coldefs.length > 0 && coldefs[coldefs.length - 1].aggr;
 	if (quantized) {
 		dnOutputPrettyQuantized(results);
 		return;
@@ -1041,23 +1086,7 @@ function dnOutputPretty(results)
 
 	mod_tab.emitTable({
 	    'columns': tablefields,
-	    'rows': results.rows.slice(0).sort(function (a, b) {
-		var j, d;
-
-		mod_assert.ok(Array.isArray(a) && Array.isArray(b));
-		mod_assert.equal(a.length, b.length);
-		for (j = 0; j < a.length; j++) {
-			if (typeof (a[j]) == 'string')
-				d = a[j].localeCompare(b[j]);
-			else
-				d = a[j] - b[j];
-
-			if (d !== 0)
-				return (d);
-		}
-
-		return (0);
-	    })
+	    'rows': dnOutputSortRows(results)
 	});
 }
 
@@ -1167,6 +1196,81 @@ function dnPrintDistribution(stream, distr, bucketizer, asdate)
 		    new Date(min * 1000).toISOString() : min.toString(),
 		    dots, count));
 	}
+}
+
+/*
+ * Emit a GNUplot file to draw a graph for the given query.
+ */
+function dnOutputGnuplot(results)
+{
+	var options, query, coldefs, out, title, xquant;
+
+	options = results.options;
+	query = results.query;
+	coldefs = query.qc_breakdowns;
+	out = process.stdout;
+
+	out.write('#\n');
+	out.write('# This is a GNUplot input file generated automatically\n');
+	out.write('# by the Dragnet "dn" command.  You can use it to create\n');
+	out.write('# a graph as a PNG image (as file "graph.png") using:\n');
+	out.write('#\n');
+	out.write('#     gnuplot < this_file > graph.png\n');
+	out.write('#\n');
+	out.write('set terminal png size 1200,600\n');
+	title = options._args[0]; /* XXX happens to always be datasource */
+	out.write('set title "' + title + '"\n');
+
+	if (query.qc_breakdowns[0].hasOwnProperty('date')) {
+		out.write('# Configure plots to use the x-axis as time.\n');
+		out.write('set xdata time;\n');
+		/* configure how gnuplot should read timestamp values */
+		out.write('set timefmt "%s";\n');
+		/* configure how gnuplot should display timestamp values */
+		out.write('set format x "%m/%d\\n%H:%MZ"\n');
+	}
+
+	out.write('# Add 10% padding at the top of the graph.\n');
+	out.write('set offsets graph 0, 0, 0.1, 0\n');
+	out.write('# The y-axis should always start at zero.\n');
+	out.write('set yrange [0:*]\n');
+	out.write('set ylabel "Count"\n');
+	out.write('set ytics\n');
+
+	/*
+	 * If the x-axis value is numeric, pass it straight through to GNUplot.
+	 * If not (e.g., the x-axis values are unordered values, like "GET",
+	 * "PUT", and "DELETE"), then tell GNUplot to use the line number as the
+	 * x-axis value and to use the first column as the x-axis label.
+	 */
+	mod_assert.equal(coldefs.length, 1);
+	xquant = query.qc_bucketizers.hasOwnProperty(coldefs[0].name);
+	if (xquant) {
+		out.write('plot "-" using 1:2 with linespoints ' +
+		    'title "Value"\n');
+	} else {
+		out.write('plot "-" using (column(0)):2:xtic(1) ' +
+		    'with linespoints title "Value"\n');
+	}
+
+	/*
+	 * Write the data inline into the GNUplot file.
+	 */
+	dnOutputSortRows(results).forEach(function (row) {
+		var b, x, y;
+
+		if (xquant) {
+			b = query.qc_bucketizers[coldefs[0].name];
+			x = b.bucketMin(row[0]);
+		} else {
+			x = row[0];
+		}
+
+		y = row[1];
+		out.write('\t' + x + ' ' + y + '\n');
+	});
+
+	out.write('\te\n');
 }
 
 /*

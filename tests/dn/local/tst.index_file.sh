@@ -29,7 +29,9 @@ dn metric-add input big_metric \
 dn build input
 . $(dirname $0)/../scan_testcases.sh
 
+#
 # That should have been pretty exhaustive, but try an index with a filter on it.
+#
 dn metric-remove input big_metric
 dn metric-add input filtered_metric \
     -f '{ "eq": [ "req.method", "GET" ] }'

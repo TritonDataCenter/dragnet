@@ -7,4 +7,6 @@ usage: dn SUBCOMMAND [OPTIONS] ARGS
 dn: invalid filter: Unexpected end of input
 usage: dn SUBCOMMAND [OPTIONS] ARGS
 dn: invalid query: invalid filter: predicate { junk: [ 'foo', 'bar' ] }: unknown operator "junk"
+dn: --gnuplot can only be used with exactly one breakdown
+dn: --gnuplot can only be used with exactly one breakdown
 dn: unsupported format: "junk"

@@ -2381,6 +2381,53 @@ wendell, putpublicobject
 {"fields":{"latency":3900},"value":15}
 {"fields":{"latency":4000},"value":13}
 
+#
+# This is a GNUplot input file generated automatically
+# by the Dragnet "dn" command.  You can use it to create
+# a graph as a PNG image (as file "graph.png") using:
+#
+#     gnuplot < this_file > graph.png
+#
+set terminal png size 1200,600
+set title "test_input"
+# Configure plots to use the x-axis as time.
+set xdata time;
+set timefmt "%s";
+set format x "%m/%d\n%H:%MZ"
+# Add 10% padding at the top of the graph.
+set offsets graph 0, 0, 0.1, 0
+# The y-axis should always start at zero.
+set yrange [0:*]
+set ylabel "Count"
+set ytics
+plot "-" using 1:2 with linespoints title "Value"
+	1398902400 500
+	1398988800 500
+	1399075200 500
+	1399161600 500
+	1399248000 250
+	e
+#
+# This is a GNUplot input file generated automatically
+# by the Dragnet "dn" command.  You can use it to create
+# a graph as a PNG image (as file "graph.png") using:
+#
+#     gnuplot < this_file > graph.png
+#
+set terminal png size 1200,600
+set title "test_input"
+# Add 10% padding at the top of the graph.
+set offsets graph 0, 0, 0.1, 0
+# The y-axis should always start at zero.
+set yrange [0:*]
+set ylabel "Count"
+set ytics
+plot "-" using (column(0)):2:xtic(1) with linespoints title "Value"
+	DELETE 582
+	GET 556
+	HEAD 551
+	PUT 563
+	e
 # dn scan --dry-run -b timestamp[date,field=time,aggr=lquantize,step=86400]
 would scan files:
     tests/data/2014/05-01/one.log

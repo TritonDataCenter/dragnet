@@ -24,6 +24,13 @@ dn datasource-add test_input --path=$DN_DATADIR \
 . $(dirname $0)/../scan_testcases.sh
 
 #
+# Check GNUplot output.
+#
+dn scan -b timestamp[field=time,date,aggr=lquantize,step=86400] \
+    --gnuplot test_input
+dn scan -b req.method --gnuplot test_input
+
+#
 # The "before" and "after" filters should prune the number of files scanned.
 # When comparing output, it's important to verify the correct number of records
 # returned as well as the expected number of files scanned.  Chop off the root

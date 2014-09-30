@@ -24,7 +24,7 @@ dn build             [--before=START_TIME] [--after=END_TIME]
 
 dn query             [--before=START_TIME] [--after=END_TIME] [--filter=FILTER]
                      [--breakdowns=BREAKDOWN[,...]] [--interval=hour|day|all]
-                     [--raw] [--points] [--counters]
+                     [--raw] [--points] [--counters] [--gnuplot]
                      [--dry-run] [--assetroot=ASSET_ROOT]
                      DATASOURCE
 
