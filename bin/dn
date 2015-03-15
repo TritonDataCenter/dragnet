@@ -496,7 +496,7 @@ function dnCmdDatasourceShow(cmdname, argv)
 	dsname = options._args[0];
 	ds = dnConfig.datasourceGet(dsname);
 	if (ds === null)
-		fatal(new Error('unknown datasource: "%s"'));
+		fatal(new VError('unknown datasource: "%s"', dsname));
 
 	columns = [ {
 	    'label': 'DATASOURCE',
