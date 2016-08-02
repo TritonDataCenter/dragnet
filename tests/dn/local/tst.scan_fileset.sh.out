@@ -2471,9 +2471,9 @@ FindFeedback       ndirectories:       7
 FindFeedback       ninputs:           24
 FindFeedback       noutputs:           9
 FindFeedback       nregfiles:          9
-JsonDecoderStream  invalid json:       2
-JsonDecoderStream  ninputs:         2254
-JsonDecoderStream  noutputs:        2252
+json parser        invalid json:       2
+json parser        ninputs:         2254
+json parser        noutputs:        2252
 SkinnerAdapterStream ninputs:         2252
 SkinnerAdapterStream noutputs:        2252
 Datetime parser    baddate:            1
@@ -2496,9 +2496,9 @@ FindFeedback       ndirectories:       7
 FindFeedback       ninputs:           24
 FindFeedback       noutputs:           9
 FindFeedback       nregfiles:          9
-JsonDecoderStream  invalid json:       2
-JsonDecoderStream  ninputs:         2254
-JsonDecoderStream  noutputs:        2252
+json parser        invalid json:       2
+json parser        ninputs:         2254
+json parser        noutputs:        2252
 SkinnerAdapterStream ninputs:         2252
 SkinnerAdapterStream noutputs:        2252
 Datetime parser    baddate:            1
@@ -2537,9 +2537,9 @@ FindFeedback       ndirectories:       1
 FindFeedback       ninputs:            5
 FindFeedback       noutputs:           2
 FindFeedback       nregfiles:          2
-JsonDecoderStream  invalid json:       2
-JsonDecoderStream  ninputs:          504
-JsonDecoderStream  noutputs:         502
+json parser        invalid json:       2
+json parser        ninputs:          504
+json parser        noutputs:         502
 SkinnerAdapterStream ninputs:          502
 SkinnerAdapterStream noutputs:         502
 Datetime parser    baddate:            1
@@ -2565,9 +2565,9 @@ FindFeedback       ndirectories:       1
 FindFeedback       ninputs:            5
 FindFeedback       noutputs:           2
 FindFeedback       nregfiles:          2
-JsonDecoderStream  invalid json:       2
-JsonDecoderStream  ninputs:          504
-JsonDecoderStream  noutputs:         502
+json parser        invalid json:       2
+json parser        ninputs:          504
+json parser        noutputs:         502
 SkinnerAdapterStream ninputs:          502
 SkinnerAdapterStream noutputs:         502
 Datetime parser    baddate:            1
@@ -2612,9 +2612,9 @@ FindFeedback       ndirectories:       1
 FindFeedback       ninputs:            5
 FindFeedback       noutputs:           2
 FindFeedback       nregfiles:          2
-JsonDecoderStream  invalid json:       2
-JsonDecoderStream  ninputs:          504
-JsonDecoderStream  noutputs:         502
+json parser        invalid json:       2
+json parser        ninputs:          504
+json parser        noutputs:         502
 SkinnerAdapterStream ninputs:          502
 SkinnerAdapterStream noutputs:         502
 Datetime parser    baddate:            1
@@ -2641,9 +2641,9 @@ FindFeedback       ndirectories:       1
 FindFeedback       ninputs:            5
 FindFeedback       noutputs:           2
 FindFeedback       nregfiles:          2
-JsonDecoderStream  invalid json:       2
-JsonDecoderStream  ninputs:          504
-JsonDecoderStream  noutputs:         502
+json parser        invalid json:       2
+json parser        ninputs:          504
+json parser        noutputs:         502
 SkinnerAdapterStream ninputs:          502
 SkinnerAdapterStream noutputs:         502
 Datetime parser    baddate:            1

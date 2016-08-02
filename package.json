@@ -13,24 +13,27 @@
 		"url": "http://github.com/joyent/dragnet.git"
 	},
 	"dependencies": {
-		"assert-plus": "0.1.5",
-		"bunyan": "1.5.1",
-		"catstreams": "0.0.4",
+		"assert-plus": "^1.0.0",
+		"bunyan": "^1.8.1",
+		"catstreams": "^1.0.0",
 		"dashdash": "1.6.0",
-		"extsprintf": "1.2.0",
+		"extsprintf": "^1.2.0",
 		"fstream": "0.1.28",
-		"krill": "0.3.0",
+		"krill": "^1.0.0",
 		"lstream": "0.0.4",
-		"jsprim": "0.5.1",
-		"manta": "2.0.2",
+		"jsprim": "^1.3.0",
+		"manta": "^3.0.0",
+		"manta-finder": "^1.0.0",
 		"mkdirp": "0.5.0",
 		"semver": "2.3.0",
 		"skinner": "git://github.com/joyent/node-skinner.git#dragnet",
 		"sqlite3": "3.1.0",
 		"tab": "0.1.0",
 		"tar": "0.1.20",
-		"vasync": "1.5.0",
-		"verror": "1.4.0",
-		"vstream": "0.1.0"
+		"timefilter": "^1.0.0",
+		"vasync": "^1.5.0",
+		"verror": "^1.4.0",
+		"vstream": "0.1.0",
+		"vstream-json-parser": "1.0.0"
 	}
 }
